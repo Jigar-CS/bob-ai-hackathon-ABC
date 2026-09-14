@@ -7,41 +7,37 @@
 <title>PortPulse — Port Congestion Predictor & Ops Optimizer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg-main: #06080f;
-    --bg-surface: rgba(14, 20, 36, 0.85);
-    --card-bg: rgba(18, 26, 46, 0.7);
-    --card-border: rgba(255, 255, 255, 0.06);
-    --card-hover-border: rgba(96, 165, 250, 0.35);
-    --accent-blue: #3b82f6;
-    --accent-cyan: #06b6d4;
-    --accent-purple: #8b5cf6;
-    --accent-green: #10b981;
-    --accent-amber: #f59e0b;
-    --accent-rose: #f43f5e;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 20px;
-    --shadow-glow: 0 0 60px rgba(59, 130, 246, 0.06);
-    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    /* ── Nautical chart palette ───────────────────────────────── */
+    --bg-main:        #e8dfc8;
+    --bg-surface:     #dfd5ba;
+    --card-bg:        #f0e8d5;
+    --card-border:    #c8b99a;
+    --card-hover-border: #8b7355;
+    --accent-brass:   #8b6914;
+    --accent-navy:    #1a2744;
+    --accent-red:     #8b1a1a;
+    --accent-gold:    #b8860b;
+    --accent-green:   #1a5c3a;
+    --accent-amber:   #b8720b;
+    --text-primary:   #1a2035;
+    --text-secondary: #3d4a5c;
+    --text-muted:     #6b7280;
+    --radius-sm:      4px;
+    --radius-md:      6px;
+    --radius-lg:      8px;
+    --radius-xl:      10px;
+    --shadow-card:    0 1px 4px rgba(26, 32, 53, 0.10);
+    --transition:     all 0.2s ease;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
     background: var(--bg-main);
-    background-image:
-      radial-gradient(ellipse at 10% 0%, rgba(59, 130, 246, 0.07) 0px, transparent 60%),
-      radial-gradient(ellipse at 90% 0%, rgba(139, 92, 246, 0.06) 0px, transparent 55%),
-      radial-gradient(ellipse at 50% 100%, rgba(6, 182, 212, 0.04) 0px, transparent 50%);
-    background-attachment: fixed;
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
@@ -61,11 +57,6 @@
   /* ── Header ─────────────────────────────────────────────────── */
 
   .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
     margin-bottom: 28px;
     padding-bottom: 22px;
     border-bottom: 1px solid var(--card-border);
@@ -73,28 +64,42 @@
 
   .brand {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    align-items: center;
+    gap: 10px;
   }
 
   .brand-logo {
-    font-family: 'Outfit', sans-serif;
-    font-size: 26px;
-    font-weight: 800;
-    letter-spacing: -0.6px;
-    background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #06b6d4 100%);
-    background-size: 200% 200%;
-    animation: gradient-shift 6s ease infinite;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 10px;
   }
 
-  @keyframes gradient-shift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+  .brand-monogram {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--accent-navy);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .brand-divider {
+    display: inline-block;
+    width: 1px;
+    height: 16px;
+    background: var(--card-border);
+    margin: 0 10px;
+    flex-shrink: 0;
+    align-self: center;
   }
 
   .brand-tagline {
@@ -103,83 +108,201 @@
     font-weight: 400;
   }
 
+  /* ── Hero title block ───────────────────────────────────────── */
+
+  .hero-title {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 700;
+    color: var(--accent-navy);
+    line-height: 1.1;
+    margin: 18px 0 10px;
+    letter-spacing: -0.5px;
+  }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .hero-meta-sep {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  /* ── Data-source status row ─────────────────────────────────── */
+
+  /* HP-4: single pill container wrapping all states */
+  .datasource-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+  }
+
+  .datasource-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px;
+    color: var(--accent-green);
+    /* no own border/bg — pill is on the parent row */
+  }
+
+  .datasource-chip.custom  { color: var(--accent-brass); }
+  .datasource-chip.loading { color: var(--accent-amber); }
+  .datasource-chip.error   { color: var(--accent-red); }
+
+  .datasource-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  /* thin rule between "custom data active" and "default data" link */
+  .datasource-sep {
+    display: inline-block;
+    width: 1px;
+    height: 14px;
+    background: var(--card-border);
+    margin: 0 2px;
+    flex-shrink: 0;
+  }
+
+  .datasource-default-link {
+    background: none;
+    border: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 5px 12px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .datasource-default-link:hover { color: var(--accent-navy); }
+
+  /* ── Controls row ───────────────────────────────────────────── */
+
   .controls {
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
+    margin-top: 18px;   /* breathing room between hero-meta line and button row */
+  }
+
+  /* ── Section subtitle ───────────────────────────────────────── */
+
+  .section-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    letter-spacing: 0.2px;
+  }
+
+  .section-sub-dot {
+    margin: 0 6px;
+    opacity: 0.5;
   }
 
   /* ── Buttons ────────────────────────────────────────────────── */
 
   .btn {
-    background: rgba(30, 41, 59, 0.75);
+    background: var(--card-bg);
     color: var(--text-primary);
     border: 1px solid var(--card-border);
-    padding: 9px 16px;
+    padding: 7px 14px;
     border-radius: var(--radius-sm);
-    font-size: 12.5px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
     font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
     transition: var(--transition);
-    backdrop-filter: blur(8px);
     white-space: nowrap;
     user-select: none;
   }
 
   .btn:hover {
-    background: rgba(51, 65, 85, 0.9);
-    border-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    background: var(--bg-surface);
+    border-color: var(--accent-brass);
   }
 
-  .btn:active { transform: translateY(0); }
+  .btn:active { opacity: 0.8; }
 
+  /* all upload/action buttons use the same base style — no primary variant */
   .btn-primary {
-    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-    border-color: rgba(96, 165, 250, 0.4);
-    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.25);
+    background: var(--card-bg);
+    border-color: var(--card-border);
   }
 
   .btn-primary:hover {
-    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.45);
-    border-color: rgba(96, 165, 250, 0.6);
+    background: var(--bg-surface);
+    border-color: var(--accent-brass);
   }
 
   .status-chip {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 7px 14px;
-    border-radius: 30px;
+    gap: 7px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.6px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
     text-transform: uppercase;
-    backdrop-filter: blur(8px);
     transition: var(--transition);
+    border: 1px solid var(--card-border);
   }
 
   .status-ready {
-    background: rgba(16, 185, 129, 0.1);
-    color: #34d399;
-    border: 1px solid rgba(16, 185, 129, 0.25);
+    background: var(--card-bg);
+    color: var(--accent-green);
+    border-color: var(--card-border);
   }
 
   .status-loading {
-    background: rgba(59, 130, 246, 0.1);
-    color: #60a5fa;
-    border: 1px solid rgba(59, 130, 246, 0.25);
+    background: var(--card-bg);
+    color: var(--accent-brass);
+    border-color: var(--card-border);
   }
 
   .status-error {
-    background: rgba(244, 63, 94, 0.1);
-    color: #fb7185;
-    border: 1px solid rgba(244, 63, 94, 0.25);
+    background: var(--card-bg);
+    color: var(--accent-red);
+    border-color: var(--card-border);
   }
 
   .status-dot {
@@ -187,7 +310,10 @@
     height: 7px;
     border-radius: 50%;
     background: currentColor;
-    box-shadow: 0 0 8px currentColor;
+  }
+
+  /* pulse only on the READY state — not on loading/error */
+  .status-ready .status-dot {
     animation: pulse 2s ease-in-out infinite;
   }
 
@@ -196,76 +322,6 @@
     50% { transform: scale(1.2); opacity: 1; }
   }
 
-  /* ── Metrics Grid ───────────────────────────────────────────── */
-
-  .metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-    margin-bottom: 30px;
-  }
-
-  @media (max-width: 1024px) {
-    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  @media (max-width: 480px) {
-    .metrics-grid { grid-template-columns: 1fr; }
-  }
-
-  .metric-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-lg);
-    padding: 18px 20px;
-    backdrop-filter: blur(16px);
-    transition: var(--transition);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .metric-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .metric-card:hover {
-    border-color: var(--card-hover-border);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-glow);
-  }
-
-  .metric-card:hover::before { opacity: 1; }
-
-  .metric-label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-  }
-
-  .metric-value {
-    font-family: 'Outfit', sans-serif;
-    font-size: 30px;
-    font-weight: 700;
-    color: #f8fafc;
-    line-height: 1.1;
-  }
-
-  .metric-sub {
-    font-size: 11.5px;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
 
   /* ── Section Headers ────────────────────────────────────────── */
 
@@ -277,34 +333,42 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 6px;   /* .section-sub owns the rest; see override below */
+  }
+
+  /* sections without a subtitle need the full gap restored */
+  #section-forecast .section-head {
     margin-bottom: 14px;
   }
 
   .section-title {
-    font-family: 'Outfit', sans-serif;
-    font-size: 18px;
-    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
     color: var(--text-primary);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
 
-  .section-title .bar {
+  .section-title .bullet {
     display: inline-block;
-    width: 3px;
-    height: 18px;
-    border-radius: 2px;
-    background: linear-gradient(to bottom, var(--accent-blue), var(--accent-purple));
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-primary);
+    flex-shrink: 0;
   }
 
   .section-count {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
     font-weight: 500;
     color: var(--text-muted);
-    background: rgba(30, 41, 59, 0.6);
-    padding: 4px 10px;
+    background: var(--card-bg);
+    padding: 3px 9px;
     border-radius: 20px;
     border: 1px solid var(--card-border);
   }
@@ -321,94 +385,132 @@
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-lg);
-    padding: 20px;
-    backdrop-filter: blur(16px);
+    padding: 20px 20px 0 20px;   /* no bottom padding — bar is flush */
     transition: var(--transition);
+    box-shadow: var(--shadow-card);
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0;   /* gap is only inside .fc-body; 0 here keeps bar truly flush */
+    overflow: hidden;
   }
 
   .forecast-card:hover {
     border-color: var(--card-hover-border);
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 3px 10px rgba(26, 32, 53, 0.15);
+  }
+
+  /* inner wrapper that carries the bottom padding so the bar stays flush */
+  .fc-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 20px;
   }
 
   .fc-top {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .fc-day {
-    font-family: 'Outfit', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text-primary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--text-muted);
   }
 
-  .risk-badge {
-    padding: 4px 11px;
-    border-radius: 20px;
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+  .fc-date-range {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 4px;
     text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  /* round filled circle badge matching the reference */
+  .risk-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    line-height: 1.2;
+    flex-shrink: 0;
   }
 
   .risk-HIGH {
-    background: rgba(244, 63, 94, 0.12);
-    color: #fb7185;
-    border: 1px solid rgba(244, 63, 94, 0.35);
-    box-shadow: 0 0 10px rgba(244, 63, 94, 0.15);
+    background: #8b1a1a;
+    color: #fff;
   }
 
   .risk-MEDIUM {
-    background: rgba(245, 158, 11, 0.12);
-    color: #fbbf24;
-    border: 1px solid rgba(245, 158, 11, 0.35);
-    box-shadow: 0 0 10px rgba(245, 158, 11, 0.15);
+    background: #b8720b;
+    color: #fff;
   }
 
   .risk-LOW {
-    background: rgba(16, 185, 129, 0.12);
-    color: #34d399;
-    border: 1px solid rgba(16, 185, 129, 0.35);
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
+    background: #1a5c3a;
+    color: #fff;
   }
 
-  .fc-volume {
-    font-family: 'Outfit', sans-serif;
-    font-size: 28px;
+  /* HP-3: more prominent vessel count */
+  .fc-vessel-count {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
     font-weight: 700;
-    color: #f8fafc;
-  }
-
-  .fc-unit {
-    font-size: 13px;
-    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
     color: var(--text-secondary);
-    margin-left: 4px;
   }
 
+  /* HP-2: larger TEU volume line */
+  .fc-volume-line {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.2px;
+    line-height: 1.3;
+  }
+
+  .fc-volume-line .fc-capacity {
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+
+  .fc-reason {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-secondary);
+    line-height: 1.45;
+  }
+
+  /* thick bar flush to card bottom edge — no margin, no radius */
   .fc-bar-track {
     width: 100%;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.06);
-    border-radius: 2px;
+    height: 8px;
+    background: var(--bg-surface);
     overflow: hidden;
+    border-radius: 0;
   }
 
   .fc-bar-fill {
     height: 100%;
-    border-radius: 2px;
+    border-radius: 0;
     transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .fc-reason {
-    font-size: 12.5px;
-    color: var(--text-secondary);
-    line-height: 1.4;
   }
 
   /* ── Table ──────────────────────────────────────────────────── */
@@ -418,7 +520,7 @@
     border: 1px solid var(--card-border);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-card);
   }
 
   .table-scroll {
@@ -429,20 +531,24 @@
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
     text-align: left;
   }
 
   th {
-    background: rgba(10, 17, 30, 0.9);
+    background: var(--bg-surface);
     color: var(--text-muted);
+    font-family: 'IBM Plex Mono', monospace;
     font-weight: 600;
-    font-size: 11px;
+    font-size: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
-    padding: 12px 16px;
+    letter-spacing: 0.7px;
+    padding: 11px 16px;
     border-bottom: 1px solid var(--card-border);
-    white-space: nowrap;
+    /* allow <br> in th cells to actually wrap */
+    white-space: normal;
+    line-height: 1.3;
     position: sticky;
     top: 0;
     z-index: 1;
@@ -450,133 +556,205 @@
 
   td {
     padding: 11px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid var(--card-border);
     color: var(--text-primary);
-    font-size: 12.5px;
+    font-size: 12px;
+    vertical-align: middle;
+  }
+
+  /* HP-6: reason column in serif italic */
+  td.reason-cell {
+    font-family: 'IBM Plex Serif', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--text-secondary);
+    max-width: 260px;
   }
 
   tr:last-child td { border-bottom: none; }
 
-  tr {
-    transition: background 0.15s;
-  }
+  tr { transition: background 0.15s; }
 
-  tr:hover td { background: rgba(255, 255, 255, 0.02); }
+  tr:hover td { background: var(--bg-surface); }
 
-  .berth-pill {
-    display: inline-block;
-    padding: 3px 9px;
-    border-radius: 6px;
-    background: rgba(59, 130, 246, 0.12);
-    color: #60a5fa;
+  /* berth id — plain monospace, no pill */
+  .berth-id {
+    font-family: 'IBM Plex Mono', monospace;
     font-weight: 600;
     font-size: 12px;
-    border: 1px solid rgba(59, 130, 246, 0.25);
+    color: var(--text-primary);
   }
 
-  .prio-tag {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 10.5px;
+  /* berth start time is bold per reference */
+  .berth-start-bold {
     font-weight: 700;
-    letter-spacing: 0.3px;
+    color: var(--text-primary);
   }
 
-  .prio-1 { background: rgba(244, 63, 94, 0.15); color: #fb7185; }
-  .prio-2 { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
-  .prio-3 { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; }
+  /* priority — round filled circle badge */
+  .prio-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+
+  .prio-1 { background: #8b6914; color: #fff; }               /* brass */
+  .prio-2 { background: #c8b99a; color: var(--text-primary); }/* light sand */
+  .prio-3 { background: var(--bg-surface); color: var(--text-muted); border: 1px solid var(--card-border); }
+
+  /* vessel name colour by priority */
+  .vessel-p1 { color: #8b6914; font-weight: 700; }  /* full brass */
+  .vessel-p2 { color: #a07c2a; font-weight: 600; }  /* lighter brass — no opacity hack */
+  .vessel-p3 { color: var(--text-primary); font-weight: 600; }
 
   /* ── Reroute Cards ──────────────────────────────────────────── */
 
+  /* Change 10: two-column grid */
   .reroute-grid {
     display: grid;
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+    gap: 14px;
   }
 
   .reroute-card {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-lg);
-    padding: 18px 22px;
-    backdrop-filter: blur(16px);
+    padding: 20px 22px;
     transition: var(--transition);
+    box-shadow: var(--shadow-card);
   }
 
   .reroute-card:hover {
-    border-color: rgba(139, 92, 246, 0.35);
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+    border-color: var(--card-hover-border);
+    box-shadow: 0 3px 10px rgba(26, 32, 53, 0.15);
   }
 
   .rc-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 12px;
   }
 
-  .rc-vessel {
-    font-family: 'Outfit', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: #93c5fd;
+  .rc-header-left {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    flex-wrap: wrap;
   }
 
+  /* vessel name in brass/ochre */
+  .rc-vessel {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--accent-brass);
+  }
+
+  /* vessel id as a small plain badge */
   .rc-vessel-id {
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 400;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    border: 1px solid var(--card-border);
+    padding: 2px 7px;
+    border-radius: var(--radius-sm);
   }
 
+  /* flat tag for AI-GENERATED / ANNUAL QUEUE */
+  .rc-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    border: 1px solid var(--card-border);
+    padding: 3px 9px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .rc-tag-ai {
+    color: var(--accent-navy);
+    border-color: var(--accent-navy);
+  }
+
+  /* rejection reason — plain body text, no coloured border */
   .rc-reject {
-    background: rgba(15, 23, 42, 0.6);
-    border-left: 3px solid var(--accent-rose);
-    padding: 9px 14px;
-    border-radius: 0 6px 6px 0;
-    font-size: 12.5px;
-    color: #e2e8f0;
-    margin-bottom: 10px;
-  }
-
-  .rc-ai-box {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.06) 0%, rgba(6, 182, 212, 0.06) 100%);
-    border: 1px solid rgba(139, 92, 246, 0.2);
-    border-radius: var(--radius-md);
-    padding: 14px 16px;
-    font-size: 12.5px;
-    color: #e2e8f0;
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 13px;
+    color: var(--text-secondary);
     line-height: 1.5;
+    margin-bottom: 14px;
   }
 
-  .rc-ai-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
+  /* alternatives section */
+  .rc-alts-label {
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.6px;
-    color: #a78bfa;
-    margin-bottom: 6px;
     text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
   }
 
+  /* Change 11: three-column port row (port name | distance badge | reason) */
   .rc-alt-item {
-    margin-top: 5px;
-    padding-left: 2px;
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
+    display: grid;
+    grid-template-columns: minmax(80px, auto) 60px 1fr;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    background: var(--bg-surface);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 6px;
   }
 
-  .rc-alt-item::before {
-    content: '→';
-    color: var(--accent-cyan);
-    font-weight: 600;
-    flex-shrink: 0;
+  .rc-alt-item:last-child { margin-bottom: 0; }
+
+  .rc-alt-port {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .rc-alt-dist {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    padding: 2px 6px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .rc-alt-reason {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
   }
 
   /* ── States ─────────────────────────────────────────────────── */
@@ -594,8 +772,7 @@
   .loading-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(6, 8, 15, 0.85);
-    backdrop-filter: blur(6px);
+    background: rgba(232, 223, 200, 0.88);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -613,10 +790,10 @@
   }
 
   .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid rgba(96, 165, 250, 0.15);
-    border-top-color: #60a5fa;
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--card-border);
+    border-top-color: var(--accent-navy);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin: 0 auto 14px;
@@ -625,17 +802,17 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   .spinner-text {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'IBM Plex Mono', monospace;
     color: var(--text-secondary);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
   }
 
   /* ── Warnings Banner ────────────────────────────────────────── */
 
   .warnings-banner {
-    background: rgba(245, 158, 11, 0.08);
-    border: 1px solid rgba(245, 158, 11, 0.25);
+    background: #f5f0e4;
+    border: 1px solid var(--accent-amber);
     border-radius: var(--radius-md);
     padding: 12px 18px;
     margin-bottom: 20px;
@@ -645,9 +822,10 @@
   .warnings-banner.visible { display: block; }
 
   .warnings-title {
-    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
     font-weight: 700;
-    color: #fbbf24;
+    color: var(--accent-amber);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 6px;
@@ -657,19 +835,15 @@
   }
 
   .warnings-list {
-    font-size: 12.5px;
-    color: #fde68a;
+    font-size: 12px;
+    color: var(--text-secondary);
     list-style: none;
     padding: 0;
   }
 
-  .warnings-list li {
-    padding: 2px 0;
-  }
+  .warnings-list li { padding: 2px 0; }
 
-  .warnings-list li::before {
-    content: '⚠ ';
-  }
+  .warnings-list li::before { content: '⚠ '; }
 
   /* ── Animations ─────────────────────────────────────────────── */
 
@@ -692,14 +866,14 @@
     position: fixed;
     bottom: 24px;
     right: 24px;
-    background: rgba(20, 28, 48, 0.95);
+    background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-md);
     padding: 12px 20px;
-    font-size: 13px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
     color: var(--text-primary);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 16px rgba(26, 32, 53, 0.18);
     z-index: 2000;
     transform: translateY(120%);
     transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -708,13 +882,8 @@
 
   .toast.show { transform: translateY(0); }
 
-  .toast-error {
-    border-color: rgba(244, 63, 94, 0.4);
-  }
-
-  .toast-success {
-    border-color: rgba(16, 185, 129, 0.4);
-  }
+  .toast-error   { border-color: var(--accent-red); }
+  .toast-success { border-color: var(--accent-green); }
 </style>
 </head>
 <body>
@@ -734,27 +903,71 @@
 
     <!-- Header -->
     <header class="header" id="app-header">
-      <div class="brand">
-        <div class="brand-logo">🚢 PortPulse</div>
-        <p class="brand-tagline">72-hour congestion prediction · berth allocation · watsonx.ai rerouting</p>
+      <!-- Top strip: brand + READY chip -->
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div class="brand">
+          <div class="brand-logo">
+            <span class="brand-monogram">P</span>
+            PortPulse
+          </div>
+          <!-- HP-5: CSS border-left rule replaces text "|" character -->
+          <span class="brand-divider"></span>
+          <span class="brand-tagline">Shift operations / 72h plan</span>
+        </div>
+        <div class="status-chip status-ready" id="data-status">
+          <span class="status-dot"></span>
+          <span id="status-text">READY</span>
+        </div>
       </div>
+
+      <!-- Hero title + meta -->
+      <h1 class="hero-title">Berth Operations Overview</h1>
+      <div class="hero-meta">
+        <span>Last updated <span id="hero-updated">—</span></span>
+        <span class="hero-meta-sep"></span>
+        <span>Forecast Horizon 72 Hours</span>
+      </div>
+
+      <!-- HP-1: Action buttons with inline SVG icons -->
       <div class="controls">
-        <label class="btn btn-primary" for="vessels-file" id="btn-upload-vessels">
-          📂 Upload Vessels
+        <label class="btn" for="vessels-file" id="btn-upload-vessels">
+          <!-- anchor + up arrow: upload to port -->
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v9M5 4l3-3 3 3"/><path d="M3 13h10"/></svg>
+          Upload Vessels
           <input type="file" id="vessels-file" accept=".csv" onchange="uploadCSV('vessels', this)">
         </label>
         <label class="btn" for="berths-file" id="btn-upload-berths">
-          ⚓ Upload Berths
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v9M5 4l3-3 3 3"/><path d="M3 13h10"/></svg>
+          Upload Berths
           <input type="file" id="berths-file" accept=".csv" onchange="uploadCSV('berths', this)">
         </label>
-        <button class="btn" onclick="exportPlanCSV()" id="btn-export">📥 Export Plan CSV</button>
-        <button class="btn" onclick="downloadTemplate('vessels')" id="btn-tmpl-vessels" title="Download sample vessels CSV">📄 Vessel Sample</button>
-        <button class="btn" onclick="downloadTemplate('berths')" id="btn-tmpl-berths" title="Download sample berths CSV">📄 Berth Sample</button>
-        <button class="btn" onclick="resetDefaultData()" id="btn-reset">🔄 Reset</button>
-        <div class="status-chip status-ready" id="data-status">
-          <span class="status-dot"></span>
-          <span id="status-text">DEFAULT DATA</span>
-        </div>
+        <button class="btn" onclick="exportPlanCSV()" id="btn-export">
+          <!-- tray with down arrow -->
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v9M5 8l3 3 3-3"/><path d="M2 12v1a1 1 0 001 1h10a1 1 0 001-1v-1"/></svg>
+          Export Plan CSV
+        </button>
+        <button class="btn" onclick="downloadTemplate('vessels')" id="btn-tmpl-vessels" title="Download sample vessels CSV">
+          <!-- document icon -->
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V6z"/><path d="M9 2v4h4"/></svg>
+          Vessel Sample
+        </button>
+        <button class="btn" onclick="downloadTemplate('berths')" id="btn-tmpl-berths" title="Download sample berths CSV">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V6z"/><path d="M9 2v4h4"/></svg>
+          Berth Sample
+        </button>
+        <button class="btn" onclick="resetDefaultData()" id="btn-reset">
+          <!-- circular reset arrow -->
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 8A5.5 5.5 0 112.5 5"/><path d="M2.5 2v3h3"/></svg>
+          Reset
+        </button>
+      </div>
+
+      <!-- Data-source status row -->
+      <div class="datasource-row" id="datasource-row">
+        <span class="datasource-chip" id="datasource-chip">
+          <span class="datasource-dot"></span>
+          <span id="datasource-label">Default Data</span>
+        </span>
       </div>
     </header>
 
@@ -764,34 +977,10 @@
       <ul class="warnings-list" id="warnings-list"></ul>
     </div>
 
-    <!-- Key Metrics -->
-    <div class="metrics-grid" id="metrics-grid">
-      <div class="metric-card animate-in" style="animation-delay: 0.05s">
-        <div class="metric-label">Total Incoming Cargo</div>
-        <div class="metric-value" id="m-teu">—</div>
-        <div class="metric-sub">TEU volume across 72h</div>
-      </div>
-      <div class="metric-card animate-in" style="animation-delay: 0.1s">
-        <div class="metric-label">Assigned Vessels</div>
-        <div class="metric-value" id="m-assigned" style="color:#34d399">—</div>
-        <div class="metric-sub">Successfully berthed</div>
-      </div>
-      <div class="metric-card animate-in" style="animation-delay: 0.15s">
-        <div class="metric-label">Unassigned Vessels</div>
-        <div class="metric-value" id="m-unassigned" style="color:#fb7185">—</div>
-        <div class="metric-sub">Rerouted via watsonx.ai</div>
-      </div>
-      <div class="metric-card animate-in" style="animation-delay: 0.2s">
-        <div class="metric-label">Peak Risk Window</div>
-        <div class="metric-value" id="m-risk" style="color:#fbbf24">—</div>
-        <div class="metric-sub">Highest 24h capacity ratio</div>
-      </div>
-    </div>
-
     <!-- Section 1: Congestion Forecast -->
     <section class="section" id="section-forecast">
       <div class="section-head">
-        <div class="section-title"><span class="bar"></span>72-Hour Congestion Forecast</div>
+        <div class="section-title"><span class="bullet"></span>Congestion Forecast</div>
         <span class="section-count" id="forecast-count"></span>
       </div>
       <div class="forecast-grid" id="forecast-cards"></div>
@@ -800,24 +989,29 @@
     <!-- Section 2: Berth Assignments -->
     <section class="section" id="section-assignments">
       <div class="section-head">
-        <div class="section-title"><span class="bar"></span>Berth & Crane Assignment Schedule</div>
-        <div style="display:flex; align-items:center; gap:10px;">
-          <input type="text" id="search-assignment" placeholder="🔍 Filter vessel or berth..." oninput="filterAssignments()" style="background:rgba(30,41,59,0.7); border:1px solid var(--card-border); color:var(--text-primary); padding:6px 12px; border-radius:8px; font-size:12px;">
+        <div class="section-title"><span class="bullet"></span>Berth Assignment Plan</div>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-muted); display:flex; align-items:center; gap:6px;">
+            <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8b6914;"></span> Priority 1
+            <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#c8b99a;margin-left:8px;"></span> Standard
+          </span>
+          <input type="text" id="search-assignment" placeholder="Filter vessel or berth..." oninput="filterAssignments()" style="background:var(--card-bg); border:1px solid var(--card-border); color:var(--text-primary); padding:5px 10px; border-radius:4px; font-family:'IBM Plex Mono',monospace; font-size:11px;">
           <span class="section-count" id="assignment-count"></span>
         </div>
       </div>
+      <p class="section-sub">72-hour optimised berth schedule <span class="section-sub-dot">·</span> priority 1 cargo highlighted with brass chart badges</p>
       <div class="table-card">
         <div class="table-scroll">
           <table id="assignment-table">
             <thead>
               <tr>
-                <th>Vessel</th>
-                <th>Berth</th>
+                <th>Vessel Name</th>
+                <th>Berth<br>ID</th>
                 <th>Cranes</th>
                 <th>Arrival</th>
-                <th>Berth Start</th>
-                <th>Est. Departure</th>
-                <th>Wait Time</th>
+                <th>Berth<br>Start</th>
+                <th>Est.<br>Departure</th>
+                <th>Wait</th>
                 <th>Priority</th>
                 <th>Reason</th>
               </tr>
@@ -831,12 +1025,16 @@
     <!-- Section 3: AI Reroute -->
     <section class="section" id="section-reroute">
       <div class="section-head">
-        <div class="section-title"><span class="bar"></span>AI Alternate Routing Suggestions</div>
+        <!-- HP-7: count badge moved out of section-title into section-head right side -->
+        <div class="section-title">
+          <span class="bullet"></span>Reroute Suggestions
+        </div>
         <div style="display:flex; align-items:center; gap:10px;">
-          <input type="text" id="search-reroute" placeholder="🔍 Search reroutes..." oninput="filterReroutes()" style="background:rgba(30,41,59,0.7); border:1px solid var(--card-border); color:var(--text-primary); padding:6px 12px; border-radius:8px; font-size:12px;">
           <span class="section-count" id="reroute-count"></span>
+          <input type="text" id="search-reroute" placeholder="Search reroutes..." oninput="filterReroutes()" style="background:var(--card-bg); border:1px solid var(--card-border); color:var(--text-primary); padding:5px 10px; border-radius:4px; font-family:'IBM Plex Mono',monospace; font-size:11px;">
         </div>
       </div>
+      <p class="section-sub">Vessels without a feasible berth in the 72-hour plan <span class="section-sub-dot">·</span> alternatives ranked by distance and fit</p>
       <div class="reroute-grid" id="reroute-list"></div>
     </section>
 
@@ -850,12 +1048,16 @@ const API_BASE = '/api/v1';
 let currentPlan = null;
 
 // ── DOM Refs ───────────────────────────────────────────────────────────────
-const $overlay   = document.getElementById('loading-overlay');
-const $toast     = document.getElementById('toast');
-const $status    = document.getElementById('data-status');
-const $statusTxt = document.getElementById('status-text');
-const $warnings  = document.getElementById('warnings-banner');
-const $warnList  = document.getElementById('warnings-list');
+const $overlay        = document.getElementById('loading-overlay');
+const $toast          = document.getElementById('toast');
+const $status         = document.getElementById('data-status');
+const $statusTxt      = document.getElementById('status-text');
+const $warnings       = document.getElementById('warnings-banner');
+const $warnList       = document.getElementById('warnings-list');
+const $heroUpdated    = document.getElementById('hero-updated');
+const $dsChip         = document.getElementById('datasource-chip');
+const $dsLabel        = document.getElementById('datasource-label');
+const $dsRow          = document.getElementById('datasource-row');
 
 // ── Loading ────────────────────────────────────────────────────────────────
 function showLoading() { $overlay.classList.remove('hidden'); }
@@ -869,31 +1071,73 @@ function showToast(msg, type = 'success', duration = 4000) {
   $toast._timer = setTimeout(() => { $toast.classList.remove('show'); }, duration);
 }
 
-// ── Status Chip ────────────────────────────────────────────────────────────
+// ── Top status chip (READY / LOADING / ERROR) ──────────────────────────────
 function setStatus(text, state = 'ready') {
   $statusTxt.textContent = text;
   $status.className = 'status-chip status-' + state;
 }
 
-// ── Metrics ────────────────────────────────────────────────────────────────
-function updateMetrics(plan) {
-  const totalTeu = (plan.congestion_forecast || []).reduce((s, d) => s + (d.incoming_teu || 0), 0);
-  document.getElementById('m-teu').textContent = totalTeu.toLocaleString();
+// ── Data-source row (below buttons) ───────────────────────────────────────
+// isCustom: true  → "● CUSTOM DATA ACTIVE | DEFAULT DATA" (link to reset)
+// isCustom: false → "● Default Data" (ready state, no link)
+// state: 'default' | 'custom' | 'loading' | 'error'
+function setDatasourceRow(state, customLabel) {
+  // clear previous dynamic content beyond the chip
+  const prevLink = $dsRow.querySelector('.datasource-default-link');
+  const prevSep  = $dsRow.querySelector('.datasource-sep');
+  if (prevLink) prevLink.remove();
+  if (prevSep)  prevSep.remove();
 
-  const assigned = plan.berth_assignments ? plan.berth_assignments.length : 0;
-  document.getElementById('m-assigned').textContent = assigned;
+  $dsChip.className = 'datasource-chip';
 
-  const unassigned = plan.unassigned_count ?? (plan.reroute_suggestions ? plan.reroute_suggestions.length : 0);
-  document.getElementById('m-unassigned').textContent = unassigned;
+  if (state === 'loading') {
+    $dsChip.classList.add('loading');
+    $dsLabel.textContent = 'Loading…';
+  } else if (state === 'error') {
+    $dsChip.classList.add('error');
+    $dsLabel.textContent = 'Error';
+  } else if (state === 'custom') {
+    $dsChip.classList.add('custom');
+    $dsLabel.textContent = customLabel || 'Custom Data Active';
+    // append separator (CSS line, no text) + "Default Data" reset link
+    const sep = document.createElement('span');
+    sep.className = 'datasource-sep';
+    const link = document.createElement('button');
+    link.className = 'datasource-default-link';
+    link.textContent = 'Default Data';
+    link.onclick = resetDefaultData;
+    $dsRow.appendChild(sep);
+    $dsRow.appendChild(link);
+  } else {
+    // default / ready
+    $dsLabel.textContent = 'Default Data';
+  }
+}
 
-  let peak = 'LOW';
-  const risks = (plan.congestion_forecast || []).map(d => d.risk_level);
-  if (risks.includes('HIGH')) peak = 'HIGH';
-  else if (risks.includes('MEDIUM')) peak = 'MEDIUM';
+// ── Hero "last updated" timestamp ─────────────────────────────────────────
+function setHeroUpdated(generatedAt) {
+  if (!generatedAt) { $heroUpdated.textContent = '—'; return; }
+  // generatedAt is an ISO string like "2026-10-01T08:42:00"
+  // Format as "08:42 IST" (display local time + fixed zone label)
+  try {
+    const d = new Date(generatedAt);
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    $heroUpdated.textContent = `${hh}:${mm} IST`;
+  } catch {
+    $heroUpdated.textContent = generatedAt;
+  }
+}
 
-  const $peak = document.getElementById('m-risk');
-  $peak.textContent = peak;
-  $peak.style.color = peak === 'HIGH' ? '#fb7185' : peak === 'MEDIUM' ? '#fbbf24' : '#34d399';
+// ── Date formatter for forecast window_start / window_end ─────────────────
+// Input:  "2026-09-15 08:00"  →  Output: "SEP 15 08:00"
+const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+function fmtWindow(str) {
+  if (!str) return '—';
+  // accepts "YYYY-MM-DD HH:MM" or ISO "YYYY-MM-DDTHH:MM"
+  const m = str.match(/(\d{4})-(\d{2})-(\d{2})[\sT](\d{2}:\d{2})/);
+  if (!m) return str;
+  return `${MONTHS[parseInt(m[2], 10) - 1]} ${parseInt(m[3], 10)} ${m[4]}`;
 }
 
 // ── Warnings ───────────────────────────────────────────────────────────────
@@ -917,7 +1161,7 @@ function escapeHtml(str) {
 // ── Render ──────────────────────────────────────────────────────────────────
 function renderPlan(plan) {
   currentPlan = plan;
-  updateMetrics(plan);
+  setHeroUpdated(plan.generated_at);
   renderWarnings(plan);
 
   // Forecast
@@ -928,23 +1172,30 @@ function renderPlan(plan) {
   if (!forecast.length) {
     $fc.innerHTML = '<div class="empty-state">No congestion data available.</div>';
   } else {
-    const riskColor = { HIGH: '#f43f5e', MEDIUM: '#f59e0b', LOW: '#10b981' };
+    const barColor = { HIGH: '#8b1a1a', MEDIUM: '#b8720b', LOW: '#1a5c3a' };
     $fc.innerHTML = forecast.map((d, i) => {
       const pct = Math.min(d.risk_ratio * 100, 100);
+      const shortLevel = d.risk_level === 'MEDIUM' ? 'MED' : d.risk_level;
       return `
       <div class="forecast-card animate-in" style="animation-delay:${i * 0.08}s">
-        <div class="fc-top">
-          <span class="fc-day">Day ${d.day}</span>
-          <span class="risk-badge risk-${d.risk_level}">${d.risk_level}</span>
-        </div>
-        <div>
-          <span class="fc-volume">${(d.incoming_teu ?? 0).toLocaleString()}</span>
-          <span class="fc-unit">TEU</span>
+        <div class="fc-body">
+          <div class="fc-top">
+            <div>
+              <div class="fc-day">Day ${d.day}</div>
+              <div class="fc-date-range">${fmtWindow(d.window_start)} – ${fmtWindow(d.window_end)}</div>
+            </div>
+            <span class="risk-badge risk-${d.risk_level}">${shortLevel}<br>ALSC</span>
+          </div>
+          <div class="fc-vessel-count">${d.vessel_count ?? 0} Vessels</div>
+          <div class="fc-volume-line">
+            ${(d.incoming_teu ?? 0).toLocaleString()} TEU
+            <span class="fc-capacity">/ ${(d.total_capacity_teu ?? 0).toLocaleString()} TEU Capacity</span>
+          </div>
+          <div class="fc-reason">${escapeHtml(d.reason)}</div>
         </div>
         <div class="fc-bar-track">
-          <div class="fc-bar-fill" style="width:${pct}%;background:${riskColor[d.risk_level] || '#3b82f6'}"></div>
+          <div class="fc-bar-fill" style="width:${pct}%;background:${barColor[d.risk_level] || '#1a2744'}"></div>
         </div>
-        <div class="fc-reason">${escapeHtml(d.reason)}</div>
       </div>`;
     }).join('');
   }
@@ -958,20 +1209,20 @@ function renderPlan(plan) {
     $tbody.innerHTML = '<tr><td colspan="9" class="empty-state" style="border-radius:0;">No vessels assigned.</td></tr>';
   } else {
     $tbody.innerHTML = assignments.map((a, i) => {
-      const waitStr = a.wait_hours && a.wait_hours > 0 ? `<span style="color:#fbbf24;font-weight:600;">+${a.wait_hours}h wait</span>` : `<span style="color:#34d399;">Direct</span>`;
-      const craneStr = a.crane_count != null ? `${escapeHtml(String(a.crane_count))} Cranes` : '—';
-      const vesselIdStr = a.vessel_id ? `(${escapeHtml(a.vessel_id)})` : '';
+      const p = a.priority || 3;
+      const waitStr = a.wait_hours != null ? `${a.wait_hours}h` : '—';
+      const craneStr = a.crane_count != null ? String(a.crane_count) : '—';
       return `
       <tr class="animate-in assignment-row" data-search="${escapeHtml(((a.vessel_name || '') + ' ' + (a.berth_id || '') + ' ' + (a.vessel_id || '')).toLowerCase())}" style="animation-delay:${i * 0.03}s">
-        <td><strong>${escapeHtml(a.vessel_name)}</strong> <span style="font-size:10.5px;color:var(--text-muted);font-family:monospace;">${vesselIdStr}</span></td>
-        <td><span class="berth-pill">${escapeHtml(a.berth_id)}</span></td>
+        <td><span class="vessel-p${p}">${escapeHtml(a.vessel_name)}</span></td>
+        <td><span class="berth-id">${escapeHtml(a.berth_id)}</span></td>
         <td>${craneStr}</td>
         <td>${escapeHtml(a.arrival)}</td>
-        <td>${escapeHtml(a.berth_start)}</td>
+        <td><span class="berth-start-bold">${escapeHtml(a.berth_start)}</span></td>
         <td>${escapeHtml(a.departure_est)}</td>
         <td>${waitStr}</td>
-        <td><span class="prio-tag prio-${a.priority || 3}">P${a.priority ?? '?'}</span></td>
-        <td style="color:var(--text-secondary);max-width:260px;">${escapeHtml(a.reason)}</td>
+        <td><span class="prio-tag prio-${p}">P${p}</span></td>
+        <td class="reason-cell">${escapeHtml(a.reason)}</td>
       </tr>`;
     }).join('');
   }
@@ -979,28 +1230,34 @@ function renderPlan(plan) {
   // Reroute
   const $rr = document.getElementById('reroute-list');
   const reroutes = plan.reroute_suggestions || [];
-  document.getElementById('reroute-count').textContent = reroutes.length + ' vessels';
+  const unassignedCount = plan.unassigned_count ?? reroutes.length;
+  document.getElementById('reroute-count').textContent = unassignedCount + ' Unassigned';
 
   if (!reroutes.length) {
-    $rr.innerHTML = '<div class="empty-state">All incoming vessels assigned — no rerouting required. ✅</div>';
+    $rr.innerHTML = '<div class="empty-state">All incoming vessels assigned — no rerouting required.</div>';
   } else {
     $rr.innerHTML = reroutes.map((r, i) => {
       const alts = (r.alternatives || []).map(a =>
-        `<div class="rc-alt-item"><strong>${escapeHtml(a.port)}</strong> <span style="color:var(--text-muted)">(${a.distance_km}km)</span>: ${escapeHtml(a.reason)}</div>`
+        `<div class="rc-alt-item">
+          <span class="rc-alt-port">${escapeHtml(a.port)}</span>
+          <span class="rc-alt-dist">${a.distance_km} km</span>
+          <span class="rc-alt-reason">${escapeHtml(a.reason)}</span>
+        </div>`
       ).join('');
-      const aiHeader = r.ai_generated
-        ? `<div class="rc-ai-label">🤖 watsonx.ai Routing</div>`
-        : `<div class="rc-ai-label" style="color:var(--text-muted);">Alternate Routing</div>`;
+      const tagClass = r.ai_generated ? 'rc-tag rc-tag-ai' : 'rc-tag';
+      const tagLabel = r.ai_generated ? '+ AI-Generated' : 'Manual Queue';
       return `
       <div class="reroute-card animate-in reroute-item" data-search="${escapeHtml(((r.vessel_name || '') + ' ' + (r.vessel_id || '')).toLowerCase())}" style="animation-delay:${i * 0.06}s">
         <div class="rc-header">
-          <div class="rc-vessel">🚢 ${escapeHtml(r.vessel_name)} <span class="rc-vessel-id">${escapeHtml(r.vessel_id)}</span></div>
+          <div class="rc-header-left">
+            <span class="rc-vessel">${escapeHtml(r.vessel_name)}</span>
+            <span class="rc-vessel-id">${escapeHtml(r.vessel_id)}</span>
+          </div>
+          <span class="${tagClass}">${tagLabel}</span>
         </div>
-        <div class="rc-reject"><strong>Rejection:</strong> ${escapeHtml(r.reason_unassigned)}</div>
-        <div class="rc-ai-box">
-          ${aiHeader}
-          ${alts}
-        </div>
+        <div class="rc-reject">${escapeHtml(r.reason_unassigned)}</div>
+        <div class="rc-alts-label">Alternative Ports</div>
+        ${alts}
       </div>`;
     }).join('');
   }
@@ -1054,6 +1311,7 @@ function downloadTemplate(type) {
 async function loadDefaultPlan() {
   showLoading();
   setStatus('LOADING…', 'loading');
+  setDatasourceRow('loading');
   try {
     const res = await fetch(`${API_BASE}/plan`);
     if (!res.ok) {
@@ -1062,11 +1320,13 @@ async function loadDefaultPlan() {
     }
     const plan = await res.json();
     renderPlan(plan);
-    setStatus('DEFAULT DATA', 'ready');
+    setStatus('READY', 'ready');
+    setDatasourceRow('default');
     showToast('Operations plan loaded successfully', 'success');
   } catch (err) {
     console.error('Failed to load plan:', err);
     setStatus('ERROR', 'error');
+    setDatasourceRow('error');
     showToast('Failed to load operations plan: ' + err.message, 'error', 6000);
   } finally {
     hideLoading();
@@ -1081,6 +1341,7 @@ async function uploadCSV(type, input) {
 
   showLoading();
   setStatus('UPLOADING…', 'loading');
+  setDatasourceRow('loading');
   try {
     const res = await fetch(`${API_BASE}/uploads/${type}`, { method: 'POST', body: formData });
     if (!res.ok) {
@@ -1089,10 +1350,13 @@ async function uploadCSV(type, input) {
     }
     const plan = await res.json();
     renderPlan(plan);
-    setStatus(`CUSTOM ${type.toUpperCase()}`, 'ready');
+    const label = `Custom ${type.charAt(0).toUpperCase() + type.slice(1)} Active`;
+    setStatus('READY', 'ready');
+    setDatasourceRow('custom', label);
     showToast(`${file.name} uploaded — plan regenerated`, 'success');
   } catch (err) {
     setStatus('ERROR', 'error');
+    setDatasourceRow('error');
     showToast(err.message, 'error', 6000);
   } finally {
     hideLoading();
@@ -1102,6 +1366,7 @@ async function uploadCSV(type, input) {
 
 function resetDefaultData() {
   setStatus('LOADING…', 'loading');
+  setDatasourceRow('loading');
   loadDefaultPlan();
 }
 
