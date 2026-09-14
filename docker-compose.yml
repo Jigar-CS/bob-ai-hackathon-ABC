@@ -1,0 +1,49 @@
+# Local container run. For production, replace the published port with a reverse
+# proxy that terminates TLS, and supply secrets from your platform's secret store
+# rather than a .env file.
+services:
+  portpulse:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: portpulse:1.0.0
+    container_name: portpulse
+    ports:
+      - "${PORTPULSE_PUBLISHED_PORT:-8000}:8000"
+    # Values below are interpolated from your shell or from a .env file in this
+    # directory, which Docker Compose loads automatically. Copy .env.example to
+    # .env to supply watsonx credentials.
+    environment:
+      PORTPULSE_ENVIRONMENT: ${PORTPULSE_ENVIRONMENT:-production}
+      PORTPULSE_LOG_LEVEL: ${PORTPULSE_LOG_LEVEL:-INFO}
+      PORTPULSE_LOG_JSON: ${PORTPULSE_LOG_JSON:-true}
+      # Required when PORTPULSE_ENVIRONMENT=production — the app refuses to start without it.
+      PORTPULSE_API_KEY: ${PORTPULSE_API_KEY:?set PORTPULSE_API_KEY in your environment or .env}
+      PORTPULSE_CORS_ALLOW_ORIGINS: ${PORTPULSE_CORS_ALLOW_ORIGINS:-http://localhost:8000}
+      WATSONX_API_KEY: ${WATSONX_API_KEY:-}
+      WATSONX_PROJECT_ID: ${WATSONX_PROJECT_ID:-}
+      WATSONX_URL: ${WATSONX_URL:-https://us-south.ml.cloud.ibm.com}
+      WATSONX_MODEL_ID: ${WATSONX_MODEL_ID:-ibm/granite-3-8b-instruct}
+    restart: unless-stopped
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4).status == 200 else 1)"
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M

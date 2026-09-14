@@ -1,0 +1,46 @@
+# Keep the build context small and, critically, keep secrets out of the image.
+.git
+.github
+.gitignore
+.dockerignore
+.editorconfig
+
+# Secrets — never copy a local .env into an image.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python artefacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# Test / tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# Not needed at runtime
+tests/
+scripts/
+docs/
+demo/
+presentation/
+requirements-dev.txt
+CONTRIBUTING.md
+CHANGELOG.md
+submission.yaml
+docker-compose.yml
+Dockerfile
+Makefile

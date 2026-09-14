@@ -1,0 +1,87 @@
+"""Plan orchestration and partial-failure behaviour."""
+
+from __future__ import annotations
+
+import pytest
+
+from portpulse.domain import planner
+from portpulse.domain.planner import generate_ops_plan
+from portpulse.errors import PlanningError
+from portpulse.schemas import OpsPlan
+
+Row = dict[str, str]
+
+
+def test_plan_contains_every_section(
+    settings, vessel_rows: list[Row], berth_rows: list[Row]
+) -> None:
+    plan = generate_ops_plan(vessel_rows, berth_rows)
+
+    assert plan["congestion_forecast"]
+    assert len(plan["berth_assignments"]) == 3
+    assert plan["unassigned_count"] == 0
+    assert plan["reroute_suggestions"] == []
+    assert plan["warnings"] == []
+    assert plan["generated_at"].endswith("+00:00")
+
+
+def test_plan_validates_against_the_response_schema(
+    settings, vessel_rows: list[Row], berth_rows: list[Row]
+) -> None:
+    """Guards against the domain layer and the API contract drifting apart."""
+    OpsPlan.model_validate(generate_ops_plan(vessel_rows, berth_rows))
+
+
+def test_oversized_vessels_flow_into_reroute_suggestions(settings) -> None:
+    vessels = [
+        {
+            "vessel_id": "V1",
+            "name": "MV Giant",
+            "eta": "2026-10-01 08:00",
+            "size_teu": "3000",
+            "cargo_type": "general",
+            "priority": "1",
+        }
+    ]
+    berths = [
+        {"berth_id": "B1", "capacity_teu": "1000", "crane_count": "2", "avg_dwell_hours": "6.0"}
+    ]
+    plan = generate_ops_plan(vessels, berths)
+
+    assert plan["berth_assignments"] == []
+    assert plan["unassigned_count"] == 1
+    assert plan["reroute_suggestions"][0]["vessel_id"] == "V1"
+
+
+def test_a_failing_engine_degrades_to_a_warning(
+    settings, monkeypatch: pytest.MonkeyPatch, vessel_rows: list[Row], berth_rows: list[Row]
+) -> None:
+    def boom(*_args: object, **_kwargs: object) -> None:
+        raise PlanningError("forecast engine offline")
+
+    monkeypatch.setattr(planner, "predict_congestion", boom)
+    plan = generate_ops_plan(vessel_rows, berth_rows)
+
+    assert plan["congestion_forecast"] == []
+    assert plan["warnings"] == ["Congestion forecast unavailable: forecast engine offline"]
+    # The rest of the plan is still produced.
+    assert len(plan["berth_assignments"]) == 3
+
+
+def test_unexpected_engine_error_does_not_leak_details(
+    settings, monkeypatch: pytest.MonkeyPatch, vessel_rows: list[Row], berth_rows: list[Row]
+) -> None:
+    def boom(*_args: object, **_kwargs: object) -> None:
+        raise RuntimeError("connection string postgres://user:secret@host/db")
+
+    monkeypatch.setattr(planner, "assign_berths", boom)
+    plan = generate_ops_plan(vessel_rows, berth_rows)
+
+    assert plan["warnings"] == ["Berth assignment unavailable due to an internal error."]
+    assert "secret" not in str(plan)
+
+
+def test_missing_berths_produce_warnings_not_an_exception(settings, vessel_rows: list[Row]) -> None:
+    plan = generate_ops_plan(vessel_rows, [])
+    assert len(plan["warnings"]) == 2
+    assert plan["unassigned_count"] == 3

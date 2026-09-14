@@ -9,51 +9,61 @@
 # =============================================================================
 
 team:
-  name: ""                             # REQUIRED — e.g., "Orion Squad"
-  track: ""                            # REQUIRED — one of: AI | DevOps | Sustainability | Open
+  name: "ABC"                          # REQUIRED
+  # REQUIRED — must be exactly one of: AI | DevOps | Sustainability | Open
+  track: "AI"
+  # Free-text detail about the problem statement this entry targets.
+  category: "Logistics & Ports — L1 Container Congestion Predictor & Port Operations Optimiser"
   lead:
-    name: ""                           # REQUIRED — e.g., "Alice Chen"
-    email: ""                          # REQUIRED — e.g., "alice.chen@ibm.com"
+    name: "Hetvi Taank"                # REQUIRED
+    email: "hetvi.taank@ibm.com"
   members:
-    - name: ""                         # REQUIRED — Team member 1
-      email: ""
-    - name: ""                         # Add more members by copying the two lines above
-      email: ""
-    - name: ""
-      email: ""
+    - name: "Trusha Patel"            # REQUIRED
+      email: "trusha.patel@ibm.com"
+    - name: "Jigar Sakhia"
+      email: "jigar.sakhia@ibm.com"
+    - name: "Priyansh Sukhdia"
+      email: "priyansh.sukhdia@ibm.com"
 
 submission:
-  title: ""                            # REQUIRED — Project display name, e.g., "SmartOps Dashboard"
+  title: "PortPulse - Container Congestion Predictor & Port Operations Optimiser" # REQUIRED
 
-  problem_statement: >                 # REQUIRED — 1-3 sentences. What problem? Who has it?
-    Replace this text with a concise description of the real-world problem
-    your project addresses and who experiences it.
+  problem_statement: >                 # REQUIRED
+    The 2021 LA/Long Beach port backlog had 100+ ships waiting offshore for weeks,
+    costing global supply chains $10B+. Port operators allocate berths, cranes, and
+    yard space across hundreds of vessels manually in spreadsheets. Congestion hotspots
+    are identified reactively — after vessels are already queuing — and alternate routing
+    decisions come too late to help.
 
-  solution_summary: >                  # REQUIRED — 1-3 sentences. What did you build?
-    Replace this text with a clear description of your solution
-    and how it addresses the problem above.
+  solution_summary: >                  # REQUIRED
+    PortPulse is an AI-assisted port operations solution that predicts congestion hotspots
+    using vessel schedules and berth capacity data, recommends alternate routing strategies
+    via IBM watsonx.ai reasoning, optimizes berth and crane assignments by priority, and
+    generates a ready-to-use 72-hour port operations plan for shift supervisors.
 
-  key_features:                        # REQUIRED — List 3 to 5 specific features you implemented
-    - ""                               # e.g., "Real-time pipeline anomaly detection using watsonx.ai"
-    - ""
-    - ""
-    - ""                               # optional 4th
-    - ""                               # optional 5th
+  key_features:                        # REQUIRED
+    - "72-hour congestion risk forecasting across rolling 24-hour berth capacity windows"
+    - "Priority-based automated berth and crane assignment with an auditable reason per decision"
+    - "AI-generated alternate port routing recommendations for unassigned vessels"
+    - "Live operations dashboard plus CSV upload and spreadsheet-ready plan export"
 
   tech_stack:
-    languages: []                      # REQUIRED — e.g., ["Python", "TypeScript"]
-    frameworks: []                     # e.g., ["FastAPI", "React"]
-    ibm_technologies: []               # e.g., ["watsonx.ai", "IBM Bob", "IBM Cloud Functions"]
-    databases: []                      # e.g., ["PostgreSQL", "Redis"]
-    other: []                          # e.g., ["Docker", "GitHub Actions", "Slack API"]
+    languages: ["Python", "JavaScript"]
+    frameworks: ["FastAPI", "Pydantic"]
+    ibm_technologies: ["IBM watsonx.ai", "IBM Bob"]
+    databases: []
+    other: ["Uvicorn", "Docker", "GitHub Actions", "pytest", "Ruff", "mypy"]
 
-  what_we_are_most_proud_of: >         # Optional but recommended — guides judges to your best work
-    Replace with what aspect of the submission you consider strongest
-    and want judges to pay special attention to.
+  what_we_are_most_proud_of: >
+    The end-to-end flow from raw vessel/berth data to a single actionable
+    72-hour operations plan, with AI reasoning applied specifically where
+    it adds value — explaining why a vessel is being rerouted — rather
+    than as a decorative wrapper.
 
-  known_limitations: >                 # Optional but recommended — be honest about gaps
-    Replace with any known limitations, incomplete features,
-    or shortcuts taken due to time constraints.
+  known_limitations: >
+    Uses a greedy assignment algorithm rather than full optimization;
+    runs on synthetic CSV data rather than a live port scheduling feed;
+    routing recommendations use a small fixed list of alternate ports.
 
 # =============================================================================
 # ARTIFACT LOCATIONS
@@ -63,7 +73,7 @@ artifacts:
   source_code: "src/"
   setup_guide: "docs/setup-guide.md"
   architecture_doc: "docs/architecture.md"
-  demo_video: "demo/demo-video-link.txt"   # URL to hosted video (YouTube, Loom, Box)
-  live_demo: "demo/live-demo-url.txt"      # URL to deployed demo (optional)
+  demo_video: "demo/demo-video-link.txt"
+  live_demo: "demo/live-demo-url.txt"
   screenshots: "demo/screenshots/"
   presentation: "presentation/"

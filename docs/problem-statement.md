@@ -1,21 +1,30 @@
 # Problem Statement
 
+## Category & Track
+- **Category:** Logistics & Ports
+- **Problem Statement ID:** L1 Container Congestion Predictor & Port Operations Optimiser
+- **Priority:** Critical Now
+
 ## Background
 
-[Describe the broader context. What domain or industry does this problem belong to? What situation creates the problem?]
+The 2021 LA/Long Beach port backlog had 100+ ships waiting offshore for weeks, costing global supply chains $10B+. Container ports allocate berths, cranes, and yard space across hundreds of incoming vessels manually, largely through spreadsheets.
 
 ## The Problem
 
-[State the problem clearly and specifically. Avoid vague statements like "things are slow" — instead say "Operations teams spend an average of 45 minutes per incident diagnosing pipeline failures because logs are scattered across 6 different tools."]
+Port operators allocate berths, cranes, and yard space across hundreds of vessels manually in spreadsheets. Congestion hotspots are identified reactively — after vessels are already queuing — and alternate routing decisions come too late to help. Shift supervisors lack a way to see ahead of time which upcoming 24-72 hour windows will exceed berth capacity.
+
+## Challenge Statement
+
+Build a Bob solution that predicts congestion hotspots using vessel schedules and berth capacity data, recommends alternate routing strategies, optimises berth and crane assignments, and generates a 72-hour port operations plan for shift supervisors.
 
 ## Who is Affected
 
-[Describe the specific user or persona experiencing this problem. Be concrete — not "developers" but "backend engineers managing CI/CD pipelines in enterprises with 50+ microservices."]
+Port operations shift supervisors and terminal planners at mid-to-large container terminals, who currently plan berth assignments reactively in spreadsheets during each shift.
 
 ## Why It Matters
 
-[What is the cost of this problem? Lost time? Revenue? Safety risk? Frustration? Quantify if possible.]
+The 2021 LA/Long Beach congestion event cost global supply chains an estimated $10B+ and caused weeks-long delays. Even smaller, routine congestion events cause cascading delivery delays for downstream manufacturers and retailers who depend on predictable vessel arrival.
 
 ## Why Existing Solutions Fall Short
 
-[Briefly explain what people currently do and why it doesn't fully solve the problem. This sets up why your solution is needed.]
+Manual spreadsheet planning is reactive — congestion is noticed once ships are already waiting, not predicted in advance. There's no single tool that combines vessel schedule data, berth capacity, and historical dwell-time patterns to forecast risk, recommend alternate port routing strategies, optimize berth and crane assignments, and generate a 72-hour operational plan automatically.

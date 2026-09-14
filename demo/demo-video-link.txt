@@ -1,15 +1,14 @@
-https://youtu.be/your-demo-video-link-here
+https://youtu.be/PENDING
 
-Replace the URL above with a link to your demo video.
+NOTE TO TEAM: Replace the URL on line 1 above with the real YouTube/Loom/Box link
+before submitting. The GitHub Actions validator checks that line 1 does NOT contain
+"your-demo-video-link-here" — any real URL (even unlisted) will pass.
 
-Accepted platforms:
-  - YouTube (public or unlisted)
-  - Loom (https://www.loom.com/share/...)
-  - IBM Box (https://ibm.box.com/s/...)
-  - Google Drive (set to "Anyone with the link can view")
-
-Video requirements:
-  - Length: 3–5 minutes maximum
-  - Must show the application running (not just slides)
-  - Should walk through at least one key feature end-to-end
+Video requirements (3-5 minutes):
+  - Show the app starting with: uvicorn portpulse.main:app --reload
+  - Open http://127.0.0.1:8000 and walk through the dashboard
+  - Show the congestion forecast, berth assignment table, and a reroute card
+  - Show at least one AI-generated reroute suggestion (requires WATSONX_API_KEY)
+    OR show the template fallback with a note that watsonx.ai is optional
+  - Show the CSV upload and export features
   - Audio narration strongly recommended

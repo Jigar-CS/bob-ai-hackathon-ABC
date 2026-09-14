@@ -1,117 +1,88 @@
-# How to Submit Your Hackathon Entry
+# Contributing
 
-Follow these steps to set up your submission repository correctly.
-The judges depend on this structure to review your entry — deviations may affect your score.
-
----
-
-## Step 1 — Fork This Template
-
-1. Click the **"Use this template"** button at the top of this repository
-   (or **Fork** if you prefer)
-2. Name your repository: `bob-ai-hackathon-[your-team-name]`
-   (e.g., `bob-ai-hackathon-orion-squad`)
-3. Set visibility to **Public** so judges can access it
-4. Click **Create repository**
-
----
-
-## Step 2 — Clone Your Fork Locally
+## Getting set up
 
 ```bash
-git clone https://github.com/[your-org]/bob-ai-hackathon-[your-team-name].git
-cd bob-ai-hackathon-[your-team-name]
+git clone https://github.com/Jigar-CS/bob-ai-hackathon-ABC.git
+cd bob-ai-hackathon-ABC
+
+python -m venv .venv
+source .venv/bin/activate          # Windows PowerShell: .venv\Scripts\Activate.ps1
+
+pip install -e ".[dev]"
+make check                         # confirm a clean baseline
 ```
 
----
+## Before opening a pull request
 
-## Step 3 — Fill in the Required Files
-
-Work through these files in order:
-
-### 3a. `submission.yaml` ← **Start here**
-This is the most important file. Judges use it to get an overview of your entry.
-
-- Open [`submission.yaml`](submission.yaml)
-- Fill in **every field marked `# REQUIRED`**
-- Read the inline comments — they explain what each field expects
-
-### 3b. `README.md`
-- Replace every `[placeholder in brackets]` with your actual content
-
-### 3c. `docs/`
-Fill in all four documentation files:
-| File | What to write |
-|---|---|
-| [`docs/problem-statement.md`](docs/problem-statement.md) | The problem you're solving |
-| [`docs/solution-overview.md`](docs/solution-overview.md) | How your solution works |
-| [`docs/architecture.md`](docs/architecture.md) | Technical architecture diagram |
-| [`docs/setup-guide.md`](docs/setup-guide.md) | Exact steps to run your project |
-
-### 3d. `src/`
-- Put all your source code inside [`src/`](src/)
-- Copy [`src/.env.example`](src/.env.example) and add your environment variables to it
-- **Never commit a real `.env` file** — it is already in `.gitignore`
-
-### 3e. `demo/`
-| File | What to do |
-|---|---|
-| [`demo/demo-video-link.txt`](demo/demo-video-link.txt) | Replace placeholder URL with your real video link |
-| [`demo/live-demo-url.txt`](demo/live-demo-url.txt) | Add your deployed demo URL (or write "NOT DEPLOYED") |
-| [`demo/screenshots/`](demo/screenshots/) | Add 3+ screenshots named `01-*.png`, `02-*.png`, etc. |
-
-### 3f. `presentation/`
-- Add your slide deck as [`presentation/slides.pdf`](presentation/) (preferred) or `.pptx`
-
----
-
-## Step 4 — Verify Your Submission Passes Validation
-
-Every push to your repository triggers the **Validate Submission** GitHub Action automatically.
-
-To check manually:
-1. Go to your repo on GitHub
-2. Click the **Actions** tab
-3. Look for **✅ Validate Submission**
-4. A green checkmark means your submission is structurally complete
-5. A red X means something is missing — click the run to see what
-
-You can also run the validation locally:
 ```bash
-# Install yq first: https://github.com/mikefarah/yq#install
-yq '.' submission.yaml   # checks YAML is valid
+make check        # ruff check, ruff format --check, mypy, pytest
+make test-cov     # confirm coverage has not regressed
 ```
 
----
+Without `make`:
 
-## Step 5 — Submit Your Repository URL
+```bash
+ruff check . && ruff format --check . && mypy && pytest --cov
+```
 
-Once validation passes:
+CI runs the same checks on Python 3.10 through 3.13, plus an HTTP smoke test and a
+Docker image build. A red CI run will not be merged.
 
-1. Copy your repository URL:
-   `https://github.com/[your-org]/bob-ai-hackathon-[your-team-name]`
+## Where code belongs
 
-2. Submit it via the **official entry form** at:
-   `[ORGANIZER: INSERT FORM URL HERE]`
+| Layer | Path | Rule |
+|---|---|---|
+| Planning logic | `src/portpulse/domain/` | No web framework imports. Raise `portpulse.errors` exceptions, never `HTTPException`. |
+| HTTP routes | `src/portpulse/api/` | Thin. Validate, delegate to the domain, translate errors to status codes. |
+| Data access | `src/portpulse/datasets.py` | The only place that touches storage. |
+| Third-party calls | `src/portpulse/integrations/` | Own the retry, timeout and error-taxonomy behaviour for that service. |
+| Configuration | `src/portpulse/config.py` | New tunables go here, not as literals in a module. |
+| Contracts | `src/portpulse/schemas.py` | Request and response models; keep them in step with what the domain emits. |
 
-3. **Deadline:** `[ORGANIZER: INSERT DEADLINE HERE]`
+## Conventions
 
-> ⚠️ Submissions after the deadline will not be reviewed.
-> Changes after the deadline are not considered — make sure everything is complete before submitting.
+- **Configuration over constants.** Anything an operator might want to change belongs
+  in `config.py` with a documented default and an entry in `.env.example`.
+- **Type hints everywhere.** `mypy` runs with `disallow_untyped_defs` on `src/` and
+  `scripts/`.
+- **Docstrings explain *why*.** The reader can see what the code does; record the
+  reasoning, trade-offs and non-obvious constraints.
+- **Line length 100.** Enforced by Ruff; `ruff format` handles it.
+- **No new runtime dependency** without a note in the pull request explaining why an
+  existing one will not do. Pin exact versions in both `pyproject.toml` and
+  `requirements.txt`.
 
----
+## Testing rules
 
-## Checklist Before You Submit
+- Tests must not make network calls. `tests/conftest.py` blanks watsonx credentials;
+  inject a fake client instead (see `FakeWatsonx` in `tests/domain/test_routing.py`).
+- Tests must not read the shipped datasets. Use the `data_dir` fixture, which writes a
+  known dataset to a temporary directory.
+- Tests must not leak state. Use `reset_settings_cache()` and `reset_client_cache()`
+  when mutating the environment; the autouse fixture already does this per test.
+- Assert on behaviour rather than log output or internal call order.
 
-- [ ] `submission.yaml` — all required fields filled
-- [ ] `README.md` — no `[placeholder]` text remaining
-- [ ] `docs/setup-guide.md` — someone else can run your project using these instructions
-- [ ] `src/` — all source code committed (no `node_modules`, no `.env`)
-- [ ] `demo/demo-video-link.txt` — real video URL (3–5 min showing the app working)
-- [ ] `demo/screenshots/` — at least 3 screenshots of the running application
-- [ ] `presentation/slides.pdf` — slide deck present
-- [ ] GitHub Actions **✅ Validate Submission** is green
-- [ ] Repository is **Public**
-- [ ] Entry form submitted before the deadline
+## Adding an endpoint
 
----
+1. Define request and response models in `schemas.py`.
+2. Add the route to the relevant module in `api/`, or a new module registered in
+   `api/__init__.py`.
+3. Put any real logic in `domain/`, not the route handler.
+4. Guard state-changing endpoints with `dependencies=[Depends(require_api_key)]`.
+5. Add tests under `tests/api/`.
+6. Update `docs/api.md` and the endpoint table in `README.md`.
+
+## Changing the data contract
+
+Column names and the timestamp format live in `src/portpulse/constants.py`. Change
+them there and the API, the domain layer and the sample-data generator stay in step.
+Also update the sample CSVs, `docs/setup-guide.md` and the dashboard if the change is
+user-visible.
+
+## Commits and pull requests
+
+- Present-tense, imperative subject lines: `Add rolling-window congestion forecast`.
+- One logical change per pull request.
+- Fill in the pull request template: what changed, how it was verified, and anything
+  reviewers should look at closely.

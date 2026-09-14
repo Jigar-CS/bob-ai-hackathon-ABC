@@ -1,96 +1,56 @@
-# =============================================================================
-# HACKATHON SUBMISSION — .gitignore
-# =============================================================================
-# IMPORTANT: Never commit secrets, credentials, or large binary files.
-
-# ── Secrets & Environment ─────────────────────────────────────────────────────
+# ── Secrets & environment ────────────────────────────────────────────────────
+# Never commit real credentials. .env.example is the tracked template.
 .env
-.env.local
-.env.production
-*.key
+.env.*
+!.env.example
 *.pem
+*.key
 *.p12
 secrets/
 
-# ── Python ────────────────────────────────────────────────────────────────────
+# ── Python ───────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
-*.pyo
+*.so
 .Python
-venv/
-.venv/
-env/
-pip-log.txt
-*.egg-info/
-dist/
 build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# ── Test & tooling caches ────────────────────────────────────────────────────
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
-*.coverage
+.tox/
+.coverage
+.coverage.*
+coverage.xml
 htmlcov/
 
-# ── Node.js ───────────────────────────────────────────────────────────────────
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.npm
-.yarn
-dist/
-.next/
-.nuxt/
-.output/
-.cache/
+# ── Logs & local runtime output ──────────────────────────────────────────────
+# Anchored to the repo root so the packaged sample data in
+# src/portpulse/data/ is NOT excluded.
+/logs/
+/tmp-data/
+*.log
 
-# ── Java / Maven / Gradle ────────────────────────────────────────────────────
-target/
-*.class
-*.jar
-*.war
-.gradle/
-build/
-
-# ── Go ────────────────────────────────────────────────────────────────────────
-vendor/
-*.exe
-
-# ── Rust ──────────────────────────────────────────────────────────────────────
-target/
-Cargo.lock  # remove this line if you want to commit lock file (recommended for apps)
-
-# ── macOS ─────────────────────────────────────────────────────────────────────
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# ── Windows ───────────────────────────────────────────────────────────────────
-Thumbs.db
-desktop.ini
-
-# ── IDEs & Editors ────────────────────────────────────────────────────────────
-.idea/
-.vscode/
-*.swp
-*.swo
-*.sublime-project
-*.sublime-workspace
-
-# ── Large Media Files (use demo-video-link.txt instead) ───────────────────────
+# ── Large media (link to hosted video instead) ────────────────────────────────
 demo/*.mp4
 demo/*.mov
 demo/*.avi
 demo/*.mkv
 
-# ── Docker volumes / local data ───────────────────────────────────────────────
-data/
-logs/
-*.log
-
-# ── Jupyter Notebooks (optional: remove if you want to commit notebooks) ──────
-# .ipynb_checkpoints/
-
-# ── Terraform ─────────────────────────────────────────────────────────────────
-.terraform/
-*.tfstate
-*.tfstate.backup
+# ── OS & editor noise ────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo

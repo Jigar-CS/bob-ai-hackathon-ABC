@@ -1,0 +1,17 @@
+[
+  {
+    "port": "Port of Oakland",
+    "distance_km": 620,
+    "spare_capacity_teu": 9000
+  },
+  {
+    "port": "Port of Tacoma",
+    "distance_km": 1450,
+    "spare_capacity_teu": 14000
+  },
+  {
+    "port": "Port of Ensenada",
+    "distance_km": 240,
+    "spare_capacity_teu": 4000
+  }
+]

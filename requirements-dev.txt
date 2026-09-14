@@ -1,0 +1,10 @@
+# Development / CI dependencies (pinned).
+# Mirrors pyproject.toml [project.optional-dependencies].dev
+-r requirements.txt
+
+httpx==0.28.1
+mypy==1.18.2
+pytest==9.1.1
+pytest-cov==7.0.0
+ruff==0.14.0
+types-requests==2.32.4.20260107
