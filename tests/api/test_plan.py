@@ -59,6 +59,7 @@ def test_get_plan_returns_503_with_guidance_when_datasets_are_missing(
 
 def test_configuration_error_returns_500() -> None:
     from fastapi import FastAPI
+
     from portpulse.app import _register_exception_handlers
     from portpulse.errors import ConfigurationError
 
