@@ -68,18 +68,33 @@ def build_prompt(vessel: Row, candidates: list[dict[str, Any]]) -> str:
         f"{port['spare_capacity_teu']:,} TEU spare capacity"
         for index, port in enumerate(candidates, start=1)
     )
+    cargo_type = _sanitise(vessel.get("cargo_type")).lower()
+    if cargo_type == "hazmat":
+        cargo_note = (
+            "IMPORTANT: this vessel carries hazardous materials (hazmat) and requires "
+            "a port with certified hazmat handling facilities and segregated storage."
+        )
+    elif cargo_type == "reefer":
+        cargo_note = (
+            "IMPORTANT: this vessel carries refrigerated cargo (reefer) and requires "
+            "a port with cold-chain facilities and continuous power supply for reefer plugs."
+        )
+    else:
+        cargo_note = ""
+    cargo_line = f"\n- Cargo note: {cargo_note}" if cargo_note else ""
     return (
         "You are a port operations planner. Recommend where to reroute a vessel.\n\n"
         "Vessel details:\n"
         f"- Name: {_sanitise(vessel.get('name'))}\n"
         f"- Size: {_sanitise(vessel.get('size_teu'), max_len=12)} TEU\n"
-        f"- Cargo type: {_sanitise(vessel.get('cargo_type'))}\n"
+        f"- Cargo type: {_sanitise(vessel.get('cargo_type'))}{cargo_line}\n"
         f"- Priority: {_sanitise(vessel.get('priority'), max_len=8) or 'unspecified'}\n"
         f"- Situation: {DEFAULT_REASON_UNASSIGNED}.\n\n"
         f"Candidate alternate ports:\n{ports_summary}\n\n"
         "Reply with exactly two sentences and nothing else.\n"
         "Sentence 1: state why the vessel could not be berthed here.\n"
-        "Sentence 2: name the best candidate port and justify it using distance and capacity.\n"
+        "Sentence 2: name the best candidate port and justify it using distance, capacity, "
+        "and any special handling requirements for the cargo type.\n"
     )
 
 

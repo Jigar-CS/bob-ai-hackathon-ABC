@@ -86,6 +86,33 @@ def test_prompt_lists_the_candidate_ports() -> None:
     assert "9,000 TEU spare capacity" in prompt
 
 
+def test_prompt_includes_hazmat_cargo_note() -> None:
+    hazmat_vessel = {**VESSEL, "cargo_type": "hazmat"}
+    prompt = build_prompt(
+        hazmat_vessel, [{"port": "P", "distance_km": 100, "spare_capacity_teu": 5000}]
+    )
+    assert "hazmat" in prompt.lower()
+    assert "hazmat handling" in prompt.lower()
+
+
+def test_prompt_includes_reefer_cargo_note() -> None:
+    reefer_vessel = {**VESSEL, "cargo_type": "reefer"}
+    prompt = build_prompt(
+        reefer_vessel, [{"port": "P", "distance_km": 100, "spare_capacity_teu": 5000}]
+    )
+    assert "reefer" in prompt.lower()
+    assert "cold-chain" in prompt.lower()
+
+
+def test_prompt_has_no_cargo_note_for_general() -> None:
+    general_vessel = {**VESSEL, "cargo_type": "general"}
+    prompt = build_prompt(
+        general_vessel, [{"port": "P", "distance_km": 100, "spare_capacity_teu": 5000}]
+    )
+    assert "IMPORTANT" not in prompt
+    assert "Cargo note" not in prompt
+
+
 # ── Response parsing ─────────────────────────────────────────────────────────
 
 

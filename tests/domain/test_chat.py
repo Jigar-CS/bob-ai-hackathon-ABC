@@ -1,0 +1,113 @@
+"""Unit tests for the conversational chat domain module."""
+
+from __future__ import annotations
+
+from pathlib import Path
+from unittest.mock import MagicMock
+
+from portpulse.csv_io import read_csv_file
+from portpulse.datasets import load_berths
+from portpulse.domain.chat import _SCOPE_REJECTION, _build_prompt, answer
+from portpulse.domain.planner import generate_ops_plan
+
+
+def get_sample_plan():
+    vessels_path = Path("test_comprehensive_vessels.csv")
+    if vessels_path.exists():
+        vessels = read_csv_file(vessels_path)
+    else:
+        vessels = [
+            {
+                "vessel_id": "V001",
+                "name": "MV Horizon-1",
+                "eta": "2026-09-25 01:00",
+                "size_teu": "16000",
+                "cargo_type": "general",
+                "priority": "1",
+            },
+            {
+                "vessel_id": "V108",
+                "name": "MV Chemical Voyager",
+                "eta": "2026-09-25 09:00",
+                "size_teu": "18000",
+                "cargo_type": "hazmat",
+                "priority": "1",
+            },
+        ]
+    berths = load_berths()
+    return generate_ops_plan(vessels, berths)
+
+
+def test_chat_answers_vessel_specific_allocation():
+    plan = get_sample_plan()
+    res = answer("Where is vessel V101 assigned?", plan)
+    assert isinstance(res["reply"], str)
+    assert (
+        "V101" in res["reply"] or "Pacific Titan" in res["reply"] or "berth" in res["reply"].lower()
+    )
+
+
+def test_chat_answers_routing_unassigned_vessel():
+    plan = get_sample_plan()
+    res = answer("Why was V108 rerouted and where can it go?", plan)
+    assert isinstance(res["reply"], str)
+    assert (
+        "V108" in res["reply"]
+        or "unassigned" in res["reply"].lower()
+        or "rerouted" in res["reply"].lower()
+    )
+
+
+def test_chat_answers_berth_specific_query():
+    plan = get_sample_plan()
+    res = answer("Which vessels are allocated to B1?", plan)
+    assert isinstance(res["reply"], str)
+    assert "B1" in res["reply"]
+
+
+def test_chat_answers_congestion_forecast_query():
+    plan = get_sample_plan()
+    res = answer("What is the congestion forecast and risk level for day 1?", plan)
+    assert isinstance(res["reply"], str)
+    assert (
+        "HIGH" in res["reply"]
+        or "congestion" in res["reply"].lower()
+        or "risk" in res["reply"].lower()
+    )
+
+
+def test_chat_strictly_refuses_out_of_scope_questions():
+    plan = get_sample_plan()
+
+    queries = [
+        "What is the recipe for chocolate cake?",
+        "Who won the FIFA world cup?",
+        "Write a python script for fibonacci numbers",
+        "What is the capital of France?",
+    ]
+    for q in queries:
+        res = answer(q, plan)
+        assert res["reply"] == _SCOPE_REJECTION
+
+
+def test_system_prompt_includes_scope_guardrails():
+    plan = get_sample_plan()
+    prompt = _build_prompt("What is the allocation plan?", plan, [])
+
+    assert "PortPulse Assistant" in prompt
+    assert "STRICT DOMAIN BOUNDARIES & SCOPE GUARDRAILS" in prompt
+    assert "I cannot answer questions outside of this domain." in prompt
+    assert "--- LIVE OPS PLAN DATA ---" in prompt
+
+
+def test_chat_uses_watsonx_client_when_enabled():
+    plan = get_sample_plan()
+    mock_client = MagicMock()
+    mock_client.enabled = True
+    mock_client.generate_text.return_value = (
+        "Assistant: Vessel V101 is berthed at B1 starting at 2026-09-25 01:00."
+    )
+
+    res = answer("Tell me about V101", plan, client=mock_client)
+    assert res["ai_generated"] is True
+    assert res["reply"] == "Vessel V101 is berthed at B1 starting at 2026-09-25 01:00."

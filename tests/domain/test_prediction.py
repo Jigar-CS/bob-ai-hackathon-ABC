@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+
 import pytest
 
 from portpulse.domain.prediction import predict_congestion
@@ -9,11 +11,15 @@ from portpulse.errors import PlanningError
 
 Row = dict[str, str]
 
+# A fixed reference point that makes all "2026-10-01/02" test ETAs fall
+# within the 72-hour planning horizon regardless of when the suite runs.
+_NOW = datetime(2026, 10, 1, 8, 0)
 
-def test_windows_are_bucketed_by_rolling_24h_from_first_eta(
+
+def test_windows_are_bucketed_by_rolling_24h_from_now(
     vessel_rows: list[Row], berth_rows: list[Row]
 ) -> None:
-    windows = predict_congestion(vessel_rows, berth_rows)
+    windows = predict_congestion(vessel_rows, berth_rows, now=_NOW)
 
     assert [w["day"] for w in windows] == [1, 2]
     assert windows[0]["vessel_count"] == 2
@@ -30,13 +36,15 @@ def test_windows_are_bucketed_by_rolling_24h_from_first_eta(
 def test_risk_level_thresholds(incoming: int, expected: str) -> None:
     vessels = [{"vessel_id": "V1", "eta": "2026-10-01 08:00", "size_teu": str(incoming)}]
     berths = [{"berth_id": "B1", "capacity_teu": "10000"}]
-    assert predict_congestion(vessels, berths)[0]["risk_level"] == expected
+    assert predict_congestion(vessels, berths, now=_NOW)[0]["risk_level"] == expected
 
 
 def test_thresholds_can_be_overridden() -> None:
     vessels = [{"vessel_id": "V1", "eta": "2026-10-01 08:00", "size_teu": "5000"}]
     berths = [{"berth_id": "B1", "capacity_teu": "10000"}]
-    windows = predict_congestion(vessels, berths, high_risk_ratio=0.4, medium_risk_ratio=0.2)
+    windows = predict_congestion(
+        vessels, berths, high_risk_ratio=0.4, medium_risk_ratio=0.2, now=_NOW
+    )
     assert windows[0]["risk_level"] == "HIGH"
 
 
@@ -46,7 +54,7 @@ def test_rows_with_unusable_values_are_skipped(berth_rows: list[Row]) -> None:
         {"vessel_id": "V2", "eta": "not-a-date", "size_teu": "5000"},
         {"vessel_id": "V3", "eta": "2026-10-01 09:00", "size_teu": "abc"},
     ]
-    windows = predict_congestion(vessels, berth_rows)
+    windows = predict_congestion(vessels, berth_rows, now=_NOW)
     assert len(windows) == 1
     assert windows[0]["incoming_teu"] == 5_000
 
@@ -56,7 +64,7 @@ def test_vessels_beyond_the_horizon_are_excluded(berth_rows: list[Row]) -> None:
         {"vessel_id": "V1", "eta": "2026-10-01 08:00", "size_teu": "1000"},
         {"vessel_id": "V2", "eta": "2026-10-09 08:00", "size_teu": "9999"},
     ]
-    windows = predict_congestion(vessels, berth_rows)
+    windows = predict_congestion(vessels, berth_rows, now=_NOW)
     assert len(windows) == 1
     assert windows[0]["incoming_teu"] == 1_000
 

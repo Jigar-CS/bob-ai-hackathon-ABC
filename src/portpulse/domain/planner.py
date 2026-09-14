@@ -20,12 +20,20 @@ from portpulse.errors import PlanningError
 logger = logging.getLogger(__name__)
 
 
-def generate_ops_plan(vessels: list[Row], berths: list[Row]) -> dict[str, Any]:
+def generate_ops_plan(
+    vessels: list[Row],
+    berths: list[Row],
+    *,
+    now: datetime | None = None,
+) -> dict[str, Any]:
     """Build the complete 72-hour operations plan.
 
     Args:
         vessels: Vessel schedule rows.
         berths: Berth capacity rows.
+        now: Reference start time for the congestion horizon; defaults to the
+            current system time. Pass explicitly in tests to get deterministic
+            window boundaries.
 
     Returns:
         A dict matching :class:`portpulse.schemas.OpsPlan`.
@@ -33,7 +41,7 @@ def generate_ops_plan(vessels: list[Row], berths: list[Row]) -> dict[str, Any]:
     warnings: list[str] = []
 
     try:
-        congestion = predict_congestion(vessels, berths)
+        congestion = predict_congestion(vessels, berths, now=now)
     except PlanningError as err:
         logger.warning("Congestion forecast unavailable: %s", err)
         congestion = []

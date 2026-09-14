@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+
 import pytest
 
 from portpulse.domain import planner
@@ -11,11 +13,14 @@ from portpulse.schemas import OpsPlan
 
 Row = dict[str, str]
 
+# Fixed reference time so test vessel ETAs (Oct 2026) fall inside the horizon.
+_NOW = datetime(2026, 10, 1, 8, 0)
+
 
 def test_plan_contains_every_section(
     settings, vessel_rows: list[Row], berth_rows: list[Row]
 ) -> None:
-    plan = generate_ops_plan(vessel_rows, berth_rows)
+    plan = generate_ops_plan(vessel_rows, berth_rows, now=_NOW)
 
     assert plan["congestion_forecast"]
     assert len(plan["berth_assignments"]) == 3
@@ -29,7 +34,7 @@ def test_plan_validates_against_the_response_schema(
     settings, vessel_rows: list[Row], berth_rows: list[Row]
 ) -> None:
     """Guards against the domain layer and the API contract drifting apart."""
-    OpsPlan.model_validate(generate_ops_plan(vessel_rows, berth_rows))
+    OpsPlan.model_validate(generate_ops_plan(vessel_rows, berth_rows, now=_NOW))
 
 
 def test_oversized_vessels_flow_into_reroute_suggestions(settings) -> None:

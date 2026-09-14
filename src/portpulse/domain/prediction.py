@@ -55,8 +55,16 @@ def predict_congestion(
     horizon_days: int = PLANNING_HORIZON_DAYS,
     high_risk_ratio: float | None = None,
     medium_risk_ratio: float | None = None,
+    now: datetime | None = None,
 ) -> list[dict[str, object]]:
     """Assess congestion risk per 24-hour window across the planning horizon.
+
+    The horizon start is ``now`` when supplied explicitly (tests, or callers that
+    want a wall-clock anchor).  When ``now`` is omitted the function uses the
+    current system time **unless** all vessel ETAs lie entirely in the future
+    beyond the 72-hour window — in that case the horizon is anchored to the
+    earliest arriving vessel so that a future-dated dataset always produces a
+    useful forecast instead of an empty one.
 
     Args:
         vessels: Vessel rows containing at least ``eta`` and ``size_teu``.
@@ -64,6 +72,8 @@ def predict_congestion(
         horizon_days: Number of 24-hour windows to report.
         high_risk_ratio: Ratio above which a window is HIGH risk.
         medium_risk_ratio: Ratio above which a window is MEDIUM risk.
+        now: Reference start time for horizon; defaults to current system time,
+            with automatic fallback to earliest ETA for future-dated datasets.
 
     Returns:
         One dict per window, ordered by window index.
@@ -90,23 +100,48 @@ def predict_congestion(
     if not arrivals:
         raise PlanningError("No vessel rows had a usable ETA and size — cannot forecast.")
 
-    horizon_start = min(eta for eta, _ in arrivals)
+    if now is not None:
+        # Explicit override (e.g. from tests or the planner's ``now`` kwarg).
+        horizon_start = now
+    else:
+        wall_clock = datetime.now()
+        default_end = wall_clock + timedelta(hours=WINDOW_HOURS * horizon_days)
+        future_etas = [eta for eta, _ in arrivals if eta >= wall_clock]
+        if future_etas and min(future_etas) >= default_end:
+            # All future vessels arrive after the current 72-hour window ends.
+            # Anchor the horizon to the earliest ETA so the forecast is useful.
+            horizon_start = min(future_etas)
+            logger.info(
+                "All vessel ETAs are beyond the current 72h window; "
+                "anchoring forecast to earliest ETA %s.",
+                horizon_start.strftime(ETA_FORMAT),
+            )
+        else:
+            horizon_start = wall_clock
+
     horizon_end = horizon_start + timedelta(hours=WINDOW_HOURS * horizon_days)
 
     windows: dict[int, list[int]] = defaultdict(list)
     beyond_horizon = 0
+    past_horizon = 0
     for eta, size in arrivals:
+        if eta < horizon_start:
+            past_horizon += 1
+            continue
         if eta >= horizon_end:
             beyond_horizon += 1
             continue
         window_index = int((eta - horizon_start).total_seconds() // (WINDOW_HOURS * 3600))
         windows[window_index].append(size)
 
-    if beyond_horizon:
+    if beyond_horizon or past_horizon:
         logger.info(
-            "%d vessel(s) arrive after the %dh horizon and are excluded from the forecast.",
-            beyond_horizon,
+            "%d vessel(s) arrive outside the %dh horizon (past: %d, future: %d) "
+            "and are excluded from the forecast.",
+            past_horizon + beyond_horizon,
             WINDOW_HOURS * horizon_days,
+            past_horizon,
+            beyond_horizon,
         )
 
     results: list[dict[str, object]] = []
