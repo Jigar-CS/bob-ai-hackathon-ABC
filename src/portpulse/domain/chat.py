@@ -225,9 +225,7 @@ def _fallback_reply(user_message: str, plan: dict[str, Any]) -> str:
                 f"({alt.get('spare_capacity_teu', alt.get('spare_capacity', 0)):,} TEU spare)"
                 for alt in (r.get("alternatives") or [])
             )
-            reason = r.get(
-                "reason_unassigned", "Exceeds maximum berth capacity or wait time limit"
-            )
+            reason = r.get("reason_unassigned", "Exceeds maximum berth capacity or wait time limit")
             return (
                 f"### Rerouting Analysis: {r.get('vessel_name')} ({r.get('vessel_id')})\n"
                 f"- **Status**: Unassigned / Pushed to Rerouting Queue\n"
