@@ -35,6 +35,7 @@ EXPORT_COLUMNS = (
     "status",
     "berth_id",
     "crane_count",
+    "effective_dwell_hours",
     "arrival",
     "berth_start",
     "departure_est",
@@ -99,6 +100,11 @@ def export_plan_csv(settings: Settings = Depends(get_settings)) -> Response:
             "BERTHED",
             assignment["berth_id"],
             assignment["crane_count"] if assignment["crane_count"] is not None else "",
+            (
+                assignment["effective_dwell_hours"]
+                if assignment.get("effective_dwell_hours") is not None
+                else ""
+            ),
             assignment["arrival"],
             assignment["berth_start"],
             assignment["departure_est"],
@@ -118,6 +124,7 @@ def export_plan_csv(settings: Settings = Depends(get_settings)) -> Response:
                 reroute["vessel_id"],
                 reroute["vessel_name"],
                 "REROUTED",
+                "",
                 "",
                 "",
                 "",

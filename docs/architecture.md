@@ -135,7 +135,7 @@ sequenceDiagram
 | **Configuration** | `config.py` | Environment settings validator using Pydantic Settings across `PORTPULSE_*` and `WATSONX_*` namespaces. |
 | **Schemas** | `schemas.py` | Data contracts (`OpsPlan`, `BerthAssignment`, `SwapOpportunity`, `CascadeRequest`, `WhatIfRequest`, `KpiSummary`). |
 | **Congestion Engine** | `domain/prediction.py` | Buckets arrivals into 24h rolling windows and computes ALSC risk levels (LOW, MEDIUM, HIGH). |
-| **Assignment Engine** | `domain/assignment.py` | Priority-first greedy berth and crane allocation algorithm with deterministic decision reasons. |
+| **Assignment Engine** | `domain/assignment.py` | Priority-first greedy berth and crane allocation algorithm with crane-adjusted dynamic dwell time and deterministic decision reasons. |
 | **KPI Calculator** | `domain/kpi_calculator.py` | Computes average wait hours, berth utilization %, vessels at risk, and CO2 emissions saved. |
 | **Swap Optimizer** | `domain/swap_optimizer.py` | Identifies pairwise berth swaps to reduce P1 queue wait times and calculates demurrage cost savings. |
 | **What-If Simulator** | `domain/whatif_simulator.py` | Sandboxed simulation engine comparing baseline vs scenario diffs without mutating live data. |

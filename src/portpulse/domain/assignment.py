@@ -62,6 +62,28 @@ def _to_int(value: object) -> int | None:
         return None
 
 
+def _effective_dwell_hours(
+    avg_dwell_hours: float,
+    crane_count: int | None,
+    baseline_crane_count: int,
+    min_multiplier: float,
+    max_multiplier: float,
+) -> float:
+    """Scale dwell time by crane availability relative to baseline.
+
+    More cranes than baseline shortens dwell time; fewer lengthens it.
+    Falls back to avg_dwell_hours unchanged when crane_count is missing
+    or non-positive (unknown crane data should not silently distort
+    the schedule).
+    """
+    if crane_count is None or crane_count <= 0:
+        return avg_dwell_hours
+
+    raw_multiplier = baseline_crane_count / crane_count
+    multiplier = max(min_multiplier, min(max_multiplier, raw_multiplier))
+    return avg_dwell_hours * multiplier
+
+
 def _parse_berths(berths: list[Row]) -> list[_Berth]:
     parsed: list[_Berth] = []
     for berth in berths:
@@ -136,7 +158,11 @@ def assign_berths(
     Raises:
         PlanningError: if no usable berths are supplied.
     """
-    limit = get_settings().app.max_berth_wait_hours if max_wait_hours is None else max_wait_hours
+    app_settings = get_settings().app
+    limit = app_settings.max_berth_wait_hours if max_wait_hours is None else max_wait_hours
+    baseline_cranes = app_settings.baseline_crane_count
+    min_mult = app_settings.crane_dwell_min_multiplier
+    max_mult = app_settings.crane_dwell_max_multiplier
 
     if not berths:
         raise PlanningError("At least one berth is required to assign vessels.")
@@ -173,7 +199,14 @@ def assign_berths(
             unassigned.append(vessel.row)
             continue
 
-        departure = best_start + timedelta(hours=best.avg_dwell_hours)
+        effective_dwell = _effective_dwell_hours(
+            best.avg_dwell_hours,
+            best.crane_count,
+            baseline_cranes,
+            min_mult,
+            max_mult,
+        )
+        departure = best_start + timedelta(hours=effective_dwell)
         best.free_at = departure
 
         priority_label = f"P{vessel.priority}" if vessel.priority is not None else "unprioritised"
@@ -182,12 +215,17 @@ def assign_berths(
         else:
             reason = f"{priority_label}, queued {best_wait:.1f}h for berth {best.berth_id}"
 
+        multiplier = effective_dwell / best.avg_dwell_hours if best.avg_dwell_hours > 0 else 1.0
+        if best.crane_count is not None and best.crane_count > 0 and abs(multiplier - 1.0) > 0.01:
+            reason += f", {best.crane_count} cranes ({multiplier:.2f}x baseline dwell)"
+
         assigned.append(
             {
                 "vessel_id": vessel.vessel_id,
                 "vessel_name": vessel.name,
                 "berth_id": best.berth_id,
                 "crane_count": best.crane_count,
+                "effective_dwell_hours": round(effective_dwell, 2),
                 "arrival": vessel.eta.strftime(ETA_FORMAT),
                 "berth_start": best_start.strftime(ETA_FORMAT),
                 "departure_est": departure.strftime(ETA_FORMAT),

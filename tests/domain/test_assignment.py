@@ -154,3 +154,95 @@ def test_unusable_berths_raise_planning_error(berths: list[Row], message: str) -
     ]
     with pytest.raises(PlanningError, match=message):
         assign_berths(vessels, berths)
+
+
+def test_crane_count_fewer_than_baseline_lengthens_dwell() -> None:
+    vessels = [
+        {
+            "vessel_id": "V1",
+            "name": "One",
+            "eta": "2026-10-01 08:00",
+            "size_teu": "5000",
+            "priority": "1",
+        }
+    ]
+    # baseline_crane_count is 4 by default.
+    # 2 cranes -> multiplier 4/2 = 2.0x -> effective dwell = 8.0
+    berths = [
+        {"berth_id": "B1", "capacity_teu": "10000", "crane_count": "2", "avg_dwell_hours": "4.0"}
+    ]
+    res = assign_berths(vessels, berths)
+    assigned = res.assigned[0]
+    assert assigned["effective_dwell_hours"] == 8.0
+    assert assigned["departure_est"] == "2026-10-01 16:00"
+    assert "2 cranes (2.00x baseline dwell)" in str(assigned["reason"])
+
+
+def test_crane_count_more_than_baseline_shortens_dwell() -> None:
+    vessels = [
+        {
+            "vessel_id": "V1",
+            "name": "One",
+            "eta": "2026-10-01 08:00",
+            "size_teu": "5000",
+            "priority": "1",
+        }
+    ]
+    # 8 cranes -> multiplier 4/8 = 0.5x -> effective dwell = 2.0
+    berths = [
+        {"berth_id": "B1", "capacity_teu": "10000", "crane_count": "8", "avg_dwell_hours": "4.0"}
+    ]
+    res = assign_berths(vessels, berths)
+    assigned = res.assigned[0]
+    assert assigned["effective_dwell_hours"] == 2.0
+    assert assigned["departure_est"] == "2026-10-01 10:00"
+    assert "8 cranes (0.50x baseline dwell)" in str(assigned["reason"])
+
+
+def test_crane_count_none_or_zero_falls_back_to_avg_dwell() -> None:
+    vessels = [
+        {
+            "vessel_id": "V1",
+            "name": "One",
+            "eta": "2026-10-01 08:00",
+            "size_teu": "5000",
+            "priority": "1",
+        }
+    ]
+    berths_none = [
+        {"berth_id": "B1", "capacity_teu": "10000", "crane_count": "", "avg_dwell_hours": "5.0"}
+    ]
+    res_none = assign_berths(vessels, berths_none)
+    assert res_none.assigned[0]["effective_dwell_hours"] == 5.0
+    assert "cranes" not in str(res_none.assigned[0]["reason"])
+
+    berths_zero = [
+        {"berth_id": "B1", "capacity_teu": "10000", "crane_count": "0", "avg_dwell_hours": "5.0"}
+    ]
+    res_zero = assign_berths(vessels, berths_zero)
+    assert res_zero.assigned[0]["effective_dwell_hours"] == 5.0
+
+
+def test_crane_dwell_multiplier_clamping() -> None:
+    vessels = [
+        {
+            "vessel_id": "V1",
+            "name": "One",
+            "eta": "2026-10-01 08:00",
+            "size_teu": "5000",
+            "priority": "1",
+        }
+    ]
+    # 1 crane -> baseline 4/1 = 4.0, clamped at max (default 2.0) -> dwell = 20.0
+    berths_extreme_low = [
+        {"berth_id": "B1", "capacity_teu": "10000", "crane_count": "1", "avg_dwell_hours": "10.0"}
+    ]
+    res_low = assign_berths(vessels, berths_extreme_low)
+    assert res_low.assigned[0]["effective_dwell_hours"] == 20.0
+
+    # 50 cranes -> baseline 4/50 = 0.08, clamped at min (default 0.5) -> dwell = 5.0
+    berths_extreme_high = [
+        {"berth_id": "B1", "capacity_teu": "10000", "crane_count": "50", "avg_dwell_hours": "10.0"}
+    ]
+    res_high = assign_berths(vessels, berths_extreme_high)
+    assert res_high.assigned[0]["effective_dwell_hours"] == 5.0

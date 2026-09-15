@@ -8,6 +8,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Crane-sensitive berth dwell time**: `crane_count` on berths now dynamically scales
+  effective dwell time (`effective_dwell_hours`) relative to `baseline_crane_count` (default 4),
+  clamped to configurable min/max bounds (`crane_dwell_min_multiplier` = 0.5,
+  `crane_dwell_max_multiplier` = 2.0). Effective dwell time directly determines vessel departure
+  estimates (`departure_est`) and berth availability (`free_at`), automatically rippling through
+  to KPIs, What-If simulations, and Cascading Impact analysis.
 - **Conversational Ops Assistant** (`POST /api/v1/chat`): a shift supervisor can ask
   plain-English questions about the live plan and receive grounded answers. Uses
   `ibm/granite-3-8b-instruct` via watsonx.ai when configured; falls back to a

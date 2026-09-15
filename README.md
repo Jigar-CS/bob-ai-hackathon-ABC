@@ -48,7 +48,7 @@ It combines a domain-driven Python planning engine with **IBM watsonx.ai** (`ibm
 ## ✨ Key Features
 
 - **72-Hour Congestion Risk Forecasting**: Buckets incoming arrivals into rolling 24-hour windows from earliest ETA, comparing incoming TEU against total berth capacity to classify windows as LOW, MEDIUM, or HIGH risk (ALSC risk model).
-- **Priority-Based Automated Berth & Crane Allocation**: Sorts vessels by cargo priority (P1/P2/P3), allocating berths and cranes to minimize queue wait time while recording a deterministic, auditable single-line reason for every placement.
+- **Priority-Based Automated Berth & Crane Allocation**: Sorts vessels by cargo priority (P1/P2/P3), allocating berths and scaling effective dwell time dynamically based on crane availability relative to baseline to optimize berth turnaround time while recording a deterministic, auditable single-line reason for every placement.
 - **KPI Tracking Strip**: Real-time summary strip at the top of the dashboard tracking `Average Queue Wait`, `Berth Capacity Utilization %`, `Vessels at Risk`, and `Estimated Emissions Saved (kg CO2)`.
 - **Top 5 Optimization Techniques (Berth Swap Optimizer)**: Evaluates pairwise berth swaps to prioritize high-priority cargo and reduce queue wait times, displaying the top 5 high-impact suggestions with exact demurrage cost savings.
 - **What-If Scenario Simulator (`POST /api/v1/plan/whatif`)**: Sandboxed scenario comparison for vessel arrival delays or berth outages with side-by-side diff reporting.

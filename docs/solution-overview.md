@@ -47,7 +47,7 @@ Vessel Schedule CSV + Berth Capacity CSV
 
 1. **Ingest**: Ingests vessel schedules and berth capacity files. Supports live custom CSV uploads with automatic column and data validation.
 2. **Forecast**: Group arrivals into rolling 24-hour windows from earliest ETA, comparing incoming TEU against total berth capacity to label windows LOW, MEDIUM, or HIGH risk.
-3. **Allocate**: Sorts vessels by cargo priority (P1 reefers/perishables first), then ETA. Allocates berths and cranes to minimize wait time while recording deterministic, auditable single-line reasons.
+3. **Allocate**: Sorts vessels by cargo priority (P1 reefers/perishables first), then ETA. Allocates berths and dynamically scales berth dwell time based on crane availability relative to baseline to optimize turnaround time while recording deterministic, auditable single-line reasons.
 4. **KPI Tracking**: Calculates real-time average queue wait, capacity fill percentage, vessels at risk, and CO2 emissions saved.
 5. **Optimize**: Identifies high-impact pairwise berth swaps to prioritize time-critical cargo and minimize demurrage costs, presenting the Top 5 advisory techniques.
 6. **Simulate**: Provides sandboxed What-If scenario simulation (delays or outages) and multi-pass Cascading Impact simulation with a waterfall ripple timeline and financial demurrage cost analysis.

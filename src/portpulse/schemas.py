@@ -121,6 +121,9 @@ class BerthAssignment(BaseModel):
     vessel_name: str
     berth_id: str
     crane_count: int | None = None
+    effective_dwell_hours: float | None = Field(
+        default=None, description="Effective dwell time in hours after crane scaling"
+    )
     arrival: str
     berth_start: str
     departure_est: str

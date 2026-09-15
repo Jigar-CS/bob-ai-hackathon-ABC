@@ -221,6 +221,10 @@ class AppSettings(BaseSettings):
     max_berth_wait_hours: float = Field(default=12.0, gt=0)
     congestion_high_risk_ratio: float = Field(default=0.9, gt=0)
     congestion_medium_risk_ratio: float = Field(default=0.6, gt=0)
+    #: Baseline crane count assumed by berth CSV avg_dwell_hours.
+    baseline_crane_count: int = Field(default=4, ge=1, le=50)
+    crane_dwell_min_multiplier: float = Field(default=0.5, gt=0)
+    crane_dwell_max_multiplier: float = Field(default=2.0, gt=0)
 
     # ── Routing / LLM fan-out guards ─────────────────────────────────────────
     routing_max_workers: int = Field(default=8, ge=1, le=32)

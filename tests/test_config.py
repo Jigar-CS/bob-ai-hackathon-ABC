@@ -79,3 +79,18 @@ def test_settings_are_cached_until_reset() -> None:
     assert get_settings() is first
     reset_settings_cache()
     assert get_settings() is not first
+
+
+def test_crane_settings_defaults_and_overrides(monkeypatch: pytest.MonkeyPatch) -> None:
+    defaults = AppSettings()
+    assert defaults.baseline_crane_count == 4
+    assert defaults.crane_dwell_min_multiplier == 0.5
+    assert defaults.crane_dwell_max_multiplier == 2.0
+
+    monkeypatch.setenv("PORTPULSE_BASELINE_CRANE_COUNT", "6")
+    monkeypatch.setenv("PORTPULSE_CRANE_DWELL_MIN_MULTIPLIER", "0.3")
+    monkeypatch.setenv("PORTPULSE_CRANE_DWELL_MAX_MULTIPLIER", "3.0")
+    custom = AppSettings()
+    assert custom.baseline_crane_count == 6
+    assert custom.crane_dwell_min_multiplier == 0.3
+    assert custom.crane_dwell_max_multiplier == 3.0

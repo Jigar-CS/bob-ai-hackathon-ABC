@@ -45,3 +45,23 @@ def test_simulate_cascade_delay_vessel():
     res = simulate_cascade(vessels, berths, disruption, max_iterations=3)
     assert res["iterations_run"] <= 3
     assert res["total_estimated_cost"] >= 0.0
+
+
+def test_simulate_cascade_crane_count_impact():
+    vessels = load_vessels()
+    berths_slow = [dict(b) for b in load_berths()]
+    for b in berths_slow:
+        if b["berth_id"] == "B1":
+            b["crane_count"] = "1"
+
+    berths_fast = [dict(b) for b in load_berths()]
+    for b in berths_fast:
+        if b["berth_id"] == "B1":
+            b["crane_count"] = "8"
+
+    disruption = {"type": "berth_outage", "berth_id": "B1", "hours": 12.0}
+    res_slow = simulate_cascade(vessels, berths_slow, disruption)
+    res_fast = simulate_cascade(vessels, berths_fast, disruption)
+
+    # Fewer cranes on B1 increases effective dwell time, leading to higher overall cascade delay
+    assert res_slow["total_cascade_delay_hours"] != res_fast["total_cascade_delay_hours"]

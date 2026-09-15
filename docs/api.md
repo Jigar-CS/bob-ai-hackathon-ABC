@@ -112,6 +112,7 @@ Generates the complete 72-hour operations plan, high-level KPIs, and Top 5 berth
       "vessel_name": "MV Horizon-4",
       "berth_id": "B3",
       "crane_count": 4,
+      "effective_dwell_hours": 23.6,
       "arrival": "2026-09-15 07:30",
       "berth_start": "2026-09-15 07:30",
       "departure_est": "2026-09-16 07:06",

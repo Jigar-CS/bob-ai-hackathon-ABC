@@ -49,6 +49,7 @@ def test_get_plan_returns_every_section(client: TestClient) -> None:
     }
     assert len(plan["berth_assignments"]) == 3
     assert plan["warnings"] == []
+    assert "effective_dwell_hours" in plan["berth_assignments"][0]
 
 
 def test_get_plan_returns_503_with_guidance_when_datasets_are_missing(
@@ -88,6 +89,7 @@ def test_custom_plan_accepts_validated_input(client: TestClient) -> None:
 
     assert response.status_code == 200
     assert response.json()["berth_assignments"][0]["vessel_id"] == "V001"
+    assert "effective_dwell_hours" in response.json()["berth_assignments"][0]
 
 
 def test_custom_plan_rejects_a_bad_eta_format(client: TestClient) -> None:
@@ -138,5 +140,6 @@ def test_export_returns_csv_with_one_row_per_vessel(client: TestClient) -> None:
 
     lines = response.text.strip().splitlines()
     assert lines[0].startswith("vessel_id,vessel_name,status")
+    assert "effective_dwell_hours" in lines[0]
     assert len(lines) == 4  # header + 3 vessels
     assert all("BERTHED" in line for line in lines[1:])
