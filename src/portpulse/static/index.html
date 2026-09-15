@@ -1399,42 +1399,241 @@
     background: var(--bg-surface);
   }
 
-  .ops-tab-btn.active {
-    color: var(--accent-navy);
-    background: var(--card-bg);
-    border-color: var(--card-border);
-    border-bottom-color: var(--card-bg);
+  /* ── Side-Panel Navigation & App Layout Restructure ─────────────────── */
+  .app-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--bg-main);
   }
 
-  .ops-tab-badge {
+  .sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #d8cca9;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24px 0;
+    z-index: 100;
+    border-right: 1px solid #c4b490;
+    box-shadow: 3px 0 14px rgba(26, 39, 68, 0.06);
+  }
+
+  .sidebar-top {
+    padding: 0 20px 20px 20px;
+    border-bottom: 1px solid #c8ba96;
+  }
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .sidebar-brand .brand-logo {
+    font-size: 20px;
+    color: var(--accent-navy);
+    font-family: 'IBM Plex Serif', serif;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sidebar-brand .brand-monogram {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 5px;
-    background: var(--bg-surface);
-    border: 1px solid var(--card-border);
-    border-radius: 20px;
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--text-muted);
-    transition: background 0.15s, color 0.15s;
-  }
-
-  .ops-tab-btn.active .ops-tab-badge {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    font-weight: 700;
     background: var(--accent-navy);
-    color: #fff;
-    border-color: var(--accent-navy);
+    color: var(--bg-main);
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
   }
 
-  .ops-tab-panel {
+  .sidebar-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #5c503e;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 0;
+    flex-grow: 1;
+    gap: 4px;
+  }
+
+  .sidebar-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    border-left: 4px solid transparent;
+    color: #3b3225;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.18s ease;
+    width: 100%;
+    position: relative;
+  }
+
+  .sidebar-nav-btn:hover {
+    background: rgba(139, 105, 20, 0.12);
+    color: var(--accent-navy);
+  }
+
+  .sidebar-nav-btn.active {
+    background: var(--bg-main);
+    border-left-color: var(--accent-brass);
+    color: var(--accent-navy);
+    font-weight: 700;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .sidebar-nav-btn svg {
+    flex-shrink: 0;
+    stroke: currentColor;
+    opacity: 0.85;
+  }
+
+  .sidebar-nav-btn.active svg {
+    stroke: var(--accent-brass);
+    opacity: 1;
+  }
+
+  .sidebar-nav-badge {
+    margin-left: auto;
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: #c8b99a;
+    color: var(--accent-navy);
+    border: 1px solid #b8a98a;
+  }
+
+  .sidebar-nav-btn.active .sidebar-nav-badge {
+    background: var(--accent-brass);
+    color: #ffffff;
+    border-color: var(--accent-brass);
+  }
+
+  .sidebar-footer {
+    padding: 16px 20px 0 20px;
+    border-top: 1px solid #c8ba96;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .sidebar-footer .status-chip {
+    align-self: flex-start;
+  }
+
+  .sidebar-system-info {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #5c503e;
+    line-height: 1.45;
+  }
+
+  .main-content {
+    margin-left: 250px;
+    flex-grow: 1;
+    min-height: 100vh;
+    padding: 32px 36px 60px 36px;
+    max-width: calc(100vw - 250px);
+    box-sizing: border-box;
+  }
+
+  .page-header {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .page-title {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--accent-navy);
+    margin: 0 0 6px 0;
+    letter-spacing: -0.3px;
+  }
+
+  .page-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .app-tab-panel {
     display: none;
   }
 
-  .ops-tab-panel.active {
+  .app-tab-panel.active {
     display: block;
     animation: fade-up 0.25s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+  }
+
+  /* Responsive Fallback for Narrow Screens */
+  @media (max-width: 900px) {
+    .sidebar {
+      width: 70px;
+      padding: 16px 0;
+    }
+    .sidebar-top {
+      padding: 0 0 16px 0;
+      text-align: center;
+    }
+    .sidebar-brand .brand-tagline, .sidebar-sub, .sidebar-brand span:not(.brand-monogram) {
+      display: none;
+    }
+    .sidebar-nav-btn span:not(.sidebar-nav-badge) {
+      display: none;
+    }
+    .sidebar-nav-btn {
+      justify-content: center;
+      padding: 14px 0;
+    }
+    .sidebar-nav-badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      font-size: 8px;
+      padding: 1px 4px;
+    }
+    .sidebar-footer {
+      padding: 12px 0 0 0;
+      align-items: center;
+    }
+    .sidebar-system-info {
+      display: none;
+    }
+    .main-content {
+      margin-left: 70px;
+      max-width: calc(100vw - 70px);
+      padding: 24px 20px;
+    }
   }
 
   /* ── Vessel Map Stylized Nautical Chart View ──────────────────────── */
@@ -1580,210 +1779,233 @@
 
   <div class="app-container">
 
-    <!-- Header -->
-    <header class="header" id="app-header">
-      <!-- Top strip: brand + READY chip -->
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <div class="brand">
+    <!-- Fixed Left Sidebar Panel -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="sidebar-brand">
           <div class="brand-logo">
             <span class="brand-monogram">P</span>
             PortPulse
           </div>
-          <!-- HP-5: CSS border-left rule replaces text "|" character -->
-          <span class="brand-divider"></span>
-          <span class="brand-tagline">Shift operations / 72h plan</span>
         </div>
+        <div class="sidebar-sub">Shift operations / 72h plan</div>
+      </div>
+
+      <!-- Vertical Navigation Items -->
+      <nav class="sidebar-nav">
+        <button class="sidebar-nav-btn active" role="tab" aria-selected="true" data-tab="tab-dashboard" id="nav-btn-dashboard">
+          <!-- Gauge / Chart icon -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          <span>Dashboard</span>
+        </button>
+
+        <button class="sidebar-nav-btn" role="tab" aria-selected="false" data-tab="tab-assignments" id="nav-btn-assignments">
+          <!-- Berth / Dock icon -->
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="1" y="10" width="4" height="5" rx="1"/><rect x="6" y="7" width="4" height="8" rx="1"/><rect x="11" y="4" width="4" height="11" rx="1"/><path d="M1 10V4"/></svg>
+          <span>Berth Allocation</span>
+          <span class="sidebar-nav-badge" id="tab-badge-assignments">…</span>
+        </button>
+
+        <button class="sidebar-nav-btn" role="tab" aria-selected="false" data-tab="tab-reroute" id="nav-btn-reroute">
+          <!-- Route / Arrow icon -->
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3l-4 4 4 4"/><path d="M10 7H4a3 3 0 000 6h2"/><path d="M2 3h6l4-2"/></svg>
+          <span>Reallocation &amp; Routing</span>
+          <span class="sidebar-nav-badge" id="tab-badge-reroute">…</span>
+        </button>
+
+        <button class="sidebar-nav-btn" role="tab" aria-selected="false" data-tab="tab-vessel-map" id="nav-btn-vessel-map">
+          <!-- Compass / Map icon -->
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="7"/><path d="M8 1v14M1 8h14"/><path d="M3 4c1.5 1 3.5 1.5 5 0M3 12c1.5-1 3.5-1.5 5 0"/></svg>
+          <span>Vessel Map</span>
+          <span class="sidebar-nav-badge" id="tab-badge-vessel-map">Chart</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
         <div class="status-chip status-ready" id="data-status">
           <span class="status-dot"></span>
           <span id="status-text">READY</span>
         </div>
-      </div>
-
-      <!-- Hero title + meta -->
-      <h1 class="hero-title">Berth Operations Overview</h1>
-      <div class="hero-meta">
-        <span>Last updated <span id="hero-updated">—</span></span>
-        <span class="hero-meta-sep"></span>
-        <span>Forecast Horizon 72 Hours</span>
-      </div>
-
-      <!-- HP-1: Action buttons with inline SVG icons -->
-      <div class="controls">
-        <label class="btn" for="vessels-file" id="btn-upload-vessels">
-          <!-- anchor + up arrow: upload to port -->
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v9M5 4l3-3 3 3"/><path d="M3 13h10"/></svg>
-          Upload Vessels
-          <input type="file" id="vessels-file" accept=".csv" onchange="uploadCSV('vessels', this)">
-        </label>
-        <label class="btn" for="berths-file" id="btn-upload-berths">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v9M5 4l3-3 3 3"/><path d="M3 13h10"/></svg>
-          Upload Berths
-          <input type="file" id="berths-file" accept=".csv" onchange="uploadCSV('berths', this)">
-        </label>
-        <button class="btn" onclick="exportPlanCSV()" id="btn-export">
-          <!-- tray with down arrow -->
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v9M5 8l3 3 3-3"/><path d="M2 12v1a1 1 0 001 1h10a1 1 0 001-1v-1"/></svg>
-          Export Plan CSV
-        </button>
-        <button class="btn" onclick="downloadTemplate('vessels')" id="btn-tmpl-vessels" title="Download sample vessels CSV">
-          <!-- document icon -->
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V6z"/><path d="M9 2v4h4"/></svg>
-          Vessel Sample
-        </button>
-        <button class="btn" onclick="downloadTemplate('berths')" id="btn-tmpl-berths" title="Download sample berths CSV">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V6z"/><path d="M9 2v4h4"/></svg>
-          Berth Sample
-        </button>
-      </div>
-
-      <!-- Datasource indicator row -->
-      <div class="datasource-row" id="datasource-row">
-        <span class="datasource-chip" id="datasource-chip">
-          <span class="datasource-dot" id="datasource-dot"></span>
-          <span id="datasource-label">Default Data</span>
-        </span>
-      </div>
-
-      <!-- Warnings Banner -->
-      <div class="warnings-banner" id="warnings-banner">
-        <div class="warnings-title"><span>⚠</span> Data Warnings</div>
-        <ul class="warnings-list" id="warnings-list"></ul>
-      </div>
-
-      <!-- Shift Operations Summary -->
-      <div class="summary-card" id="summary-card">
-        <div class="summary-card-head">
-          <div class="summary-card-title"><span class="bullet"></span>Shift Operations Summary</div>
-          <span class="summary-tag" id="summary-tag">Domain AI</span>
+        <div class="sidebar-system-info">
+          <div>Last Updated: <span id="hero-updated">—</span></div>
+          <div style="margin-top:2px;">Horizon: 72 Hours</div>
         </div>
-        <div class="summary-text" id="summary-text">Loading operations summary…</div>
       </div>
+    </aside>
 
-      <!-- Action Required Banner -->
-      <div class="action-required" id="action-required">
-        <div class="ar-title"><span class="ar-title-dot"></span>Action Required</div>
-        <ul class="ar-list" id="action-list"></ul>
-      </div>
+    <!-- Main Content Area -->
+    <main class="main-content">
 
-      <!-- 72h Congestion Risk Forecast Section -->
-      <section class="section" id="section-forecast">
-        <div class="section-head">
-          <div class="section-title"><span class="bullet"></span>72-Hour Congestion Risk Forecast</div>
-          <span class="section-count" id="forecast-count">3 windows</span>
+      <!-- ── TAB 1: DASHBOARD ── -->
+      <div class="app-tab-panel active" id="tab-dashboard" role="tabpanel">
+        <div class="page-header">
+          <h1 class="page-title">Berth Operations Overview</h1>
+          <p class="page-sub">Shift Operations Overview · 72h Forecast &amp; Data Control</p>
         </div>
-        <p class="section-sub">Rolling 24-hour TEU volume vs capacity <span class="section-sub-dot">·</span> ALSC risk level classification</p>
-        <div class="forecast-cards" id="forecast-cards"></div>
-      </section>
 
-    <!-- ── Tabbed Operations Panel (Sections 2, 2.5, 3) ── -->
-    <div class="ops-tabs" role="tablist" id="ops-tabs">
-      <button class="ops-tab-btn active" role="tab" aria-selected="true"
-              data-tab="tab-assignments" id="tab-btn-assignments">
-        <!-- berth/dock icon -->
-        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="1" y="10" width="4" height="5" rx="1"/><rect x="6" y="7" width="4" height="8" rx="1"/><rect x="11" y="4" width="4" height="11" rx="1"/><path d="M1 10V4"/></svg>
-        Berth Assignments
-        <span class="ops-tab-badge" id="tab-badge-assignments">…</span>
-      </button>
-      <button class="ops-tab-btn" role="tab" aria-selected="false"
-              data-tab="tab-vessel-map" id="tab-btn-vessel-map">
-        <!-- nautical chart icon -->
-        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="7"/><path d="M8 1v14M1 8h14"/><path d="M3 4c1.5 1 3.5 1.5 5 0M3 12c1.5-1 3.5-1.5 5 0"/></svg>
-        Vessel Map
-        <span class="ops-tab-badge" id="tab-badge-vessel-map">Chart</span>
-      </button>
-      <button class="ops-tab-btn" role="tab" aria-selected="false"
-              data-tab="tab-reroute" id="tab-btn-reroute">
-        <!-- reroute/redirect icon -->
-        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3l-4 4 4 4"/><path d="M10 7H4a3 3 0 000 6h2"/><path d="M2 3h6l4-2"/></svg>
-        Reroute Suggestions
-        <span class="ops-tab-badge" id="tab-badge-reroute">…</span>
-      </button>
-    </div>
+        <!-- Top Upload & Export Control Panel -->
+        <div class="controls" style="margin-bottom:12px;">
+          <label class="btn" for="vessels-file" id="btn-upload-vessels">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v9M5 4l3-3 3 3"/><path d="M3 13h10"/></svg>
+            Upload Vessels
+            <input type="file" id="vessels-file" accept=".csv" onchange="uploadCSV('vessels', this)">
+          </label>
+          <label class="btn" for="berths-file" id="btn-upload-berths">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v9M5 4l3-3 3 3"/><path d="M3 13h10"/></svg>
+            Upload Berths
+            <input type="file" id="berths-file" accept=".csv" onchange="uploadCSV('berths', this)">
+          </label>
+          <button class="btn" onclick="exportPlanCSV()" id="btn-export">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v9M5 8l3 3 3-3"/><path d="M2 12v1a1 1 0 001 1h10a1 1 0 001-1v-1"/></svg>
+            Export Plan CSV
+          </button>
+          <button class="btn" onclick="downloadTemplate('vessels')" id="btn-tmpl-vessels" title="Download sample vessels CSV">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V6z"/><path d="M9 2v4h4"/></svg>
+            Vessel Sample
+          </button>
+          <button class="btn" onclick="downloadTemplate('berths')" id="btn-tmpl-berths" title="Download sample berths CSV">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V6z"/><path d="M9 2v4h4"/></svg>
+            Berth Sample
+          </button>
+        </div>
 
-    <!-- Tab Panel: Berth Assignments -->
-    <div class="ops-tab-panel active" id="tab-assignments" role="tabpanel">
-      <section class="section" id="section-assignments">
-        <div class="section-head">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <div class="section-title"><span class="bullet"></span>Berth Assignment Plan</div>
-            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-muted); display:flex; align-items:center; gap:6px;">
-              <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#8b6914;"></span> P1
-              <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#c8b99a;margin-left:4px;"></span> P2
-            </span>
+        <!-- Datasource indicator row -->
+        <div class="datasource-row" id="datasource-row" style="margin-bottom:24px;">
+          <span class="datasource-chip" id="datasource-chip">
+            <span class="datasource-dot" id="datasource-dot"></span>
+            <span id="datasource-label">Default Data</span>
+          </span>
+        </div>
+
+        <!-- Shift Operations Summary Card -->
+        <div class="summary-card" id="summary-card">
+          <div class="summary-card-head">
+            <div class="summary-card-title"><span class="bullet"></span>Shift Operations Summary</div>
+            <span class="summary-tag" id="summary-tag">Domain AI</span>
           </div>
-          <div style="display:flex; align-items:center; gap:10px;">
-            <input type="text" id="search-assignment" placeholder="Filter vessel or berth…" oninput="filterAssignments()" style="background:var(--card-bg); border:1px solid var(--card-border); color:var(--text-primary); padding:5px 10px; border-radius:4px; font-family:'IBM Plex Mono',monospace; font-size:11px; outline:none;">
-            <span class="section-count" id="assignment-count"></span>
-          </div>
+          <div class="summary-text" id="summary-text">Loading operations summary…</div>
         </div>
-        <p class="section-sub">72-hour optimised berth schedule <span class="section-sub-dot">·</span> priority 1 cargo highlighted with brass chart badges</p>
-        <div class="table-card">
-          <div class="table-scroll">
-            <table id="assignment-table">
-              <thead>
-                <tr>
-                  <th>Vessel Name</th>
-                  <th>Berth<br>ID</th>
-                  <th>Cranes</th>
-                  <th>Arrival</th>
-                  <th>Berth<br>Start</th>
-                  <th>Est.<br>Departure</th>
-                  <th>Wait</th>
-                  <th>Priority</th>
-                  <th>Reason</th>
-                </tr>
-              </thead>
-              <tbody id="assignment-tbody"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    </div>
 
-    <!-- Tab Panel: Vessel Map -->
-    <div class="ops-tab-panel" id="tab-vessel-map" role="tabpanel">
-      <section class="section" id="section-vessel-map">
-        <div class="section-head">
-          <div class="section-title"><span class="bullet"></span>Vessel Map &amp; Reroute Corridors</div>
-          <span class="section-count" id="map-vessel-count">Schematic View</span>
+        <!-- Action Required Banner -->
+        <div class="action-required" id="action-required">
+          <div class="ar-title"><span class="ar-title-dot"></span>Action Required</div>
+          <ul class="ar-list" id="action-list"></ul>
         </div>
-        <p class="section-sub">Illustrative nautical chart · hover over any vessel or port node for details · not GPS-accurate</p>
-        <div class="vessel-map-card">
-          <div class="vessel-map-header">
-            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--accent-navy);">
-              ⚓ Live Port Schematic &amp; Reroute Corridors
+
+        <!-- Warnings Banner -->
+        <div class="warnings-banner" id="warnings-banner">
+          <div class="warnings-title"><span>⚠</span> Data Warnings</div>
+          <ul class="warnings-list" id="warnings-list"></ul>
+        </div>
+
+        <!-- 72h Congestion Risk Forecast Section -->
+        <section class="section" id="section-forecast">
+          <div class="section-head">
+            <div class="section-title"><span class="bullet"></span>72-Hour Congestion Risk Forecast</div>
+            <span class="section-count" id="forecast-count">3 windows</span>
+          </div>
+          <p class="section-sub">Rolling 24-hour TEU volume vs capacity <span class="section-sub-dot">·</span> ALSC risk level classification</p>
+          <div class="forecast-cards" id="forecast-cards"></div>
+        </section>
+      </div>
+
+      <!-- ── TAB 2: BERTH ALLOCATION ── -->
+      <div class="app-tab-panel" id="tab-assignments" role="tabpanel">
+        <div class="page-header">
+          <h1 class="page-title">Berth Allocation</h1>
+          <p class="page-sub">72-hour optimised berth schedule · priority 1 cargo highlighted with brass chart badges</p>
+        </div>
+        <section class="section" id="section-assignments">
+          <div class="section-head">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="section-title"><span class="bullet"></span>Berth Assignment Plan</div>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-muted); display:flex; align-items:center; gap:6px;">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#8b6914;"></span> P1
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#c8b99a;margin-left:4px;"></span> P2
+              </span>
             </div>
-            <div class="vessel-map-legend">
-              <span class="legend-item"><span class="legend-dot" style="background:#d4af37;"></span> P1 Priority</span>
-              <span class="legend-item"><span class="legend-dot" style="background:#4a90e2;"></span> P2 Standard</span>
-              <span class="legend-item"><span class="legend-dot" style="background:#e67e22;"></span> P3 Flexible</span>
-              <span class="legend-item"><span style="display:inline-block; width:16px; height:0; border-top:2px dotted #e74c3c; margin-right:4px;"></span> Rerouted</span>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <input type="text" id="search-assignment" placeholder="Filter vessel or berth…" oninput="filterAssignments()" style="background:var(--card-bg); border:1px solid var(--card-border); color:var(--text-primary); padding:5px 10px; border-radius:4px; font-family:'IBM Plex Mono',monospace; font-size:11px; outline:none;">
+              <span class="section-count" id="assignment-count"></span>
             </div>
           </div>
-          <div class="vessel-map-svg-container" id="vessel-map-container">
-            <div class="map-tooltip" id="map-tooltip"></div>
-            <svg id="vessel-map-svg" width="100%" height="100%" viewBox="0 0 1000 540" preserveAspectRatio="xMidYMid meet">
-              <!-- Nautical chart rendered by renderVesselMap() -->
-            </svg>
+          <div class="table-card">
+            <div class="table-scroll">
+              <table id="assignment-table">
+                <thead>
+                  <tr>
+                    <th>Vessel Name</th>
+                    <th>Berth<br>ID</th>
+                    <th>Cranes</th>
+                    <th>Arrival</th>
+                    <th>Berth<br>Start</th>
+                    <th>Est.<br>Departure</th>
+                    <th>Wait</th>
+                    <th>Priority</th>
+                    <th>Reason</th>
+                  </tr>
+                </thead>
+                <tbody id="assignment-tbody"></tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
 
-    <!-- Tab Panel: Reroute Suggestions -->
-    <div class="ops-tab-panel" id="tab-reroute" role="tabpanel">
-      <section class="section" id="section-reroute">
-        <div class="section-head">
-          <div class="section-title"><span class="bullet"></span>Reroute Suggestions</div>
-          <div style="display:flex; align-items:center; gap:10px;">
-            <span class="section-count" id="reroute-count"></span>
-            <input type="text" id="search-reroute" placeholder="Search reroutes…" oninput="filterReroutes()" style="background:var(--card-bg); border:1px solid var(--card-border); color:var(--text-primary); padding:5px 10px; border-radius:4px; font-family:'IBM Plex Mono',monospace; font-size:11px; outline:none;">
-          </div>
+      <!-- ── TAB 3: REALLOCATION & ROUTING ── -->
+      <div class="app-tab-panel" id="tab-reroute" role="tabpanel">
+        <div class="page-header">
+          <h1 class="page-title">Reallocation &amp; Routing</h1>
+          <p class="page-sub">Vessels without a feasible berth in the 72-hour plan · alternatives ranked by distance and fit</p>
         </div>
-        <p class="section-sub">Vessels without a feasible berth in the 72-hour plan <span class="section-sub-dot">·</span> alternatives ranked by distance and fit</p>
-        <div class="reroute-grid" id="reroute-list"></div>
-      </section>
-    </div>
+        <section class="section" id="section-reroute">
+          <div class="section-head">
+            <div class="section-title"><span class="bullet"></span>Reroute Suggestions</div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span class="section-count" id="reroute-count"></span>
+              <input type="text" id="search-reroute" placeholder="Search reroutes…" oninput="filterReroutes()" style="background:var(--card-bg); border:1px solid var(--card-border); color:var(--text-primary); padding:5px 10px; border-radius:4px; font-family:'IBM Plex Mono',monospace; font-size:11px; outline:none;">
+            </div>
+          </div>
+          <div class="reroute-grid" id="reroute-list"></div>
+        </section>
+      </div>
+
+      <!-- ── TAB 4: VESSEL MAP ── -->
+      <div class="app-tab-panel" id="tab-vessel-map" role="tabpanel">
+        <div class="page-header">
+          <h1 class="page-title">Vessel Map &amp; Reroute Corridors</h1>
+          <p class="page-sub">Illustrative nautical chart · hover over any vessel or port node for details · not GPS-accurate</p>
+        </div>
+        <section class="section" id="section-vessel-map">
+          <div class="section-head">
+            <div class="section-title"><span class="bullet"></span>Live Schematic View</div>
+            <span class="section-count" id="map-vessel-count">Schematic View</span>
+          </div>
+          <div class="vessel-map-card">
+            <div class="vessel-map-header">
+              <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--accent-navy);">
+                ⚓ Live Port Schematic &amp; Reroute Corridors
+              </div>
+              <div class="vessel-map-legend">
+                <span class="legend-item"><span class="legend-dot" style="background:#d4af37;"></span> P1 Priority</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#4a90e2;"></span> P2 Standard</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#e67e22;"></span> P3 Flexible</span>
+                <span class="legend-item"><span style="display:inline-block; width:16px; height:0; border-top:2px dotted #e74c3c; margin-right:4px;"></span> Rerouted</span>
+              </div>
+            </div>
+            <div class="vessel-map-svg-container" id="vessel-map-container">
+              <div class="map-tooltip" id="map-tooltip"></div>
+              <svg id="vessel-map-svg" width="100%" height="100%" viewBox="0 0 1000 540" preserveAspectRatio="xMidYMid meet">
+                <!-- Nautical chart rendered by renderVesselMap() -->
+              </svg>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </main>
+  </div>
 
 
 
@@ -2617,13 +2839,13 @@ function resetDefaultData() {
   loadDefaultPlan();
 }
 
-// ── Tab Navigation ─────────────────────────────────────────────────────────
+// ── Side-Panel Navigation Switcher ──────────────────────────────────────────
 (function () {
-  const tabBtns = document.querySelectorAll('.ops-tab-btn');
+  const tabBtns = document.querySelectorAll('.sidebar-nav-btn');
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       tabBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
-      document.querySelectorAll('.ops-tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.app-tab-panel').forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
       btn.setAttribute('aria-selected', 'true');
       const target = btn.getAttribute('data-tab');

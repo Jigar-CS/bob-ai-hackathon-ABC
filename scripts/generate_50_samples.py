@@ -51,6 +51,7 @@ def generate_datasets() -> None:
         priority = random.choice([1, 1, 2, 2, 2, 3, 3])  # Weight prio 1 and 2
         vessels_lines.append(f"{vid},{name},{eta_str},{size_teu},{cargo},{priority}")
 
+    vessels_csv = "\n".join(vessels_lines) + "\n"
     out_dir = Path(__file__).parent.parent / "tests" / "fixtures"
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "test_vessels_50.csv").write_text(vessels_csv, encoding="utf-8")
