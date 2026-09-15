@@ -114,11 +114,11 @@ jobs:
             sleep 1
           done
 
-          curl -sf http://127.0.0.1:8000/health | grep -q '"status":"healthy"'
-          curl -sf http://127.0.0.1:8000/api/v1/plan | grep -q 'berth_assignments'
-          curl -sf http://127.0.0.1:8000/api/v1/plan/export.csv | head -1 | grep -q 'vessel_id'
-          curl -sf http://127.0.0.1:8000/api/v1/templates/vessels | grep -q 'vessel_id'
-          curl -sf http://127.0.0.1:8000/ | grep -q 'PortPulse'
+          curl -sf http://127.0.0.1:8000/health | grep '"status":"healthy"' > /dev/null
+          curl -sf http://127.0.0.1:8000/api/v1/plan | grep 'berth_assignments' > /dev/null
+          curl -sf http://127.0.0.1:8000/api/v1/plan/export.csv | grep 'vessel_id' > /dev/null
+          curl -sf http://127.0.0.1:8000/api/v1/templates/vessels | grep 'vessel_id' > /dev/null
+          curl -sf http://127.0.0.1:8000/ | grep 'PortPulse' > /dev/null
           echo "Smoke test passed"
 
       - name: Server log
@@ -153,7 +153,7 @@ jobs:
             if curl -sf http://127.0.0.1:8000/health > /dev/null; then break; fi
             sleep 1
           done
-          curl -sf http://127.0.0.1:8000/health | grep -q '"status":"healthy"'
+          curl -sf http://127.0.0.1:8000/health | grep '"status":"healthy"' > /dev/null
           echo "Container responded successfully"
 
       - name: Container logs
