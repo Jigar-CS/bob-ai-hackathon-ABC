@@ -1,26 +1,24 @@
 # Screenshots
 
-Place your application screenshots in this folder.
+Screenshots captured from the running PortPulse dashboard using the bundled
+sample vessel and berth datasets.
 
 ## Naming Convention
 
 Name your screenshots sequentially so they appear in logical order:
 
-  01-landing-page.png       ← First thing a user sees
-  02-main-feature.png       ← Your primary feature in action
-  03-output-or-results.png  ← The result / value delivered
-  04-additional-feature.png ← Any other notable screen
+  01-dashboard-overview.png       ← Operations overview and KPIs
+  02-whatif-cascade-simulation.png ← Scenario controls and congestion risk
+  03-berth-capacity.png           ← Berth capacity and utilization
+  04-berth-assignment-plan.png    ← Vessel assignment schedule
+  05-reallocation-routing.png    ← Unassigned vessels and alternate ports
+  06-vessel-map.png               ← Live schematic and reroute corridors
 
-## Requirements
+## Captured Screenshots
 
-- Minimum: 3 screenshots
-- Format: PNG or JPG
-- Show the application running with real (or realistic mock) data
-- Avoid screenshots of empty states or placeholder data
-- Captions are not required but appreciated
-
-## Tips
-
-- Use a consistent browser window size across all screenshots
-- Highlight key UI elements with arrows/circles if helpful (use any image editor)
-- Include a screenshot showing IBM technology integration if applicable
+1. [Dashboard overview](01-dashboard-overview.png) — 72-hour plan summary, KPIs, and priority roster.
+2. [What-If and cascade simulation](02-whatif-cascade-simulation.png) — scenario controls, action alerts, and congestion forecast.
+3. [Berth capacity](03-berth-capacity.png) — capacity utilization and optimization summary.
+4. [Berth assignment plan](04-berth-assignment-plan.png) — vessel schedule, berth starts, waits, priorities, and decision reasons.
+5. [Reallocation and routing](05-reallocation-routing.png) — unassigned vessels and ranked alternate ports.
+6. [Vessel map](06-vessel-map.png) — schematic terminal layout, berth nodes, vessels, and reroute corridors.

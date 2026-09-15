@@ -16,8 +16,8 @@ Read endpoints are public. Write endpoints require an `X-API-Key` header **when*
 | `POST /api/v1/plan/custom` | ✓ |
 | `POST /api/v1/uploads/{dataset}` | ✓ |
 | `POST /api/v1/chat` | ✓ |
-| `POST /api/v1/plan/whatif` | — |
-| `POST /api/v1/cascade-simulation` | — |
+| `POST /api/v1/plan/whatif` | ✓ |
+| `POST /api/v1/cascade-simulation` | ✓ |
 | All `GET` endpoints | — |
 | `POST /api/v1/summary` | — |
 
@@ -123,7 +123,28 @@ Generates the complete 72-hour operations plan, high-level KPIs, and Top 5 berth
     }
   ],
   "unassigned_count": 1,
-  "reroute_suggestions": [ ... ],
+  "reroute_suggestions": [
+    {
+      "vessel_id": "V009",
+      "vessel_name": "MV Horizon-9",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Ensenada",
+          "distance_km": 240,
+          "spare_capacity_teu": 4000,
+          "reason": "4,000 TEU spare capacity, 240km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 9000,
+          "reason": "9,000 TEU spare capacity, 620km away"
+        }
+      ]
+    }
+  ],
   "warnings": []
 }
 ```
@@ -215,7 +236,24 @@ Answers supervisor operational questions grounded in live 72-hour plan data. Enf
 ```json
 {
   "message": "Which vessel is assigned to B3, and when does it depart?",
-  "plan": { ... },
+  "plan": {
+    "generated_at": "2026-09-15T08:00:00+00:00",
+    "freshness_status": "FRESH",
+    "data_age_seconds": 0,
+    "source_name": "TOS",
+    "kpis": {
+      "avg_wait_hours": 2.15,
+      "berth_utilization_pct": 42.8,
+      "vessels_at_risk": 1,
+      "estimated_emissions_saved_kg": 48002.5
+    },
+    "congestion_forecast": [],
+    "berth_assignments": [],
+    "unassigned_count": 0,
+    "reroute_suggestions": [],
+    "swap_opportunities": [],
+    "warnings": []
+  },
   "history": [
     { "role": "user", "content": "What is the congestion level today?" },
     { "role": "assistant", "content": "Day 1 is at HIGH risk..." }
