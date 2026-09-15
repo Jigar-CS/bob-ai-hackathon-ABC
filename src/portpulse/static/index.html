@@ -3431,12 +3431,24 @@ function renderVesselMap(plan) {
     $countEl.textContent = `${assignments.length} Berthed · ${reroutes.length} Rerouted`;
   }
 
-  // 1. Group assigned vessels by berth_id
-  const berthVesselMap = { B1: [], B2: [], B3: [], B4: [], B5: [], B6: [] };
+  // 1. Group assigned vessels by berth_id and collect all unique berth IDs present
+  const berthVesselMap = {};
+  const berthSet = new Set();
+
   assignments.forEach(a => {
     const bId = a.berth_id;
-    if (berthVesselMap[bId]) berthVesselMap[bId].push(a);
-    else berthVesselMap[bId] = [a];
+    if (!bId) return;
+    berthSet.add(bId);
+    if (!berthVesselMap[bId]) berthVesselMap[bId] = [];
+    berthVesselMap[bId].push(a);
+  });
+
+  let allBerthIds = Array.from(berthSet);
+  if (allBerthIds.length === 0) {
+    allBerthIds = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6'];
+  }
+  allBerthIds.forEach(bId => {
+    if (!berthVesselMap[bId]) berthVesselMap[bId] = [];
   });
 
   // 2. Alternate Ports grouping
@@ -3472,8 +3484,10 @@ function renderVesselMap(plan) {
   const homeTerminalX = 220;
   const homeTerminalY = 270;
 
-  // Berths arranged in a neat arc around the home terminal
-  const berthPositions = {
+  // Dynamically calculate berth positions for any set of berth IDs
+  const berthPositions = {};
+  const totalBerths = allBerthIds.length;
+  const defaultPresets = {
     'B1': { x: 100, y: 90  },
     'B2': { x: 80,  y: 270 },
     'B3': { x: 100, y: 450 },
@@ -3481,6 +3495,28 @@ function renderVesselMap(plan) {
     'B5': { x: 370, y: 270 },
     'B6': { x: 350, y: 450 }
   };
+
+  const isStandardB1ToB6 = totalBerths === 6 && allBerthIds.every(id => defaultPresets[id]);
+
+  if (isStandardB1ToB6) {
+    Object.assign(berthPositions, defaultPresets);
+  } else {
+    const half = Math.ceil(totalBerths / 2);
+    allBerthIds.forEach((bId, idx) => {
+      const isLeft = idx < half;
+      const colIdx = isLeft ? idx : (idx - half);
+      const colTotal = isLeft ? half : (totalBerths - half);
+
+      const x = isLeft ? (colIdx % 2 === 1 ? 80 : 100) : (colIdx % 2 === 1 ? 370 : 350);
+      const topY = 90;
+      const bottomY = 450;
+      const stepY = colTotal > 1 ? (bottomY - topY) / (colTotal - 1) : 0;
+      const y = colTotal > 1 ? Math.round(topY + colIdx * stepY) : 270;
+
+      berthPositions[bId] = { x, y };
+    });
+  }
+
 
   let svgContent = '';
 
@@ -3596,8 +3632,11 @@ function renderVesselMap(plan) {
     type: 'terminal',
     totalVessels: assignments.length + reroutes.length,
     berthedCount: assignments.length,
-    unassignedCount: reroutes.length
+    unassignedCount: reroutes.length,
+    berthCount: totalBerths,
+    berthsSummary: allBerthIds.slice(0, 4).join(', ') + (totalBerths > 4 ? '…' : '')
   });
+
 
   svgContent += `
     <g class="map-node-interactive" transform="translate(${homeTerminalX}, ${homeTerminalY})" data-info="${escapeHtml(homeData)}">
@@ -3767,9 +3806,10 @@ function renderVesselMap(plan) {
             <div class="map-tooltip-row"><strong>Total Incoming Vessels:</strong> ${info.totalVessels}</div>
             <div class="map-tooltip-row"><strong>Berthed at Terminal:</strong> ${info.berthedCount}</div>
             <div class="map-tooltip-row"><strong>Rerouted Offshore:</strong> ${info.unassignedCount}</div>
-            <div class="map-tooltip-row" style="margin-top:4px; color:#c8b99a;">6 Active Dock Slips (B1–B6)</div>
+            <div class="map-tooltip-row" style="margin-top:4px; color:#c8b99a;">${info.berthCount || 6} Active Dock Slips (${info.berthsSummary || 'B1–B6'})</div>
           `;
         }
+
 
         $tooltip.innerHTML = html;
         $tooltip.classList.add('visible');
