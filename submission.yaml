@@ -9,21 +9,21 @@
 # =============================================================================
 
 team:
-  name: "ABC"                          # REQUIRED
+  name: "Team Surfers"                          # REQUIRED
   # REQUIRED — must be exactly one of: AI | DevOps | Sustainability | Open
   track: "AI"
   # Free-text detail about the problem statement this entry targets.
   category: "Logistics & Ports — L1 Container Congestion Predictor & Port Operations Optimiser"
   lead:
     name: "Hetvi Taank"                # REQUIRED
-    email: "hetvi.taank@ibm.com"
+    email: "hetvitaank07@gmail.com"
   members:
     - name: "Trusha Patel"            # REQUIRED
-      email: "trusha.patel@ibm.com"
+      email: "trushapatel2905@gmail.com"
     - name: "Jigar Sakhia"
-      email: "jigar.sakhia@ibm.com"
+      email: "jigarsakhia2020@gmail.com"
     - name: "Priyansh Sukhdia"
-      email: "priyansh.sukhdia@ibm.com"
+      email: "24cs096@charusat.edu.in"
 
 submission:
   title: "PortPulse - Container Congestion Predictor & Port Operations Optimiser" # REQUIRED
