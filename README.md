@@ -1,14 +1,16 @@
 # PortPulse — Container Congestion Predictor & Port Operations Optimiser
 
-[![CI](https://github.com/Jigar-CS/bob-ai-hackathon-ABC/actions/workflows/ci.yml/badge.svg)](https://github.com/Jigar-CS/bob-ai-hackathon-ABC/actions/workflows/ci.yml)
+[![CI](https://github.com/Jigar-CS/bob-ai-hackathon-Team-Surfers/actions/workflows/ci.yml/badge.svg)](https://github.com/Jigar-CS/bob-ai-hackathon-Team-Surfers/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+---
 
 ## 👥 Team
 
 | Field | Value |
 |---|---|
-| **Team Name** | ABC |
+| **Team Name** | Team Surfers (ABC) |
 | **Track** | AI |
 | **Category** | Logistics & Ports — L1 Container Congestion Predictor & Port Operations Optimiser |
 | **Team Lead** | Hetvi Tank — `hetvitaank07@gmail.com` |
@@ -26,7 +28,20 @@ The 2021 LA/Long Beach port backlog had 100+ ships waiting offshore for weeks, c
 
 **PortPulse** is an AI-assisted port operations solution that predicts congestion hotspots using vessel arrival schedules and berth capacity data, recommends alternate routing strategies via IBM watsonx.ai reasoning, optimizes berth and crane assignments by priority, and generates a ready-to-use 72-hour port operations plan for shift supervisors.
 
-It combines a domain-driven Python planning engine with **IBM watsonx.ai** (`ibm/granite-3-8b-instruct`), an interactive Ops Assistant chat widget (`/api/v1/chat`), and a professional side-panel admin dashboard featuring an interactive SVG live nautical chart.
+It combines a domain-driven Python planning engine with **IBM watsonx.ai** (`ibm/granite-3-8b-instruct`), an interactive Ops Assistant chat widget (`/api/v1/chat`), predictive What-If & Cascading Impact simulators, and a professional side-panel admin dashboard featuring an interactive SVG live nautical chart.
+
+---
+
+## 🖼️ System & Feature Flowcharts
+
+### 1. Technology Stack Flowchart
+![Tech Stack Flowchart](docs/images/tech_stack_flowchart.svg)
+
+### 2. Website & Dashboard Feature Map Flowchart
+![Website Feature Map](docs/images/website_feature_flowchart.svg)
+
+### 3. Cascading Impact Simulation Workflow
+![Cascading Simulation Workflow](docs/images/cascading_simulation_workflow.svg)
 
 ---
 
@@ -34,8 +49,12 @@ It combines a domain-driven Python planning engine with **IBM watsonx.ai** (`ibm
 
 - **72-Hour Congestion Risk Forecasting**: Buckets incoming arrivals into rolling 24-hour windows from earliest ETA, comparing incoming TEU against total berth capacity to classify windows as LOW, MEDIUM, or HIGH risk (ALSC risk model).
 - **Priority-Based Automated Berth & Crane Allocation**: Sorts vessels by cargo priority (P1/P2/P3), allocating berths and cranes to minimize queue wait time while recording a deterministic, auditable single-line reason for every placement.
-- **AI-Generated Alternate Port Routing (IBM watsonx.ai)**: Ranks regional candidate ports (Oakland, Tacoma, Ensenada) by distance and draft fit for unassigned vessels, leveraging IBM watsonx.ai (`ibm/granite-3-8b-instruct`) to generate plain-language reroute justifications for ship captains.
-- **Conversational Ops Assistant (`/api/v1/chat`)**: Slide-out chat assistant grounded directly in live 72-hour plan data, featuring pre-LLM scope gating (filtering off-topic questions) and strict system-prompt security guardrails against prompt injection.
+- **KPI Tracking Strip**: Real-time summary strip at the top of the dashboard tracking `Average Queue Wait`, `Berth Capacity Utilization %`, `Vessels at Risk`, and `Estimated Emissions Saved (kg CO2)`.
+- **Top 5 Optimization Techniques (Berth Swap Optimizer)**: Evaluates pairwise berth swaps to prioritize high-priority cargo and reduce queue wait times, displaying the top 5 high-impact suggestions with exact demurrage cost savings.
+- **What-If Scenario Simulator (`POST /api/v1/plan/whatif`)**: Sandboxed scenario comparison for vessel arrival delays or berth outages with side-by-side diff reporting.
+- **Cascading Impact Simulator (`POST /api/v1/cascade-simulation`)**: Traces multi-pass queue ripple effects across vessel schedules with a waterfall timeline and financial demurrage cost analysis.
+- **AI-Generated Alternate Port Routing (IBM watsonx.ai)**: Ranks regional candidate ports (Oakland, Tacoma, Ensenada) by distance and draft fit for unassigned vessels, leveraging IBM watsonx.ai (`ibm/granite-3-8b-instruct`) to generate plain-language reroute justifications.
+- **Conversational Ops Assistant (`/api/v1/chat`)**: Slide-out chat assistant grounded directly in live 72-hour plan data, featuring pre-LLM scope gating and strict system-prompt security guardrails against prompt injection.
 - **Side-Panel Admin Dashboard & Live Nautical Map**: Professional ops tool UI featuring tabbed navigation (Dashboard, Berth Allocation, Reallocation & Routing, Vessel Map), top-mounted CSV upload/export controls, and interactive SVG schematic vessel map with hover tooltips.
 - **Resilient Fallback Architecture**: Isolated engine execution ensures watsonx.ai API failures or missing keys degrade gracefully to structured template text without ever failing plan generation or returning HTTP 500 errors.
 
@@ -49,7 +68,7 @@ It combines a domain-driven Python planning engine with **IBM watsonx.ai** (`ibm
 | **Frameworks** | FastAPI, Pydantic v2 |
 | **IBM Technologies** | IBM watsonx.ai (`ibm/granite-3-8b-instruct`), IBM Bob |
 | **Databases / Storage** | File-based CSV Datasets (`vessels.csv` & `berths.csv`) |
-| **DevOps & Tooling** | Uvicorn, Docker, GitHub Actions CI/CD, Pytest (168 tests), Ruff, Mypy |
+| **DevOps & Tooling** | Uvicorn, Docker, GitHub Actions CI/CD, Pytest (180 tests), Ruff, Mypy |
 
 ---
 
@@ -60,22 +79,23 @@ It combines a domain-driven Python planning engine with **IBM watsonx.ai** (`ibm
 │   └── portpulse/            # PortPulse core package
 │       ├── api/              # FastAPI endpoints (plan, datasets, health, security)
 │       ├── data/             # Bundled CSV datasets (vessels.csv, berths.csv)
-│       ├── domain/           # Framework-free core logic (planner, prediction, assignment, routing, chat, summary)
+│       ├── domain/           # Framework-free core logic (planner, prediction, assignment, swap_optimizer, kpi_calculator, whatif_simulator, cascade_simulator, routing, chat, summary)
 │       ├── integrations/     # IBM watsonx.ai REST client (IAM auth, retries, circuit breaker)
 │       └── static/           # Operations dashboard single-file frontend (index.html)
 ├── docs/                     # Comprehensive written documentation
 │   ├── problem-statement.md  # Detailed domain problem analysis
 │   ├── solution-overview.md  # End-to-end system architectural overview
-│   ├── architecture.md       # Layered design, data flow & security posture
+│   ├── architecture.md       # Layered design, Mermaid diagrams, data flow & security posture
 │   ├── api.md                # Full OpenAPI specification & error taxonomy
-│   └── setup-guide.md        # Local, Docker, and environment setup guide
+│   ├── setup-guide.md        # Local, Docker, and environment setup guide
+│   └── images/               # Flowcharts and architecture diagrams (SVG format)
 ├── demo/                     # Hackathon demo artifacts
 │   ├── screenshots/          # High-resolution application screenshots
 │   ├── demo-video-link.txt   # Link to demo video recording
 │   └── live-demo-url.txt     # Link to live deployed application
 ├── presentation/             # Slide deck and presentation materials
 ├── scripts/                  # Utility scripts (e.g., generate_50_samples.py)
-├── tests/                    # Pytest test suite (168 tests, >93% coverage)
+├── tests/                    # Pytest test suite (180 tests, 100% pass rate)
 ├── requirements.txt          # Python runtime dependencies
 ├── pyproject.toml            # Tooling configuration (Ruff, Mypy, Pytest, Coverage)
 ├── Dockerfile                # Multi-stage container build spec
@@ -88,8 +108,8 @@ It combines a domain-driven Python planning engine with **IBM watsonx.ai** (`ibm
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/Jigar-CS/bob-ai-hackathon-ABC.git
-cd bob-ai-hackathon-ABC
+git clone https://github.com/Jigar-CS/bob-ai-hackathon-Team-Surfers.git
+cd bob-ai-hackathon-Team-Surfers
 
 # 2. Create and activate a virtual environment (Python 3.10+ recommended)
 python -m venv .venv
@@ -110,7 +130,7 @@ python -m portpulse
 # Web Dashboard:        http://127.0.0.1:8000
 # Interactive API Docs: http://127.0.0.1:8000/api/docs
 
-# 7. Run automated verification test suite (168 tests)
+# 7. Run automated verification test suite (180 tests)
 pytest tests/
 ```
 
@@ -139,4 +159,4 @@ pytest tests/
 
 - **Honest, Evidence-Grounded AI**: We applied AI reasoning via IBM watsonx.ai (`ibm/granite-3-8b-instruct`) specifically where human language adds genuine value — explaining complex rerouting trade-offs and answering shift supervisors' operational queries in plain English — rather than as a decorative wrapper over numeric data.
 - **Zero-Downtime Fallback Design**: Isolated engine execution ensures that watsonx.ai rate limits, missing keys, or network failures instantly degrade to clean, structured template text without ever breaking the 72-hour ops plan or returning HTTP 500 errors.
-- **Clean Architecture & 100% Test Pass Rate**: Built a framework-free domain layer with 168 unit and API integration tests (>93% coverage), strict security posture (HMAC API key auth, streaming upload limits, CSP headers, rate limiting), and a responsive admin dashboard featuring interactive SVG nautical chart visualisations.
+- **Clean Architecture & 100% Test Pass Rate**: Built a framework-free domain layer with 180 unit and API integration tests, strict security posture (HMAC API key auth, streaming upload limits, CSP headers, rate limiting), and a responsive admin dashboard featuring interactive SVG nautical chart visualisations.

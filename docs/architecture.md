@@ -1,138 +1,165 @@
-# Architecture
+# PortPulse — System Architecture & Design Specification
 
-## Layers
+## Overview
+
+PortPulse is built on a clean, layered architecture with strict inward dependency rules. The domain layer contains zero web framework code and can execute in complete isolation. The API layer (FastAPI) handles request routing, validation, security headers, rate limiting, and HTTP error mapping.
+
+---
+
+## 🏗️ System Layer Architecture (Mermaid)
 
 ```mermaid
 graph TD
-    Browser["Browser<br/>dashboard (static/index.html)"]
-
-    subgraph API["API layer — portpulse/api"]
-        Health["health.py<br/>GET /health"]
-        PlanRoutes["plan.py<br/>/plan, /plan/custom, /export.csv<br/>/summary, /chat"]
-        DataRoutes["datasets.py<br/>/uploads, /templates"]
+    User["Shift Operations Supervisor / User"]
+    
+    subgraph Frontend["Frontend Layer (static/index.html)"]
+        Dashboard["Side-Panel Admin Dashboard"]
+        KpiStrip["KPI Tracking Strip"]
+        SwapVisual["Top 5 Swap Optimizer Card"]
+        WhatIfPanel["What-If Scenario Simulator Panel"]
+        CascadePanel["Cascading Impact Simulator Panel"]
+        NauticalMap["Interactive SVG Nautical Chart"]
+        ChatWidget["AI Ops Assistant Floating Widget"]
     end
 
-    subgraph Domain["Domain layer — portpulse/domain (no web framework)"]
-        Planner["planner.py<br/>orchestration + degradation"]
-        Prediction["prediction.py<br/>congestion forecast"]
-        Assignment["assignment.py<br/>berth allocation"]
-        Routing["routing.py<br/>alternate ports"]
-        Chat["chat.py<br/>conversational assistant"]
-        Summary["summary.py<br/>shift summary"]
+    subgraph API["FastAPI REST API Layer (portpulse/api)"]
+        HealthRoute["GET /health"]
+        PlanRoute["GET /api/v1/plan"]
+        WhatIfRoute["POST /api/v1/plan/whatif"]
+        CascadeRoute["POST /api/v1/cascade-simulation"]
+        ChatRoute["POST /api/v1/chat"]
+        DataRoutes["POST /api/v1/uploads/* & GET /templates"]
     end
 
-    Datasets["datasets.py<br/>CSV / JSON access"]
-    Watsonx["integrations/watsonx.py<br/>IAM auth, retries, circuit breaker"]
-    Cloud["IBM watsonx.ai<br/>granite-3-8b-instruct"]
+    subgraph Domain["Framework-Free Domain Layer (portpulse/domain)"]
+        Planner["planner.py (Orchestrator)"]
+        Prediction["prediction.py (ALSC Horizon)"]
+        Assignment["assignment.py (Greedy Allocator)"]
+        KpiCalc["kpi_calculator.py (Metrics)"]
+        SwapOpt["swap_optimizer.py (Swap Advisory)"]
+        WhatIfSim["whatif_simulator.py (Sandboxed Diff)"]
+        CascadeSim["cascade_simulator.py (Ripple Engine)"]
+        Routing["routing.py (Alternate Ports)"]
+        ChatEngine["chat.py (Scope Gate + Context)"]
+        SummaryEngine["summary.py (Shift Summary)"]
+    end
 
-    Browser -->|"fetch /api/v1/*"| PlanRoutes
-    Browser --> DataRoutes
-    PlanRoutes --> Planner
-    PlanRoutes --> Chat
-    PlanRoutes --> Summary
-    DataRoutes --> Planner
-    Health --> Datasets
+    subgraph External["External Services & Datasets"]
+        Watsonx["integrations/watsonx.py Client"]
+        WatsonxAI["IBM watsonx.ai (ibm/granite-3-8b-instruct)"]
+        CSVData["File Datasets (vessels.csv & berths.csv)"]
+    end
+
+    User -->|"Interacts with UI"| Dashboard
+    Dashboard --> KpiStrip
+    Dashboard --> SwapVisual
+    Dashboard --> WhatIfPanel
+    Dashboard --> CascadePanel
+    Dashboard --> NauticalMap
+    Dashboard --> ChatWidget
+
+    Dashboard -->|"fetch /api/v1/plan"| PlanRoute
+    WhatIfPanel -->|"POST /plan/whatif"| WhatIfRoute
+    CascadePanel -->|"POST /cascade-simulation"| CascadeRoute
+    ChatWidget -->|"POST /chat"| ChatRoute
+    Dashboard --> DataRoutes
+
+    PlanRoute --> Planner
+    WhatIfRoute --> WhatIfSim
+    CascadeRoute --> CascadeSim
+    ChatRoute --> ChatEngine
+
     Planner --> Prediction
     Planner --> Assignment
+    Planner --> KpiCalc
+    Planner --> SwapOpt
     Planner --> Routing
-    Prediction --> Datasets
-    Assignment --> Datasets
-    Routing --> Datasets
+    Planner --> SummaryEngine
+
+    WhatIfSim --> Planner
+    CascadeSim --> Planner
+
+    Prediction --> CSVData
+    Assignment --> CSVData
     Routing --> Watsonx
-    Chat --> Watsonx
-    Summary --> Watsonx
-    Watsonx -->|"REST, with fallback"| Cloud
+    ChatEngine --> Watsonx
+    SummaryEngine --> Watsonx
+
+    Watsonx -->|"REST (IAM Auth + Circuit Breaker)"| WatsonxAI
 ```
 
-The dependency direction is strictly inward: `api/` depends on `domain/`, and
-`domain/` depends on neither FastAPI nor `api/`. The domain layer raises
-exceptions from `portpulse.errors`; the API layer is the only place that knows
-about HTTP status codes.
+---
 
-## Components
+## 🔄 Cascading Impact Simulation Data Flow (Mermaid)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Shift Supervisor
+    participant UI as Dashboard UI
+    participant API as API Layer (/cascade-simulation)
+    participant Sim as cascade_simulator.py
+    participant Planner as planner.py
+    participant Engine as assignment.py
+
+    User->>UI: Selects Vessel (e.g. V001) & Delay (10h)
+    UI->>API: POST /api/v1/cascade-simulation {disruption, max_iterations: 5}
+    API->>Sim: simulate_cascade(vessels, berths, disruption)
+    Sim->>Planner: generate_ops_plan() (Pass 1: Baseline)
+    Planner->>Engine: assign_berths()
+    Engine-->>Sim: Returns Baseline Assignments & Start Times
+    
+    loop Cascade Ripple Pass (up to max_iterations)
+        Sim->>Sim: Apply ETA Delays & Re-run Schedule
+        Sim->>Planner: generate_ops_plan() (Pass N)
+        Planner-->>Sim: Returns Modified Schedule
+        Sim->>Sim: Compare Start Times vs Baseline
+        alt Schedule Stabilized OR No New Hits
+            Sim->>Sim: Break Loop (Stabilized = True)
+        end
+    end
+
+    Sim->>Sim: Calculate Demurrage Cost ($0.05/TEU-hr)
+    Sim-->>API: Returns {iterations_run, total_estimated_cost, affected_vessels}
+    API-->>UI: HTTP 200 OK Response
+    UI->>User: Renders Headline Cost ($23,622.00) & Waterfall Timeline
+```
+
+---
+
+## 🛠️ Components & Module Responsibilities
 
 | Component | Module | Responsibility |
 |---|---|---|
-| Application factory | `app.py` | Builds the app, registers middleware, exception handlers, routers and the static mount; runs startup safety checks. |
-| Configuration | `config.py` | Typed settings across two env namespaces (`PORTPULSE_*`, `WATSONX_*`/`BOB_AGENT_*`) with a cached singleton. Both families resolve to the same fields via `AliasChoices`. |
-| Schemas | `schemas.py` | Request validation and response contracts, which also generate the OpenAPI schema. |
-| Congestion engine | `domain/prediction.py` | Buckets arrivals into rolling 24-hour windows and compares TEU against capacity. |
-| Assignment engine | `domain/assignment.py` | Priority-first greedy berth allocation with per-decision reasons. |
-| Routing engine | `domain/routing.py` | Ranks alternate ports, builds prompts, parses replies, bounds LLM fan-out. |
-| Orchestrator | `domain/planner.py` | Runs the three engines, isolating each failure into a warning. |
-| Conversational assistant | `domain/chat.py` | Answers free-text supervisor questions grounded in the ops plan. Pre-LLM scope gate rejects off-domain queries. |
-| Shift summary | `domain/summary.py` | Produces a 3–4 sentence plain-language plan summary (AI or template). |
-| Dataset access | `datasets.py` | Reads the CSV and JSON datasets; the seam for a future database or live feed. |
-| watsonx client | `integrations/watsonx.py` | IAM token caching, retries with jitter, auth circuit breaker, error taxonomy. Bearer-token / JWT fast-path for BOB Agent keys. |
-| Middleware | `middleware.py` | Request correlation IDs, access logging, security headers (CSP, HSTS, X-Frame-Options, etc.), per-IP rate limiting. |
-| Dashboard | `static/index.html` | Single-file UI, no build step. Tabbed layout: berth assignments, vessel map chart, reroute suggestions. |
+| **Application Factory** | `app.py` | Builds FastAPI app instance, registers CORS middleware, rate limiters, security headers, and static mount (`/`). |
+| **Configuration** | `config.py` | Environment settings validator using Pydantic Settings across `PORTPULSE_*` and `WATSONX_*` namespaces. |
+| **Schemas** | `schemas.py` | Data contracts (`OpsPlan`, `BerthAssignment`, `SwapOpportunity`, `CascadeRequest`, `WhatIfRequest`, `KpiSummary`). |
+| **Congestion Engine** | `domain/prediction.py` | Buckets arrivals into 24h rolling windows and computes ALSC risk levels (LOW, MEDIUM, HIGH). |
+| **Assignment Engine** | `domain/assignment.py` | Priority-first greedy berth and crane allocation algorithm with deterministic decision reasons. |
+| **KPI Calculator** | `domain/kpi_calculator.py` | Computes average wait hours, berth utilization %, vessels at risk, and CO2 emissions saved. |
+| **Swap Optimizer** | `domain/swap_optimizer.py` | Identifies pairwise berth swaps to reduce P1 queue wait times and calculates demurrage cost savings. |
+| **What-If Simulator** | `domain/whatif_simulator.py` | Sandboxed simulation engine comparing baseline vs scenario diffs without mutating live data. |
+| **Cascade Simulator** | `domain/cascade_simulator.py` | Multi-pass schedule ripple engine tracing downstream delays and financial demurrage impact. |
+| **Routing Engine** | `domain/routing.py` | Ranks regional alternate ports (distance/fit) and uses IBM watsonx.ai to generate plain-language justifications. |
+| **Conversational Assistant** | `domain/chat.py` | Scope-gated AI assistant answering operator questions grounded in live 72-hour ops plan data. |
+| **watsonx.ai Client** | `integrations/watsonx.py` | IAM authentication, token caching, exponential retries with jitter, and circuit breaker fallback. |
 
-## Data flow
+---
 
-### Plan generation
+## 🖼️ Architecture & Workflow Visual Diagrams
 
-1. The dashboard requests `GET /api/v1/plan`.
-2. `datasets.py` loads `vessels.csv` and `berths.csv` from the configured data directory.
-3. `prediction.py` buckets arrivals into rolling 24-hour windows from the earliest
-   ETA and classifies each window LOW / MEDIUM / HIGH against total capacity.
-4. `assignment.py` sorts vessels by priority then ETA and places each at the berth
-   that frees up earliest and has sufficient capacity, provided the queue wait stays
-   within `PORTPULSE_MAX_BERTH_WAIT_HOURS`.
-5. Anything unplaceable goes to `routing.py`, which ranks alternate ports by
-   capacity fit and distance and asks watsonx.ai to explain the recommendation.
-6. `planner.py` assembles one response, validated against `OpsPlan` before it
-   leaves the process.
+- **[Tech Stack Flowchart](images/tech_stack_flowchart.svg)**: Complete breakdown of presentation, web server, domain engine, and IBM watsonx.ai integration layers.
+- **[Website & Dashboard Feature Map](images/website_feature_flowchart.svg)**: Map of side-panel navigation layout, 4 tabs, simulation controls, and floating chat assistant.
+- **[Cascading Impact Simulation Workflow](images/cascading_simulation_workflow.svg)**: Detailed step-by-step workflow of multi-pass schedule ripple analysis.
 
-### Conversational assistant
+---
 
-1. The dashboard sends `POST /api/v1/chat` with the current `OpsPlan`, the
-   supervisor's question, and up to 20 turns of conversation history.
-2. `chat.py` runs a keyword-based scope gate (`_is_out_of_scope`). Off-topic
-   questions receive a fixed refusal reply without reaching the LLM.
-3. The plan is serialised into a compact context block and a prompt is built with
-   strict system-level guardrails against prompt injection.
-4. watsonx.ai generates a reply. If the client is unconfigured, unreachable, or
-   returns something unparseable, a structured rule-based fallback produces the
-   answer instead. The endpoint never returns 500.
+## 🔒 Security Posture
 
-## Failure behaviour
-
-Partial results beat an error page for an operator mid-shift, so degradation is
-explicit at every level:
-
-| Failure | Behaviour |
+| Security Dimension | Implementation |
 |---|---|
-| watsonx.ai unconfigured, unreachable, or returns unparseable text | Deterministic template text; `ai_generated: false`. The plan is unaffected. |
-| One engine raises | That section is empty, the rest of the plan is returned, and `warnings` explains what is missing. |
-| Chat LLM call fails | Rule-based fallback reply is returned; `ai_generated: false`. Never a 500. |
-| Datasets missing | `503` from `/health` and `/api/v1/plan`, with the remediation command in the message. |
-| Unexpected exception | `500` with a request-ID reference only; internal details go to the logs, never the response. |
-
-## Security posture
-
-| Concern | Approach |
-|---|---|
-| Credentials | Read from the environment or a gitignored `.env`. `.dockerignore` excludes `.env`, so a local file is never baked into an image. |
-| Write endpoints | `X-API-Key` via `hmac.compare_digest`. Production startup fails without a key. Applies to `/plan/custom`, `/uploads/*`, and `/chat`. |
-| CORS | Explicit allowlist defaulting to localhost. Wildcards are rejected in production. |
-| Rate limiting | Sliding 60-second window, 30 req/min per IP, on all `POST` to sensitive paths. Returns `429` with `Retry-After`. |
-| Uploads | Extension check, streamed size limit, UTF-8 validation, and required-column validation before any parsing. |
-| Prompt injection | Vessel-supplied text is stripped of control characters and newlines and length-capped before interpolation. The system prompt explicitly instructs the model to treat plan data as reference, not instructions. |
-| History sanitisation | Only `user` and `assistant` role turns are forwarded to the LLM; `system` role turns supplied by the client are filtered out. |
-| Error leakage | Upstream response bodies are logged at DEBUG and never embedded in exception messages or API responses. |
-| Security headers | `Content-Security-Policy`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `X-Frame-Options` injected into every response; `Strict-Transport-Security` added over HTTPS. |
-| Container | Non-root user, no development dependencies, dropped capabilities, read-only root filesystem in Compose. |
-| Output encoding | Every value the dashboard injects into the DOM passes through an HTML-escaping helper. |
-
-## Scaling notes
-
-- The application is stateless per request and scales horizontally behind a load
-  balancer. The IAM token cache is per process, so each replica authenticates once.
-- watsonx.ai calls dominate latency. Fan-out is bounded by a worker cap and a
-  per-request call budget so a large unassigned set cannot open unbounded connections.
-- The in-process rate limiter is per worker-process. For a multi-worker deployment,
-  front with a reverse proxy (nginx, AWS ALB) that enforces the limit upstream.
-- `GET /api/v1/plan` recomputes everything, including LLM calls. A cache keyed on a
-  dataset fingerprint is the obvious next step.
-- Replacing CSV with a database means reimplementing `datasets.py` only; the domain
-  and API layers are unchanged.
+| **Authentication** | `X-API-Key` header verified via `hmac.compare_digest` for write endpoints (`/plan/custom`, `/uploads/*`, `/chat`). |
+| **Prompt Injection Defense** | Pre-LLM keyword scope gate rejects off-topic queries; vessel input text is stripped of control characters and length-capped. |
+| **Rate Limiting** | Sliding 60-second window rate limiter (30 req/min per IP) on POST endpoints. |
+| **HTTP Security Headers** | Injects `Content-Security-Policy`, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, and `Permissions-Policy`. |
+| **Zero-Downtime Fallback** | Isolated engine execution degrades watsonx.ai network or auth failures to structured template text without returning 500 errors. |

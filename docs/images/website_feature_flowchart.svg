@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" width="100%" height="100%" style="background:#0f1a28; font-family:'IBM Plex Mono', monospace, sans-serif;">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Title -->
+  <text x="500" y="40" font-size="22" font-weight="700" fill="#f0e6d2" text-anchor="middle" letter-spacing="1.5">PORTPULSE — WEBSITE &amp; DASHBOARD FEATURE MAP</text>
+  <text x="500" y="65" font-size="12" fill="#c8b99a" text-anchor="middle" letter-spacing="0.5">Side-Panel Admin Layout, Interactive Visuals &amp; Predictive Simulation Tools</text>
+  <line x1="80" y1="80" x2="920" y2="80" stroke="#d4af37" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- Left Sidebar Node -->
+  <g transform="translate(50, 100)" filter="url(#shadow)">
+    <rect width="220" height="540" rx="8" fill="#162744" stroke="#d4af37" stroke-width="1.5"/>
+    <text x="110" y="30" font-size="14" font-weight="700" fill="#d4af37" text-anchor="middle">NAV SIDEBAR</text>
+    <line x1="15" y1="42" x2="205" y2="42" stroke="#d4af37" stroke-width="1" opacity="0.4"/>
+    
+    <rect x="15" y="55" width="190" height="40" rx="4" fill="#0f1a28" stroke="#4a90e2"/>
+    <text x="105" y="78" font-size="11" fill="#f0e6d2" text-anchor="middle">Dashboard (Main)</text>
+
+    <rect x="15" y="105" width="190" height="40" rx="4" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="105" y="128" font-size="11" fill="#c8b99a" text-anchor="middle">Berth Allocation</text>
+
+    <rect x="15" y="155" width="190" height="40" rx="4" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="105" y="178" font-size="11" fill="#c8b99a" text-anchor="middle">Reallocation &amp; Routing</text>
+
+    <rect x="15" y="205" width="190" height="40" rx="4" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="105" y="228" font-size="11" fill="#c8b99a" text-anchor="middle">Vessel Map &amp; Corridors</text>
+
+    <line x1="15" y1="260" x2="205" y2="260" stroke="#d4af37" stroke-width="1" opacity="0.4"/>
+    <text x="110" y="280" font-size="11" font-weight="700" fill="#d4af37" text-anchor="middle">ACTIONS &amp; DATA</text>
+
+    <rect x="15" y="295" width="190" height="32" rx="4" fill="#1b2a47" stroke="#334e7a"/>
+    <text x="105" y="315" font-size="10" fill="#f0e6d2" text-anchor="middle">Upload Vessels CSV</text>
+
+    <rect x="15" y="335" width="190" height="32" rx="4" fill="#1b2a47" stroke="#334e7a"/>
+    <text x="105" y="355" font-size="10" fill="#f0e6d2" text-anchor="middle">Upload Berths CSV</text>
+
+    <rect x="15" y="375" width="190" height="32" rx="4" fill="#1b2a47" stroke="#334e7a"/>
+    <text x="105" y="395" font-size="10" fill="#f0e6d2" text-anchor="middle">Export Operations CSV</text>
+
+    <rect x="15" y="415" width="190" height="32" rx="4" fill="#1b2a47" stroke="#334e7a"/>
+    <text x="105" y="435" font-size="10" fill="#f0e6d2" text-anchor="middle">Reset to Default Data</text>
+
+    <rect x="15" y="475" width="190" height="45" rx="4" fill="#0f1a28" stroke="#2ecc71"/>
+    <text x="105" y="495" font-size="10" font-weight="700" fill="#2ecc71" text-anchor="middle">Status: READY</text>
+    <text x="105" y="510" font-size="9" fill="#c8b99a" text-anchor="middle">Last Updated Live Timer</text>
+  </g>
+
+  <!-- Right Main Workspace Content -->
+  <!-- TAB 1: DASHBOARD -->
+  <g transform="translate(300, 100)" filter="url(#shadow)">
+    <rect width="650" height="125" rx="8" fill="#16233b" stroke="#4a90e2" stroke-width="1.5"/>
+    <text x="20" y="25" font-size="13" font-weight="700" fill="#4a90e2">TAB 1: DASHBOARD &amp; KPI OVERVIEW</text>
+    
+    <!-- 4 KPI Cards -->
+    <rect x="20" y="38" width="140" height="70" rx="4" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="90" y="56" font-size="9" fill="#c8b99a" text-anchor="middle">AVG QUEUE WAIT</text>
+    <text x="90" y="80" font-size="14" font-weight="700" fill="#d4af37" text-anchor="middle">2.15h</text>
+
+    <rect x="175" y="38" width="140" height="70" rx="4" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="245" y="56" font-size="9" fill="#c8b99a" text-anchor="middle">UTILIZATION</text>
+    <text x="245" y="80" font-size="14" font-weight="700" fill="#2ecc71" text-anchor="middle">42.8%</text>
+
+    <rect x="330" y="38" width="140" height="70" rx="4" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="400" y="56" font-size="9" fill="#c8b99a" text-anchor="middle">VESSELS AT RISK</text>
+    <text x="400" y="80" font-size="14" font-weight="700" fill="#e74c3c" text-anchor="middle">25</text>
+
+    <rect x="485" y="38" width="145" height="70" rx="4" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="557" y="56" font-size="9" fill="#c8b99a" text-anchor="middle">EMISSIONS SAVED</text>
+    <text x="557" y="80" font-size="13" font-weight="700" fill="#f0e6d2" text-anchor="middle">48,002 kg</text>
+  </g>
+
+  <!-- SIMULATION TOOLS -->
+  <g transform="translate(300, 240)" filter="url(#shadow)">
+    <rect width="650" height="135" rx="8" fill="#16233b" stroke="#9b59b6" stroke-width="1.5"/>
+    <text x="20" y="25" font-size="13" font-weight="700" fill="#9b59b6">PREDICTIVE SIMULATION PANELS</text>
+    
+    <rect x="20" y="38" width="295" height="80" rx="4" fill="#0f1a28" stroke="#6c5ce7"/>
+    <text x="167" y="58" font-size="11" font-weight="700" fill="#f0e6d2" text-anchor="middle">What-If Scenario Simulator</text>
+    <text x="167" y="76" font-size="9.5" fill="#c8b99a" text-anchor="middle">• Delay vessel / Berth outage</text>
+    <text x="167" y="94" font-size="9.5" fill="#c8b99a" text-anchor="middle">• Reassigned vs Unassigned diffs</text>
+
+    <rect x="335" y="38" width="295" height="80" rx="4" fill="#0f1a28" stroke="#6c5ce7"/>
+    <text x="482" y="58" font-size="11" font-weight="700" fill="#f0e6d2" text-anchor="middle">Cascading Impact Simulator</text>
+    <text x="482" y="76" font-size="9.5" fill="#c8b99a" text-anchor="middle">• Multi-pass schedule ripple</text>
+    <text x="482" y="94" font-size="9.5" fill="#c8b99a" text-anchor="middle">• Waterfall timeline &amp; Demurrage cost</text>
+  </g>
+
+  <!-- TAB 2 & 3: SCHEDULES & ROUTING -->
+  <g transform="translate(300, 390)" filter="url(#shadow)">
+    <rect width="650" height="120" rx="8" fill="#16233b" stroke="#e67e22" stroke-width="1.5"/>
+    <text x="20" y="25" font-size="13" font-weight="700" fill="#e67e22">TAB 2 &amp; 3: SCHEDULING, SWAPS &amp; REROUTING</text>
+    
+    <rect x="20" y="38" width="195" height="68" rx="4" fill="#0f1a28" stroke="#d35400"/>
+    <text x="117" y="58" font-size="10.5" font-weight="700" fill="#f0e6d2" text-anchor="middle">Top 5 Swap Optimizer</text>
+    <text x="117" y="78" font-size="9" fill="#c8b99a" text-anchor="middle">Cost &amp; wait reduction</text>
+
+    <rect x="230" y="38" width="195" height="68" rx="4" fill="#0f1a28" stroke="#d35400"/>
+    <text x="327" y="58" font-size="10.5" font-weight="700" fill="#f0e6d2" text-anchor="middle">Berth Allocations</text>
+    <text x="327" y="78" font-size="9" fill="#c8b99a" text-anchor="middle">Sortable table (P1-P3)</text>
+
+    <rect x="440" y="38" width="190" height="68" rx="4" fill="#0f1a28" stroke="#d35400"/>
+    <text x="535" y="58" font-size="10.5" font-weight="700" fill="#f0e6d2" text-anchor="middle">Reroute Suggestions</text>
+    <text x="535" y="78" font-size="9" fill="#c8b99a" text-anchor="middle">watsonx.ai reasoning</text>
+  </g>
+
+  <!-- TAB 4 & CHAT ASSISTANT -->
+  <g transform="translate(300, 525)" filter="url(#shadow)">
+    <rect width="315" height="115" rx="8" fill="#16233b" stroke="#1abc9c" stroke-width="1.5"/>
+    <text x="15" y="25" font-size="12" font-weight="700" fill="#1abc9c">TAB 4: LIVE NAUTICAL MAP</text>
+    <text x="15" y="48" font-size="10" fill="#f0e6d2">• Interactive SVG Port Schematic</text>
+    <text x="15" y="68" font-size="10" fill="#f0e6d2">• Hover tooltips for vessels &amp; berths</text>
+    <text x="15" y="88" font-size="10" fill="#f0e6d2">• Offshore reroute corridor lines</text>
+
+    <rect x="345" y="0" width="305" height="115" rx="8" fill="#16233b" stroke="#e74c3c" stroke-width="1.5"/>
+    <text x="360" y="25" font-size="12" font-weight="700" fill="#e74c3c">FLOATING AI CHAT ASSISTANT</text>
+    <text x="360" y="48" font-size="10" fill="#f0e6d2">• Slide-out panel + quick suggestions</text>
+    <text x="360" y="68" font-size="10" fill="#f0e6d2">• Grounded in live 72h plan data</text>
+    <text x="360" y="88" font-size="10" fill="#f0e6d2">• Pre-LLM scope gate security filter</text>
+  </g>
+</svg>

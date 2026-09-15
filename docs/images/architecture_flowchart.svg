@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" width="100%" height="100%" style="background:#0f1a28; font-family:'IBM Plex Mono', monospace, sans-serif;">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Title -->
+  <text x="500" y="45" font-size="22" font-weight="700" fill="#f0e6d2" text-anchor="middle" letter-spacing="1.5">PORTPULSE — SYSTEM ARCHITECTURE &amp; DATA FLOW</text>
+  <text x="500" y="70" font-size="12" fill="#c8b99a" text-anchor="middle" letter-spacing="0.5">Strict Inward Dependency Architecture &amp; Isolated Engine Execution</text>
+  <line x1="100" y1="85" x2="900" y2="85" stroke="#d4af37" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- Client Layer -->
+  <g transform="translate(60, 110)" filter="url(#shadow)">
+    <rect width="240" height="490" rx="8" fill="#16233b" stroke="#4a90e2" stroke-width="1.5"/>
+    <text x="120" y="35" font-size="14" font-weight="700" fill="#4a90e2" text-anchor="middle">CLIENT / UI LAYER</text>
+    <line x1="20" y1="48" x2="220" y2="48" stroke="#4a90e2" stroke-width="1" opacity="0.4"/>
+    
+    <rect x="20" y="65" width="200" height="60" rx="4" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="120" y="90" font-size="11" font-weight="700" fill="#f0e6d2" text-anchor="middle">index.html (Dashboard)</text>
+    <text x="120" y="108" font-size="9.5" fill="#c8b99a" text-anchor="middle">Single-page admin layout</text>
+
+    <rect x="20" y="145" width="200" height="60" rx="4" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="120" y="170" font-size="11" font-weight="700" fill="#f0e6d2" text-anchor="middle">SVG Nautical Chart</text>
+    <text x="120" y="188" font-size="9.5" fill="#c8b99a" text-anchor="middle">Interactive vessel/berth map</text>
+
+    <rect x="20" y="225" width="200" height="60" rx="4" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="120" y="250" font-size="11" font-weight="700" fill="#f0e6d2" text-anchor="middle">Simulation Controls</text>
+    <text x="120" y="268" font-size="9.5" fill="#c8b99a" text-anchor="middle">What-If &amp; Cascade forms</text>
+
+    <rect x="20" y="305" width="200" height="60" rx="4" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="120" y="330" font-size="11" font-weight="700" fill="#f0e6d2" text-anchor="middle">Chat Widget Component</text>
+    <text x="120" y="348" font-size="9.5" fill="#c8b99a" text-anchor="middle">Floating AI assistant</text>
+  </g>
+
+  <!-- Flow Arrow -->
+  <path d="M 300 350 L 360 350" stroke="#d4af37" stroke-width="2.5" fill="none"/>
+
+  <!-- API Layer -->
+  <g transform="translate(360, 110)" filter="url(#shadow)">
+    <rect width="280" height="490" rx="8" fill="#16233b" stroke="#d4af37" stroke-width="1.5"/>
+    <text x="140" y="35" font-size="14" font-weight="700" fill="#d4af37" text-anchor="middle">API &amp; ROUTING LAYER</text>
+    <line x1="20" y1="48" x2="260" y2="48" stroke="#d4af37" stroke-width="1" opacity="0.4"/>
+
+    <rect x="20" y="65" width="240" height="50" rx="4" fill="#0f1a28" stroke="#8b6914"/>
+    <text x="140" y="88" font-size="11" font-weight="700" fill="#f0e6d2" text-anchor="middle">GET /api/v1/plan</text>
+    <text x="140" y="103" font-size="9" fill="#c8b99a" text-anchor="middle">Generates 72h plan + KPIs + Swaps</text>
+
+    <rect x="20" y="130" width="240" height="50" rx="4" fill="#0f1a28" stroke="#8b6914"/>
+    <text x="140" y="153" font-size="11" font-weight="700" fill="#f0e6d2" text-anchor="middle">POST /api/v1/plan/whatif</text>
+    <text x="140" y="168" font-size="9" fill="#c8b99a" text-anchor="middle">Sandboxed scenario diff simulator</text>
+
+    <rect x="20" y="195" width="240" height="50" rx="4" fill="#0f1a28" stroke="#8b6914"/>
+    <text x="140" y="218" font-size="11" font-weight="700" fill="#f0e6d2" text-anchor="middle">POST /cascade-simulation</text>
+    <text x="140" y="233" font-size="9" fill="#c8b99a" text-anchor="middle">Multi-pass ripple effect simulation</text>
+
+    <rect x="20" y="260" width="240" height="50" rx="4" fill="#0f1a28" stroke="#8b6914"/>
+    <text x="140" y="283" font-size="11" font-weight="700" fill="#f0e6d2" text-anchor="middle">POST /api/v1/chat</text>
+    <text x="140" y="298" font-size="9" fill="#c8b99a" text-anchor="middle">Scope-gated ops plan Q&amp;A</text>
+
+    <rect x="20" y="325" width="240" height="50" rx="4" fill="#0f1a28" stroke="#8b6914"/>
+    <text x="140" y="348" font-size="11" font-weight="700" fill="#f0e6d2" text-anchor="middle">POST /uploads/vessels &amp; berths</text>
+    <text x="140" y="363" font-size="9" fill="#c8b99a" text-anchor="middle">Streamed CSV validation</text>
+  </g>
+
+  <!-- Flow Arrow -->
+  <path d="M 640 350 L 700 350" stroke="#d4af37" stroke-width="2.5" fill="none"/>
+
+  <!-- Domain Layer -->
+  <g transform="translate(700, 110)" filter="url(#shadow)">
+    <rect width="240" height="490" rx="8" fill="#16233b" stroke="#2ecc71" stroke-width="1.5"/>
+    <text x="120" y="35" font-size="14" font-weight="700" fill="#2ecc71" text-anchor="middle">DOMAIN LAYER</text>
+    <line x1="20" y1="48" x2="220" y2="48" stroke="#2ecc71" stroke-width="1" opacity="0.4"/>
+
+    <rect x="20" y="65" width="200" height="40" rx="4" fill="#0f1a28" stroke="#1a5c3a"/>
+    <text x="120" y="88" font-size="10.5" fill="#f0e6d2" text-anchor="middle">planner.py (Orchestrator)</text>
+
+    <rect x="20" y="115" width="200" height="40" rx="4" fill="#0f1a28" stroke="#1a5c3a"/>
+    <text x="120" y="138" font-size="10.5" fill="#f0e6d2" text-anchor="middle">prediction.py (ALSC)</text>
+
+    <rect x="20" y="165" width="200" height="40" rx="4" fill="#0f1a28" stroke="#1a5c3a"/>
+    <text x="120" y="188" font-size="10.5" fill="#f0e6d2" text-anchor="middle">assignment.py (Greedy)</text>
+
+    <rect x="20" y="215" width="200" height="40" rx="4" fill="#0f1a28" stroke="#1a5c3a"/>
+    <text x="120" y="238" font-size="10.5" fill="#f0e6d2" text-anchor="middle">kpi_calculator.py</text>
+
+    <rect x="20" y="265" width="200" height="40" rx="4" fill="#0f1a28" stroke="#1a5c3a"/>
+    <text x="120" y="288" font-size="10.5" fill="#f0e6d2" text-anchor="middle">swap_optimizer.py</text>
+
+    <rect x="20" y="315" width="200" height="40" rx="4" fill="#0f1a28" stroke="#1a5c3a"/>
+    <text x="120" y="338" font-size="10.5" fill="#f0e6d2" text-anchor="middle">whatif_simulator.py</text>
+
+    <rect x="20" y="365" width="200" height="40" rx="4" fill="#0f1a28" stroke="#1a5c3a"/>
+    <text x="120" y="388" font-size="10.5" fill="#f0e6d2" text-anchor="middle">cascade_simulator.py</text>
+
+    <rect x="20" y="415" width="200" height="50" rx="4" fill="#0f1a28" stroke="#9b59b6"/>
+    <text x="120" y="436" font-size="10.5" font-weight="700" fill="#9b59b6" text-anchor="middle">routing.py &amp; chat.py</text>
+    <text x="120" y="453" font-size="9" fill="#c8b99a" text-anchor="middle">IBM watsonx.ai Integration</text>
+  </g>
+</svg>

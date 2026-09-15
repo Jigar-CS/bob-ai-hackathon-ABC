@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" width="100%" height="100%" style="background:#0f1a28; font-family:'IBM Plex Mono', monospace, sans-serif;">
+  <defs>
+    <linearGradient id="primary-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a2b4c"/>
+      <stop offset="100%" stop-color="#0f1a28"/>
+    </linearGradient>
+    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#b8720b"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Title -->
+  <text x="500" y="45" font-size="22" font-weight="700" fill="#f0e6d2" text-anchor="middle" letter-spacing="1.5">PORTPULSE — TECHNOLOGY STACK ARCHITECTURE</text>
+  <text x="500" y="70" font-size="12" fill="#c8b99a" text-anchor="middle" letter-spacing="0.5">End-to-End System Components &amp; Integration Layers</text>
+  <line x1="100" y1="85" x2="900" y2="85" stroke="#d4af37" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- Layer 1: Client / Frontend -->
+  <g transform="translate(60, 110)" filter="url(#shadow)">
+    <rect width="880" height="90" rx="8" fill="#16233b" stroke="#4a90e2" stroke-width="1.5"/>
+    <text x="25" y="30" font-size="13" font-weight="700" fill="#4a90e2">1. CLIENT &amp; PRESENTATION LAYER (FRONTEND)</text>
+    <rect x="25" y="42" width="260" height="36" rx="4" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="155" y="65" font-size="11" fill="#f0e6d2" text-anchor="middle">Single-Page Dashboard (HTML5/CSS3)</text>
+    <rect x="310" y="42" width="260" height="36" rx="4" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="440" y="65" font-size="11" fill="#f0e6d2" text-anchor="middle">Vanilla JS &amp; Interactive SVG Map</text>
+    <rect x="595" y="42" width="260" height="36" rx="4" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="725" y="65" font-size="11" fill="#f0e6d2" text-anchor="middle">Ops Assistant Chat UI Component</text>
+  </g>
+
+  <!-- Downward Arrows -->
+  <path d="M 500 200 L 500 230" stroke="#d4af37" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4,4"/>
+
+  <!-- Layer 2: API & Gateway Layer -->
+  <g transform="translate(60, 230)" filter="url(#shadow)">
+    <rect width="880" height="100" rx="8" fill="#16233b" stroke="#d4af37" stroke-width="1.5"/>
+    <text x="25" y="30" font-size="13" font-weight="700" fill="#d4af37">2. FASTAPI WEB SERVER &amp; REST GATEWAY</text>
+    <rect x="25" y="45" width="195" height="40" rx="4" fill="#0f1a28" stroke="#8b6914"/>
+    <text x="122" y="68" font-size="11" fill="#f0e6d2" text-anchor="middle">GET /api/v1/plan</text>
+    <rect x="235" y="45" width="195" height="40" rx="4" fill="#0f1a28" stroke="#8b6914"/>
+    <text x="332" y="68" font-size="11" fill="#f0e6d2" text-anchor="middle">POST /plan/whatif</text>
+    <rect x="445" y="45" width="200" height="40" rx="4" fill="#0f1a28" stroke="#8b6914"/>
+    <text x="545" y="68" font-size="11" fill="#f0e6d2" text-anchor="middle">POST /cascade-simulation</text>
+    <rect x="660" y="45" width="195" height="40" rx="4" fill="#0f1a28" stroke="#8b6914"/>
+    <text x="757" y="68" font-size="11" fill="#f0e6d2" text-anchor="middle">POST /api/v1/chat</text>
+  </g>
+
+  <!-- Downward Arrows -->
+  <path d="M 500 330 L 500 360" stroke="#d4af37" stroke-width="2" stroke-dasharray="4,4"/>
+
+  <!-- Layer 3: Domain Planning Engine -->
+  <g transform="translate(60, 360)" filter="url(#shadow)">
+    <rect width="880" height="135" rx="8" fill="#16233b" stroke="#2ecc71" stroke-width="1.5"/>
+    <text x="25" y="28" font-size="13" font-weight="700" fill="#2ecc71">3. CORE DOMAIN PLANNING &amp; SIMULATION ENGINES (PYTHON 3.10+)</text>
+    
+    <rect x="25" y="42" width="195" height="36" rx="4" fill="#0f1a28" stroke="#1a5c3a"/>
+    <text x="122" y="65" font-size="10.5" fill="#f0e6d2" text-anchor="middle">Prediction Engine</text>
+    
+    <rect x="235" y="42" width="195" height="36" rx="4" fill="#0f1a28" stroke="#1a5c3a"/>
+    <text x="332" y="65" font-size="10.5" fill="#f0e6d2" text-anchor="middle">Assignment Engine</text>
+    
+    <rect x="445" y="42" width="200" height="36" rx="4" fill="#0f1a28" stroke="#1a5c3a"/>
+    <text x="545" y="65" font-size="10.5" fill="#f0e6d2" text-anchor="middle">KPI Calculator</text>
+
+    <rect x="660" y="42" width="195" height="36" rx="4" fill="#0f1a28" stroke="#1a5c3a"/>
+    <text x="757" y="65" font-size="10.5" fill="#f0e6d2" text-anchor="middle">Swap Optimizer</text>
+
+    <rect x="130" y="86" width="300" height="36" rx="4" fill="#0f1a28" stroke="#1a5c3a"/>
+    <text x="280" y="109" font-size="10.5" fill="#f0e6d2" text-anchor="middle">What-If Scenario Simulator</text>
+
+    <rect x="450" y="86" width="300" height="36" rx="4" fill="#0f1a28" stroke="#1a5c3a"/>
+    <text x="600" y="109" font-size="10.5" fill="#f0e6d2" text-anchor="middle">Cascading Impact Simulator</text>
+  </g>
+
+  <!-- Downward Arrows -->
+  <path d="M 300 495 L 300 525" stroke="#d4af37" stroke-width="2" stroke-dasharray="4,4"/>
+  <path d="M 700 495 L 700 525" stroke="#d4af37" stroke-width="2" stroke-dasharray="4,4"/>
+
+  <!-- Layer 4: AI & Data Storage -->
+  <g transform="translate(60, 525)" filter="url(#shadow)">
+    <!-- IBM watsonx -->
+    <rect x="0" y="0" width="425" height="85" rx="8" fill="#16233b" stroke="#9b59b6" stroke-width="1.5"/>
+    <text x="20" y="25" font-size="12" font-weight="700" fill="#9b59b6">4A. IBM WATSONX.AI INTEGRATION</text>
+    <text x="20" y="48" font-size="11" fill="#f0e6d2">• Model: ibm/granite-3-8b-instruct</text>
+    <text x="20" y="68" font-size="11" fill="#f0e6d2">• Resilient Fallback: Template engine on 401/timeout</text>
+
+    <!-- Data Storage -->
+    <rect x="455" y="0" width="425" height="85" rx="8" fill="#16233b" stroke="#e67e22" stroke-width="1.5"/>
+    <text x="475" y="25" font-size="12" font-weight="700" fill="#e67e22">4B. DATA STORAGE &amp; INPUT CONTRACTS</text>
+    <text x="475" y="48" font-size="11" fill="#f0e6d2">• Structured CSVs: vessels.csv &amp; berths.csv</text>
+    <text x="475" y="68" font-size="11" fill="#f0e6d2">• Alternate Ports JSON &amp; Pydantic v2 Schemas</text>
+  </g>
+</svg>

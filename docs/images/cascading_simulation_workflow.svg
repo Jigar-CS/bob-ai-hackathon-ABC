@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" width="100%" height="100%" style="background:#0f1a28; font-family:'IBM Plex Mono', monospace, sans-serif;">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Title -->
+  <text x="500" y="45" font-size="22" font-weight="700" fill="#f0e6d2" text-anchor="middle" letter-spacing="1.5">CASCADING IMPACT SIMULATION — WORKFLOW</text>
+  <text x="500" y="70" font-size="12" fill="#c8b99a" text-anchor="middle" letter-spacing="0.5">Multi-Pass Schedule Ripple Analysis &amp; Demurrage Cost Impact Engine</text>
+  <line x1="100" y1="85" x2="900" y2="85" stroke="#d4af37" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- Step 1 -->
+  <g transform="translate(60, 120)" filter="url(#shadow)">
+    <rect width="180" height="110" rx="8" fill="#16233b" stroke="#4a90e2" stroke-width="1.5"/>
+    <text x="90" y="30" font-size="12" font-weight="700" fill="#4a90e2" text-anchor="middle">PASS 1: BASELINE</text>
+    <line x1="15" y1="40" x2="165" y2="40" stroke="#4a90e2" stroke-width="1" opacity="0.4"/>
+    <text x="90" y="60" font-size="10" fill="#f0e6d2" text-anchor="middle">Generate Baseline Plan</text>
+    <text x="90" y="80" font-size="9" fill="#c8b99a" text-anchor="middle">Record original berth</text>
+    <text x="90" y="95" font-size="9" fill="#c8b99a" text-anchor="middle">start timestamps</text>
+  </g>
+
+  <path d="M 240 175 L 280 175" stroke="#d4af37" stroke-width="2"/>
+
+  <!-- Step 2 -->
+  <g transform="translate(280, 120)" filter="url(#shadow)">
+    <rect width="200" height="110" rx="8" fill="#16233b" stroke="#e67e22" stroke-width="1.5"/>
+    <text x="100" y="30" font-size="12" font-weight="700" fill="#e67e22" text-anchor="middle">PASS 2: DISRUPTION</text>
+    <line x1="15" y1="40" x2="185" y2="40" stroke="#e67e22" stroke-width="1" opacity="0.4"/>
+    <text x="100" y="60" font-size="10" fill="#f0e6d2" text-anchor="middle">Apply Disruption Spec</text>
+    <text x="100" y="80" font-size="9" fill="#c8b99a" text-anchor="middle">Vessel Arrival Delay OR</text>
+    <text x="100" y="95" font-size="9" fill="#c8b99a" text-anchor="middle">Berth Outage (e.g., B1)</text>
+  </g>
+
+  <path d="M 480 175 L 520 175" stroke="#d4af37" stroke-width="2"/>
+
+  <!-- Step 3 -->
+  <g transform="translate(520, 120)" filter="url(#shadow)">
+    <rect width="200" height="110" rx="8" fill="#16233b" stroke="#9b59b6" stroke-width="1.5"/>
+    <text x="100" y="30" font-size="12" font-weight="700" fill="#9b59b6" text-anchor="middle">PASS 3: RIPPLE LOOP</text>
+    <line x1="15" y1="40" x2="185" y2="40" stroke="#9b59b6" stroke-width="1" opacity="0.4"/>
+    <text x="100" y="60" font-size="10" fill="#f0e6d2" text-anchor="middle">Iterative Re-planning</text>
+    <text x="100" y="80" font-size="9" fill="#c8b99a" text-anchor="middle">Track downstream delays</text>
+    <text x="100" y="95" font-size="9" fill="#c8b99a" text-anchor="middle">across queue (max 10 passes)</text>
+  </g>
+
+  <path d="M 720 175 L 760 175" stroke="#d4af37" stroke-width="2"/>
+
+  <!-- Step 4 -->
+  <g transform="translate(760, 120)" filter="url(#shadow)">
+    <rect width="180" height="110" rx="8" fill="#16233b" stroke="#2ecc71" stroke-width="1.5"/>
+    <text x="90" y="30" font-size="12" font-weight="700" fill="#2ecc71" text-anchor="middle">STABILIZATION</text>
+    <line x1="15" y1="40" x2="165" y2="40" stroke="#2ecc71" stroke-width="1" opacity="0.4"/>
+    <text x="90" y="60" font-size="10" fill="#f0e6d2" text-anchor="middle">Check Stabilization</text>
+    <text x="90" y="80" font-size="9" fill="#c8b99a" text-anchor="middle">Loop halts when schedule</text>
+    <text x="90" y="95" font-size="9" fill="#c8b99a" text-anchor="middle">absorbs disruption</text>
+  </g>
+
+  <!-- Financial Output Box -->
+  <g transform="translate(150, 280)" filter="url(#shadow)">
+    <rect width="700" height="280" rx="8" fill="#162744" stroke="#d4af37" stroke-width="1.5"/>
+    <text x="350" y="35" font-size="15" font-weight="700" fill="#d4af37" text-anchor="middle">FINANCIAL COST ANALYSIS &amp; WATERFALL OUTPUT</text>
+    <line x1="30" y1="48" x2="670" y2="48" stroke="#d4af37" stroke-width="1" opacity="0.4"/>
+
+    <!-- Metrics -->
+    <rect x="50" y="70" width="180" height="80" rx="6" fill="#0f1a28" stroke="#8b6914"/>
+    <text x="140" y="95" font-size="10" fill="#c8b99a" text-anchor="middle">EST. DEMURRAGE COST</text>
+    <text x="140" y="125" font-size="16" font-weight="700" fill="#d4af37" text-anchor="middle">$23,622.00</text>
+
+    <rect x="260" y="70" width="180" height="80" rx="6" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="350" y="95" font-size="10" fill="#c8b99a" text-anchor="middle">VESSELS AFFECTED</text>
+    <text x="350" y="125" font-size="16" font-weight="700" fill="#2ecc71" text-anchor="middle">8 Vessels</text>
+
+    <rect x="470" y="70" width="180" height="80" rx="6" fill="#0f1a28" stroke="#334e7a"/>
+    <text x="560" y="95" font-size="10" fill="#c8b99a" text-anchor="middle">TOTAL DELAY HOURS</text>
+    <text x="560" y="125" font-size="16" font-weight="700" fill="#f0e6d2" text-anchor="middle">75.35 Hours</text>
+
+    <!-- Formula Note -->
+    <rect x="50" y="170" width="600" height="75" rx="4" fill="#0f1a28" stroke="#d4af37" opacity="0.9"/>
+    <text x="350" y="195" font-size="11" font-weight="700" fill="#d4af37" text-anchor="middle">Demurrage Cost Formula per Affected Vessel:</text>
+    <text x="350" y="218" font-size="11" fill="#f0e6d2" text-anchor="middle">Cost = Delay Hours × Size TEU × $0.05/TEU-Hour (DEMURRAGE_RATE_PER_TEU_HOUR)</text>
+    <text x="350" y="235" font-size="9.5" fill="#c8b99a" text-anchor="middle">Rendered as a chronological waterfall timeline ordered by cascade depth pass</text>
+  </g>
+</svg>
