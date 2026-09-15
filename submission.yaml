@@ -45,6 +45,7 @@ submission:
     - "72-hour congestion risk forecasting across rolling 24-hour berth capacity windows"
     - "Priority-based automated berth and crane assignment with an auditable reason per decision"
     - "AI-generated alternate port routing recommendations for unassigned vessels"
+    - "Conversational Ops Assistant (/api/v1/chat) for plain-English query answering grounded in live plan data"
     - "Live operations dashboard plus CSV upload and spreadsheet-ready plan export"
 
   tech_stack:

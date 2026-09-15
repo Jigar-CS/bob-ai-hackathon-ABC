@@ -51,8 +51,9 @@ def generate_datasets() -> None:
         priority = random.choice([1, 1, 2, 2, 2, 3, 3])  # Weight prio 1 and 2
         vessels_lines.append(f"{vid},{name},{eta_str},{size_teu},{cargo},{priority}")
 
-    vessels_csv = "\n".join(vessels_lines) + "\n"
-    Path("test_vessels_50.csv").write_text(vessels_csv, encoding="utf-8")
+    out_dir = Path(__file__).parent.parent / "tests" / "fixtures"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "test_vessels_50.csv").write_text(vessels_csv, encoding="utf-8")
 
     # 2. Berths (50 records)
     berths_lines = ["berth_id,capacity_teu,crane_count,avg_dwell_hours"]
@@ -64,10 +65,11 @@ def generate_datasets() -> None:
         berths_lines.append(f"{bid},{capacity},{cranes},{dwell}")
 
     berths_csv = "\n".join(berths_lines) + "\n"
-    Path("test_berths_50.csv").write_text(berths_csv, encoding="utf-8")
+    (out_dir / "test_berths_50.csv").write_text(berths_csv, encoding="utf-8")
 
-    print("Successfully generated test_vessels_50.csv and test_berths_50.csv with 50 records each.")
+    print(f"Successfully generated 50-record datasets in {out_dir}.")
 
 
 if __name__ == "__main__":
     generate_datasets()
+

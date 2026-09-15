@@ -97,8 +97,9 @@ def test_missing_berths_produce_warnings_not_an_exception(
 
 
 def test_50_record_datasets_plan_generation() -> None:
-    vessels_path = Path("test_vessels_50.csv")
-    berths_path = Path("test_berths_50.csv")
+    fixtures_dir = Path(__file__).parent.parent / "fixtures"
+    vessels_path = fixtures_dir / "test_vessels_50.csv"
+    berths_path = fixtures_dir / "test_berths_50.csv"
     if vessels_path.exists() and berths_path.exists():
         from portpulse.csv_io import read_csv_file
 
@@ -108,3 +109,4 @@ def test_50_record_datasets_plan_generation() -> None:
         plan = generate_ops_plan(vessels, berths, now=start_now)
         assert len(plan["berth_assignments"]) + plan["unassigned_count"] == 50
         OpsPlan.model_validate(plan)
+

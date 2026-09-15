@@ -170,3 +170,36 @@ def test_chat_answers_overview_query():
     plan = get_sample_plan()
     res = answer("Give me an overview of the operations center status", plan)
     assert "PortPulse Operations Center Overview" in str(res["reply"])
+
+
+def test_chat_handles_case_insensitive_and_sentence_variations():
+    plan = get_sample_plan()
+
+    queries = [
+        "b1 status?",
+        "B1 STATUS!",
+        "tell me about V001",
+        "v001 info",
+        "ANY HIGH RISK DAYS??",
+        "alternate ports list",
+        "PRIORITY 1 SHIPS",
+    ]
+    for q in queries:
+        res = answer(q, plan)
+        assert isinstance(res["reply"], str)
+        assert res["reply"] != _SCOPE_REJECTION
+
+
+def test_chat_refuses_additional_out_of_scope_questions():
+    plan = get_sample_plan()
+
+    out_of_scope = [
+        "Who is Albert Einstein?",
+        "Explain quantum mechanics in simple words",
+        "What is 25 multiplied by 40?",
+        "How do I cook pasta?",
+        "Who is the current US president?",
+    ]
+    for q in out_of_scope:
+        res = answer(q, plan)
+        assert res["reply"] == _SCOPE_REJECTION

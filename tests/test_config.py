@@ -33,6 +33,16 @@ def test_real_credentials_enable_watsonx(monkeypatch: pytest.MonkeyPatch) -> Non
     assert settings.enabled is True
 
 
+def test_bob_agent_api_key_enables_watsonx(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("WATSONX_API_KEY", raising=False)
+    monkeypatch.delenv("WATSONX_PROJECT_ID", raising=False)
+    monkeypatch.setenv("BOB_AGENT_API_KEY", "bob_secret_key_12345")
+    settings = WatsonxSettings()
+    assert settings.api_key == "bob_secret_key_12345"
+    assert settings.project_id == "bob-agent-project"
+    assert settings.enabled is True
+
+
 def test_generation_endpoint_has_no_double_slash(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("WATSONX_URL", "https://eu-de.ml.cloud.ibm.com/")
     settings = WatsonxSettings()

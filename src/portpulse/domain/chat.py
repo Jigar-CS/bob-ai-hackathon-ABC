@@ -138,74 +138,152 @@ def _build_prompt(
     )
 
 
+_OUT_OF_SCOPE_TERMS = (
+    "weather",
+    "sports",
+    "recipe",
+    "food",
+    "python",
+    "javascript",
+    "java",
+    "c++",
+    "code",
+    "coding",
+    "programming",
+    "movie",
+    "song",
+    "music",
+    "president",
+    "capital of",
+    "fibonacci",
+    "game",
+    "who won",
+    "joke",
+    "story",
+    "math",
+    "politics",
+    "travel advice",
+    "restaurant",
+    "history",
+    "einstein",
+    "quantum",
+    "sing a",
+    "tell me a joke",
+    "who is",
+    "who created",
+    "solve",
+    "calculate",
+)
+
+_PORT_KEYWORDS = (
+    "vessel",
+    "vessels",
+    "ship",
+    "ships",
+    "berth",
+    "berths",
+    "port",
+    "ports",
+    "congestion",
+    "routing",
+    "reroute",
+    "rerouted",
+    "allocation",
+    "allocations",
+    "teu",
+    "horizon",
+    "plan",
+    "forecast",
+    "schedule",
+    "schedules",
+    "crane",
+    "cranes",
+    "dwell",
+    "cargo",
+    "hazmat",
+    "reefer",
+    "general",
+    "p1",
+    "p2",
+    "p3",
+    "priority",
+    "portpulse",
+    "arrival",
+    "departure",
+    "unassigned",
+    "eta",
+    "b1",
+    "b2",
+    "b3",
+    "b4",
+    "b5",
+    "b6",
+    "ensenada",
+    "oakland",
+    "tacoma",
+    "long beach",
+    "los angeles",
+    "overview",
+    "summary",
+    "status",
+    "info",
+    "details",
+    "report",
+    "operations",
+    "ops",
+    "center",
+    "list",
+    "queue",
+    "risk",
+    "high",
+    "medium",
+    "low",
+)
+
+
+def _is_out_of_scope(msg: str, plan: dict[str, Any]) -> bool:
+    """Return True if user_message is strictly outside PortPulse domain boundaries."""
+    raw_lower = msg.lower()
+    clean_text = re.sub(r"[^\w\s-]", " ", raw_lower)
+
+    # Explicit out-of-scope keyword check
+    has_out_of_scope = any(term in clean_text for term in _OUT_OF_SCOPE_TERMS)
+    has_port_kw = any(kw in clean_text for kw in _PORT_KEYWORDS)
+
+    if has_out_of_scope and not has_port_kw:
+        return True
+
+    # Check for specific vessel IDs / names or berth IDs in the current plan or query
+    assignments = plan.get("berth_assignments") or []
+    reroutes = plan.get("reroute_suggestions") or []
+
+    vessel_match = False
+    for item in assignments + reroutes:
+        vid = str(item.get("vessel_id", "")).lower().strip()
+        vname = str(item.get("vessel_name", "")).lower().strip()
+        if (vid and vid in clean_text) or (vname and vname in clean_text):
+            vessel_match = True
+            break
+
+    berth_match = bool(re.search(r"\b(b\d{1,4}|berth\s*b?\d{1,4})\b", clean_text))
+    generic_vessel_pattern = bool(re.search(r"\bv\d{1,4}\b", clean_text))
+
+    return not (has_port_kw or vessel_match or berth_match or generic_vessel_pattern)
+
+
 def _fallback_reply(user_message: str, plan: dict[str, Any]) -> str:
     """Advanced, highly detailed domain reply when watsonx.ai is not active."""
-    msg = user_message.lower()
+    raw_lower = user_message.lower()
+    msg = re.sub(r"[^\w\s-]", " ", raw_lower)
+
     forecast = plan.get("congestion_forecast") or []
     assignments = plan.get("berth_assignments") or []
     reroutes = plan.get("reroute_suggestions") or []
 
-    # Out of domain / scope check
-    out_of_scope_keywords = (
-        "weather",
-        "sports",
-        "recipe",
-        "python",
-        "javascript",
-        "code",
-        "movie",
-        "song",
-        "president",
-        "capital of",
-        "fibonacci",
-        "game",
-        "who won",
-        "joke",
-        "story",
-        "math",
-        "politics",
-        "travel advice",
-        "restaurant",
-    )
-    port_keywords = (
-        "vessel",
-        "ship",
-        "berth",
-        "port",
-        "congestion",
-        "routing",
-        "reroute",
-        "allocation",
-        "teu",
-        "horizon",
-        "plan",
-        "forecast",
-        "schedule",
-        "crane",
-        "dwell",
-        "cargo",
-        "hazmat",
-        "reefer",
-        "p1",
-        "p2",
-        "p3",
-        "priority",
-        "portpulse",
-        "b1",
-        "b2",
-        "b3",
-        "b4",
-        "b5",
-        "b6",
-    )
-
-    is_out_of_scope = any(kw in msg for kw in out_of_scope_keywords) and not any(
-        kw in msg for kw in port_keywords
-    )
-    if is_out_of_scope:
+    if _is_out_of_scope(user_message, plan):
         return _SCOPE_REJECTION
 
-    # 1. Search for specific vessel query (e.g. V101, MV Pacific Titan, V108...)
+    # 1. Search for specific vessel query (e.g. V101, V001, MV Pacific Titan, V108...)
     for a in assignments:
         vid = str(a.get("vessel_id", "")).lower().strip()
         vname = str(a.get("vessel_name", "")).lower().strip()
@@ -252,7 +330,7 @@ def _fallback_reply(user_message: str, plan: dict[str, Any]) -> str:
             break
 
     if not matched_berth:
-        berth_match = re.search(r"\b(b\d{1,3}|berth\s+b?\d{1,3})\b", msg)
+        berth_match = re.search(r"\b(b\d{1,3}|berth\s*b?\d{1,3})\b", msg)
         if berth_match:
             raw_b = berth_match.group(1).upper().replace("BERTH", "").strip()
             matched_berth = raw_b if raw_b.startswith("B") else f"B{raw_b}"
@@ -317,6 +395,9 @@ def _fallback_reply(user_message: str, plan: dict[str, Any]) -> str:
             "cannot",
             "can't",
             "queue",
+            "ensenada",
+            "oakland",
+            "tacoma",
         )
     ):
         if reroutes:
@@ -456,6 +537,10 @@ def answer(
         ``{"reply": str, "ai_generated": bool}`` — never raises.
     """
     history = history or []
+
+    if _is_out_of_scope(user_message, plan):
+        return {"reply": _SCOPE_REJECTION, "ai_generated": False}
+
     active_client: WatsonxClient = client if client is not None else get_client()
 
     if active_client.enabled:

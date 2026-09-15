@@ -20,6 +20,8 @@ services:
       # Required when PORTPULSE_ENVIRONMENT=production — the app refuses to start without it.
       PORTPULSE_API_KEY: ${PORTPULSE_API_KEY:?set PORTPULSE_API_KEY in your environment or .env}
       PORTPULSE_CORS_ALLOW_ORIGINS: ${PORTPULSE_CORS_ALLOW_ORIGINS:-http://localhost:8000}
+      BOB_AGENT_API_KEY: ${BOB_AGENT_API_KEY:-}
+      BOB_AGENT_PROJECT_ID: ${BOB_AGENT_PROJECT_ID:-}
       WATSONX_API_KEY: ${WATSONX_API_KEY:-}
       WATSONX_PROJECT_ID: ${WATSONX_PROJECT_ID:-}
       WATSONX_URL: ${WATSONX_URL:-https://us-south.ml.cloud.ibm.com}

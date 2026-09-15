@@ -53,6 +53,7 @@ Alternate-port routing for what does not fit  ──▶  IBM watsonx.ai reasonin
   estimated departure, queue wait, priority and the reason for the placement.
 - **AI alternate routing:** one card per unassigned vessel with the rejection reason
   and ranked alternate ports.
+- **Conversational Ops Assistant (`/api/v1/chat`):** interactive slide-out assistant powered by `domain/chat.py` that answers supervisor questions grounded strictly in the live 72-hour operations plan with refusal of out-of-scope queries.
 - **Upload / Reset / Export:** swap in your own CSV, return to the sample dataset,
   or export the plan.
 

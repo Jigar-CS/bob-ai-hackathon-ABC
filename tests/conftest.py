@@ -38,12 +38,14 @@ BERTH_CSV = "berth_id,capacity_teu,crane_count,avg_dwell_hours\nB1,16000,4,6.0\n
 def isolated_environment(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
     """Give every test a clean, offline configuration."""
     for key in list(os.environ):
-        if key.startswith(("PORTPULSE_", "WATSONX_")):
+        if key.startswith(("PORTPULSE_", "WATSONX_", "BOB_", "AGENT_")):
             monkeypatch.delenv(key, raising=False)
 
     # Explicitly blank so a developer's .env cannot enable live API calls.
     monkeypatch.setenv("WATSONX_API_KEY", "")
     monkeypatch.setenv("WATSONX_PROJECT_ID", "")
+    monkeypatch.setenv("BOB_AGENT_API_KEY", "")
+    monkeypatch.setenv("BOB_AGENT_PROJECT_ID", "")
     monkeypatch.setenv("PORTPULSE_ENVIRONMENT", "development")
     monkeypatch.setenv("PORTPULSE_LOG_LEVEL", "WARNING")
 

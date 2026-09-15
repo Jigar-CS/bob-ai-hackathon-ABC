@@ -19,7 +19,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, field_validator
+from pydantic import AliasChoices, Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from portpulse.constants import (
@@ -32,11 +32,21 @@ PACKAGE_DIR: Path = Path(__file__).resolve().parent
 STATIC_DIR: Path = PACKAGE_DIR / "static"
 DEFAULT_DATA_DIR: Path = PACKAGE_DIR / "data"
 
+try:
+    from dotenv import load_dotenv
+
+    _root = Path(__file__).resolve().parent.parent.parent
+    for _p in (_root / ".env", _root / "src" / ".env", Path(".env"), Path("src/.env")):
+        if _p.is_file():
+            load_dotenv(_p, override=True)
+except ImportError:
+    pass
+
 #: Values that look like an untouched ``.env.example`` entry are treated as unset.
 _PLACEHOLDER_MARKERS = ("your_", "_here", "changeme", "<", "xxx")
 
 _ENV_FILE_CONFIG = SettingsConfigDict(
-    env_file=".env",
+    env_file=(".env", "src/.env", "../.env"),
     env_file_encoding="utf-8",
     extra="ignore",
     case_sensitive=False,
@@ -57,32 +67,116 @@ def _blank_to_none(value: str | None) -> str | None:
 
 
 class WatsonxSettings(BaseSettings):
-    """IBM watsonx.ai connection settings (``WATSONX_*`` environment variables)."""
+    """IBM watsonx.ai / BOB Agent connection settings.
 
-    model_config = SettingsConfigDict(env_prefix="WATSONX_", **_ENV_FILE_CONFIG)
+    Supports ``WATSONX_*`` or ``BOB_AGENT_*`` environment variables.
+    """
 
-    api_key: str | None = None
-    project_id: str | None = None
-    url: str = "https://us-south.ml.cloud.ibm.com"
-    model_id: str = "ibm/granite-3-8b-instruct"
-    api_version: str = "2024-05-01"
-    iam_url: str = "https://iam.cloud.ibm.com/identity/token"
+    model_config = _ENV_FILE_CONFIG
 
-    iam_timeout_seconds: float = Field(default=10.0, gt=0)
-    request_timeout_seconds: float = Field(default=60.0, gt=0)
-    max_retries: int = Field(default=3, ge=1, le=10)
-    backoff_factor: float = Field(default=0.5, ge=0)
-    max_new_tokens: int = Field(default=300, ge=1, le=4096)
+    api_key: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices(
+            "WATSONX_API_KEY", "BOB_AGENT_API_KEY", "BOB_API_KEY", "AGENT_API_KEY"
+        ),
+    )
+    project_id: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices(
+            "WATSONX_PROJECT_ID", "BOB_AGENT_PROJECT_ID", "BOB_PROJECT_ID"
+        ),
+    )
+    url: str = Field(
+        default="https://us-south.ml.cloud.ibm.com",
+        validation_alias=AliasChoices("WATSONX_URL", "BOB_AGENT_URL"),
+    )
+    model_id: str = Field(
+        default="ibm/granite-3-8b-instruct",
+        validation_alias=AliasChoices("WATSONX_MODEL_ID", "BOB_AGENT_MODEL_ID"),
+    )
+    api_version: str = Field(
+        default="2024-05-01",
+        validation_alias=AliasChoices("WATSONX_API_VERSION", "BOB_AGENT_API_VERSION"),
+    )
+    iam_url: str = Field(
+        default="https://iam.cloud.ibm.com/identity/token",
+        validation_alias=AliasChoices("WATSONX_IAM_URL", "BOB_AGENT_IAM_URL"),
+    )
+
+    iam_timeout_seconds: float = Field(
+        default=10.0,
+        gt=0,
+        validation_alias=AliasChoices(
+            "WATSONX_IAM_TIMEOUT_SECONDS", "BOB_AGENT_IAM_TIMEOUT_SECONDS"
+        ),
+    )
+    request_timeout_seconds: float = Field(
+        default=60.0,
+        gt=0,
+        validation_alias=AliasChoices(
+            "WATSONX_REQUEST_TIMEOUT_SECONDS", "BOB_AGENT_REQUEST_TIMEOUT_SECONDS"
+        ),
+    )
+    max_retries: int = Field(
+        default=3,
+        ge=1,
+        le=10,
+        validation_alias=AliasChoices("WATSONX_MAX_RETRIES", "BOB_AGENT_MAX_RETRIES"),
+    )
+    backoff_factor: float = Field(
+        default=0.5,
+        ge=0,
+        validation_alias=AliasChoices("WATSONX_BACKOFF_FACTOR", "BOB_AGENT_BACKOFF_FACTOR"),
+    )
+    max_new_tokens: int = Field(
+        default=300,
+        ge=1,
+        le=4096,
+        validation_alias=AliasChoices("WATSONX_MAX_NEW_TOKENS", "BOB_AGENT_MAX_NEW_TOKENS"),
+    )
 
     #: Seconds to short-circuit token requests after an authentication failure.
-    auth_cooldown_seconds: float = Field(default=60.0, ge=0)
+    auth_cooldown_seconds: float = Field(
+        default=60.0,
+        ge=0,
+        validation_alias=AliasChoices(
+            "WATSONX_AUTH_COOLDOWN_SECONDS", "BOB_AGENT_AUTH_COOLDOWN_SECONDS"
+        ),
+    )
     #: Renew tokens this many seconds before the IAM-reported expiry.
-    token_expiry_buffer_seconds: int = Field(default=300, ge=0)
+    token_expiry_buffer_seconds: int = Field(
+        default=300,
+        ge=0,
+        validation_alias=AliasChoices(
+            "WATSONX_TOKEN_EXPIRY_BUFFER_SECONDS", "BOB_AGENT_TOKEN_EXPIRY_BUFFER_SECONDS"
+        ),
+    )
 
     @field_validator("api_key", "project_id", mode="before")
     @classmethod
     def _clean_credentials(cls, value: str | None) -> str | None:
         return _blank_to_none(value)
+
+    @model_validator(mode="after")
+    def _fallback_bob_agent_keys(self) -> WatsonxSettings:
+        import os
+
+        if not self.api_key:
+            for key in ("BOB_AGENT_API_KEY", "BOB_API_KEY", "AGENT_API_KEY"):
+                val = _blank_to_none(os.getenv(key))
+                if val:
+                    object.__setattr__(self, "api_key", val)
+                    break
+
+        if self.api_key and not self.project_id:
+            for key in ("BOB_AGENT_PROJECT_ID", "BOB_PROJECT_ID", "WATSONX_PROJECT_ID"):
+                val = _blank_to_none(os.getenv(key))
+                if val:
+                    object.__setattr__(self, "project_id", val)
+                    break
+            if not self.project_id:
+                object.__setattr__(self, "project_id", "bob-agent-project")
+        return self
 
     @field_validator("url", "iam_url")
     @classmethod

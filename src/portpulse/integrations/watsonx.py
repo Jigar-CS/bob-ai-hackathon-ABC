@@ -163,6 +163,9 @@ class WatsonxClient:
         if not api_key:
             raise WatsonxNotConfiguredError("WATSONX_API_KEY is not configured.")
 
+        if api_key.startswith(("bob_", "bearer_", "ey")):
+            return api_key
+
         now = time.monotonic()
         token = self._token
         if token and now < self._token_expiry:
@@ -273,7 +276,30 @@ class WatsonxClient:
 
         try:
             payload = response.json()
-            generated = payload["results"][0]["generated_text"]
+            generated = None
+            results = payload.get("results")
+            choices = payload.get("choices")
+            if isinstance(results, list) and results:
+                first_res = results[0]
+                if isinstance(first_res, dict) and "generated_text" in first_res:
+                    generated = first_res["generated_text"]
+            elif isinstance(choices, list) and choices:
+                choice = choices[0]
+                if isinstance(choice, dict):
+                    msg = choice.get("message")
+                    if isinstance(msg, dict) and "content" in msg:
+                        generated = msg["content"]
+                    elif "text" in choice:
+                        generated = choice["text"]
+                elif "reply" in payload:
+                    generated = payload["reply"]
+                elif "response" in payload:
+                    generated = payload["response"]
+                elif "content" in payload:
+                    generated = payload["content"]
+
+            if generated is None:
+                raise WatsonxGenerationError("Unexpected response payload from watsonx.ai.")
         except (ValueError, KeyError, IndexError, TypeError) as err:
             raise WatsonxGenerationError("Unexpected response payload from watsonx.ai.") from err
 
