@@ -39,10 +39,12 @@ def test_get_plan_returns_every_section(client: TestClient) -> None:
         "freshness_status",
         "data_age_seconds",
         "source_name",
+        "kpis",
         "congestion_forecast",
         "berth_assignments",
         "unassigned_count",
         "reroute_suggestions",
+        "swap_opportunities",
         "warnings",
     }
     assert len(plan["berth_assignments"]) == 3

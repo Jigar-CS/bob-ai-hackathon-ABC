@@ -5,16 +5,24 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from pydantic import BaseModel, Field
 
 from portpulse.config import Settings, get_settings
 from portpulse.csv_io import Row, table_to_csv
 from portpulse.datasets import load_berths, load_vessels
+from portpulse.domain.cascade_simulator import simulate_cascade
 from portpulse.domain.chat import answer as chat_answer
 from portpulse.domain.planner import generate_ops_plan
 from portpulse.domain.summary import generate_ops_summary
-from portpulse.schemas import CustomPlanRequest, ErrorResponse, OpsPlan
+from portpulse.domain.whatif_simulator import simulate_whatif
+from portpulse.schemas import (
+    CascadeRequest,
+    CustomPlanRequest,
+    ErrorResponse,
+    OpsPlan,
+    WhatIfRequest,
+)
 from portpulse.security import require_api_key
 
 logger = logging.getLogger(__name__)
@@ -155,6 +163,62 @@ def post_summary(payload: OpsPlan) -> dict[str, object]:
     """
     plan = payload.model_dump()
     return generate_ops_summary(plan)
+
+
+@router.post(
+    "/plan/whatif",
+    summary="Run a sandboxed What-If simulation comparing baseline vs modified scenario",
+)
+def post_whatif_plan(payload: WhatIfRequest) -> dict[str, Any]:
+    """Simulate a single scenario modification (delay vessel or berth outage) vs baseline.
+
+    Never mutates live data or process state — returns simulated comparison.
+    """
+    if payload.vessels and payload.berths:
+        vessels = [v.to_row() for v in payload.vessels]
+        berths = [b.to_row() for b in payload.berths]
+    else:
+        vessels = load_vessels()
+        berths = load_berths()
+
+    return simulate_whatif(vessels, berths, payload.scenario.model_dump())
+
+
+@router.post(
+    "/cascade-simulation",
+    summary="Simulate iterative cascading impact across vessel schedule",
+    responses={
+        status.HTTP_400_BAD_REQUEST: {
+            "model": ErrorResponse,
+            "description": "Invalid input configuration or simulation guard failure.",
+        }
+    },
+)
+def post_cascade_simulation(payload: CascadeRequest) -> dict[str, Any]:
+    """Iteratively trace queue disruption ripples up to max_iterations (hard cap 10).
+
+    Never mutates process state or default datasets.
+    """
+    try:
+        if payload.vessels and payload.berths:
+            vessels = [v.to_row() for v in payload.vessels]
+            berths = [b.to_row() for b in payload.berths]
+        else:
+            vessels = load_vessels()
+            berths = load_berths()
+
+        return simulate_cascade(
+            vessels=vessels,
+            berths=berths,
+            disruption=payload.disruption.model_dump(),
+            max_iterations=payload.max_iterations,
+        )
+    except Exception as err:
+        logger.warning("Cascade simulation failed: %s", err)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cascade simulation error: {err}",
+        ) from err
 
 
 # ── Chat ──────────────────────────────────────────────────────────────────────

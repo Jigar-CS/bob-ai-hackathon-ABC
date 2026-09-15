@@ -13,8 +13,10 @@ from typing import Any
 
 from portpulse.csv_io import Row
 from portpulse.domain.assignment import AssignmentResult, assign_berths
+from portpulse.domain.kpi_calculator import calculate_plan_kpis
 from portpulse.domain.prediction import predict_congestion
 from portpulse.domain.routing import suggest_alternates
+from portpulse.domain.swap_optimizer import find_swap_opportunities
 from portpulse.errors import PlanningError
 
 logger = logging.getLogger(__name__)
@@ -69,7 +71,7 @@ def generate_ops_plan(
         reroutes = []
         warnings.append("Alternate routing suggestions unavailable due to an internal error.")
 
-    return {
+    partial_plan = {
         "generated_at": datetime.now(tz=timezone.utc).isoformat(timespec="seconds"),
         "congestion_forecast": congestion,
         "berth_assignments": assignment.assigned,
@@ -77,3 +79,24 @@ def generate_ops_plan(
         "reroute_suggestions": reroutes,
         "warnings": warnings,
     }
+
+    try:
+        kpis = calculate_plan_kpis(partial_plan)
+    except Exception:
+        logger.exception("KPI calculation failed unexpectedly.")
+        kpis = {
+            "avg_wait_hours": 0.0,
+            "berth_utilization_pct": 0.0,
+            "vessels_at_risk": len(assignment.unassigned),
+            "estimated_emissions_saved_kg": 0.0,
+        }
+
+    try:
+        swap_opps = find_swap_opportunities(assignment.assigned, berths)
+    except Exception:
+        logger.exception("Swap optimizer failed unexpectedly.")
+        swap_opps = []
+
+    partial_plan["kpis"] = kpis
+    partial_plan["swap_opportunities"] = swap_opps
+    return partial_plan

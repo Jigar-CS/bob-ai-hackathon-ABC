@@ -1738,6 +1738,517 @@
   .map-node-interactive:hover {
     transform: scale(1.22);
   }
+
+  /* ── Live relative time badge ────────────────────────────── */
+  .live-timer-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--accent-brass);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    margin-left: 8px;
+  }
+  .live-timer-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-brass);
+    animation: live-pulse 1.8s infinite ease-in-out;
+  }
+  @keyframes live-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.85); }
+  }
+
+  /* ── Priority breakdown card ────────────────────────────── */
+  .priority-breakdown-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-card);
+  }
+  .prio-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .prio-card-title {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent-navy);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .prio-card-total {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .prio-stats-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .prio-stat-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: var(--radius-md);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: #e2d7c0;
+    border: 1px solid var(--card-border);
+    flex: 1;
+    min-width: 140px;
+  }
+  .prio-stat-p1 .prio-dot { background: #8b6914; width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .prio-stat-p2 .prio-dot { background: #1a5c3a; width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .prio-stat-p3 .prio-dot { background: #b8720b; width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .prio-stat-label { color: var(--text-secondary); font-weight: 500; }
+  .prio-stat-val { margin-left: auto; font-weight: 700; color: var(--accent-navy); }
+  .prio-bar-track {
+    display: flex;
+    height: 10px;
+    border-radius: 5px;
+    background: #d0c4aa;
+    overflow: hidden;
+  }
+  .prio-bar-segment {
+    height: 100%;
+    transition: width 0.4s ease;
+  }
+  .prio-seg-p1 { background: #8b6914; }
+  .prio-seg-p2 { background: #1a5c3a; }
+  .prio-seg-p3 { background: #b8720b; }
+
+  /* ── Berth utilization mini-bars ──────────────────────── */
+  .berth-util-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+    margin-top: 12px;
+  }
+  .berth-util-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    box-shadow: var(--shadow-card);
+  }
+  .berth-util-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .berth-util-id {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-navy);
+  }
+  .berth-util-vessels {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .berth-util-vol {
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .berth-util-track {
+    height: 8px;
+    background: #d0c4aa;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .berth-util-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  /* ── Table Sorting & Interactivity ──────────────────────── */
+  th.sortable-th {
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease;
+  }
+  th.sortable-th:hover {
+    background: #d4c8ae;
+    color: var(--accent-navy);
+  }
+  .sort-icon {
+    font-size: 9px;
+    margin-left: 4px;
+    opacity: 0.6;
+  }
+  th.active-sort .sort-icon {
+    opacity: 1;
+    color: var(--accent-brass);
+    font-weight: 700;
+  }
+  .assignment-row {
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .assignment-row:hover {
+    background: rgba(26, 39, 68, 0.05);
+  }
+
+  /* ── Click-to-Expand Vessel Detail Modal ───────────────── */
+  .modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 26, 40, 0.65);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .modal-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .modal-card {
+    background: var(--card-bg);
+    border: 2px solid var(--accent-navy);
+    border-radius: var(--radius-lg);
+    width: 90%;
+    max-width: 580px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 24px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+    transform: translateY(12px);
+    transition: transform 0.25s ease;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .modal-backdrop.open .modal-card {
+    transform: translateY(0);
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--card-border);
+    margin-bottom: 16px;
+  }
+  .modal-title {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent-navy);
+  }
+  .modal-subtitle {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+  }
+  .modal-close:hover { color: var(--accent-navy); }
+  .modal-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .modal-detail-item {
+    background: var(--bg-main);
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--card-border);
+  }
+  .modal-detail-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .modal-detail-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-navy);
+    margin-top: 3px;
+  }
+  .modal-reason-box {
+    background: #e2d7c0;
+    border-left: 3px solid var(--accent-brass);
+    padding: 12px;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--text-primary);
+  }
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid var(--card-border);
+  }
+
+  /* ── KPI Tracking Strip ────────────────────────────────── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .kpi-card:hover {
+    border-color: var(--card-hover-border);
+    transform: translateY(-2px);
+  }
+  .kpi-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--text-muted);
+  }
+  .kpi-est-tag {
+    font-size: 9px;
+    color: var(--accent-brass);
+    font-weight: 700;
+  }
+  .kpi-value {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--accent-navy);
+    margin: 6px 0 2px;
+  }
+  .kpi-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-secondary);
+  }
+  @media (max-width: 900px) {
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+  /* ── Optimization Opportunities (Swap Optimizer) ── */
+  .swap-opps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+    margin-top: 12px;
+  }
+  .swap-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .swap-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .swap-headline {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent-brass);
+  }
+  .swap-savings-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: #e2d7c0;
+    color: var(--accent-navy);
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--card-border);
+  }
+  .swap-vessel-names {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-navy);
+  }
+  .swap-reason {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.45;
+  }
+  /* ── What-If Simulator Panel ────────────────────────────── */
+  .whatif-panel {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-card);
+  }
+  .whatif-form-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .whatif-input, .whatif-select {
+    background: var(--bg-main);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    padding: 7px 12px;
+    border-radius: var(--radius-md);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    outline: none;
+  }
+  .whatif-results {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--card-border);
+    display: none;
+  }
+  .whatif-results.visible {
+    display: block;
+    animation: fade-up 0.2s ease;
+  }
+  .whatif-diff-pill {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  /* ── Cascading Impact Simulator ────────────────────────── */
+  .cascade-panel {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-card);
+  }
+  .cascade-results {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--card-border);
+    display: none;
+  }
+  .cascade-results.visible {
+    display: block;
+    animation: fade-up 0.25s ease;
+  }
+  .cascade-headlines {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .cascade-hl-card {
+    background: var(--bg-main);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+  }
+  .cascade-hl-card.hl-primary {
+    border-color: var(--accent-brass);
+    background: #e2d7c0;
+  }
+  .hl-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .hl-val-large {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent-brass);
+    margin: 4px 0 2px;
+  }
+  .hl-val {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent-navy);
+    margin: 4px 0 2px;
+  }
+  .hl-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-secondary);
+  }
+  .cascade-waterfall-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .waterfall-item {
+    background: var(--bg-main);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+  }
+  .waterfall-depth-tag {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 9.5px;
+    font-weight: 700;
+    background: var(--accent-navy);
+    color: #fff;
+    margin-right: 8px;
+  }
 </style>
 </head>
 <body>
@@ -1870,12 +2381,40 @@
           </button>
         </div>
 
-        <!-- Datasource indicator row -->
+        <!-- Datasource indicator row + Live timer badge -->
         <div class="datasource-row" id="datasource-row" style="margin-bottom:24px;">
           <span class="datasource-chip" id="datasource-chip">
             <span class="datasource-dot" id="datasource-dot"></span>
             <span id="datasource-label">Default Data</span>
           </span>
+          <span class="live-timer-chip" id="live-timer-chip">
+            <span class="live-timer-dot"></span>
+            <span id="live-timer-text">Updated 0s ago</span>
+          </span>
+        </div>
+
+        <!-- KPI Tracking Strip -->
+        <div class="kpi-strip" id="kpi-strip">
+          <div class="kpi-card">
+            <div class="kpi-label">Avg Queue Wait</div>
+            <div class="kpi-value" id="kpi-avg-wait">—</div>
+            <div class="kpi-sub">Target: &lt; 6.0 hours</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Berth Utilization</div>
+            <div class="kpi-value" id="kpi-utilization">—</div>
+            <div class="kpi-sub">Capacity volume fill</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Vessels at Risk</div>
+            <div class="kpi-value" id="kpi-unassigned">—</div>
+            <div class="kpi-sub">Unassigned queue</div>
+          </div>
+          <div class="kpi-card" title="Illustrative estimate: idle_hours_avoided × size_teu × 0.05 kg CO2/TEU-hr">
+            <div class="kpi-label">Emissions Saved <span class="kpi-est-tag">(Est.)</span></div>
+            <div class="kpi-value" id="kpi-emissions">—</div>
+            <div class="kpi-sub">CO₂ idle reduction</div>
+          </div>
         </div>
 
         <!-- Shift Operations Summary Card -->
@@ -1885,6 +2424,110 @@
             <span class="summary-tag" id="summary-tag">Domain AI</span>
           </div>
           <div class="summary-text" id="summary-text">Loading operations summary…</div>
+        </div>
+
+        <!-- Priority Breakdown Card -->
+        <div class="priority-breakdown-card" id="priority-breakdown-card">
+          <div class="prio-card-header">
+            <div class="prio-card-title"><span class="bullet"></span>Vessel Priority Roster Breakdown</div>
+            <span class="prio-card-total" id="prio-total-vessels">0 Vessels Total</span>
+          </div>
+          <div class="prio-stats-row">
+            <div class="prio-stat-badge prio-stat-p1">
+              <span class="prio-dot"></span>
+              <span class="prio-stat-label">P1 Time-Critical</span>
+              <span class="prio-stat-val" id="p1-count-val">0 (0%)</span>
+            </div>
+            <div class="prio-stat-badge prio-stat-p2">
+              <span class="prio-dot"></span>
+              <span class="prio-stat-label">P2 Standard</span>
+              <span class="prio-stat-val" id="p2-count-val">0 (0%)</span>
+            </div>
+            <div class="prio-stat-badge prio-stat-p3">
+              <span class="prio-dot"></span>
+              <span class="prio-stat-label">P3 Flexible</span>
+              <span class="prio-stat-val" id="p3-count-val">0 (0%)</span>
+            </div>
+          </div>
+          <div class="prio-bar-track">
+            <div class="prio-bar-segment prio-seg-p1" id="p1-bar-seg" style="width:0%" title="P1 Priority"></div>
+            <div class="prio-bar-segment prio-seg-p2" id="p2-bar-seg" style="width:0%" title="P2 Priority"></div>
+            <div class="prio-bar-segment prio-seg-p3" id="p3-bar-seg" style="width:0%" title="P3 Priority"></div>
+          </div>
+        </div>
+
+        <!-- What-If Scenario Simulator Panel (Feature 3) -->
+        <div class="whatif-panel" id="whatif-panel">
+          <div class="prio-card-title"><span class="bullet"></span>What-If Scenario Simulator</div>
+          <p class="section-sub" style="margin-top:4px;">Sandboxed comparison — simulate arrival delays or berth outages without altering live data</p>
+          <div class="whatif-form-row">
+            <select class="whatif-select" id="whatif-type" onchange="toggleWhatifInputs()">
+              <option value="berth_outage">Berth Outage</option>
+              <option value="delay_vessel">Vessel Arrival Delay</option>
+            </select>
+            <div id="whatif-berth-group" style="display:flex; gap:8px; align-items:center;">
+              <input type="text" class="whatif-input" id="whatif-berth-id" placeholder="Berth ID (e.g. B1)" value="B1" style="width:140px;">
+              <input type="number" class="whatif-input" id="whatif-berth-hours" placeholder="Hours" value="24" style="width:90px;">
+            </div>
+            <div id="whatif-vessel-group" style="display:none; gap:8px; align-items:center;">
+              <input type="text" class="whatif-input" id="whatif-vessel-id" placeholder="Vessel ID (e.g. V001)" value="V001" style="width:160px;">
+              <input type="number" class="whatif-input" id="whatif-vessel-delay" placeholder="Delay (hrs)" value="6" style="width:100px;">
+            </div>
+            <button class="btn" onclick="runWhatifScenario()" id="btn-run-whatif" style="margin-left:auto;">
+              Run Scenario
+            </button>
+          </div>
+          <div class="whatif-results" id="whatif-results">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:700; color:var(--accent-navy); margin-bottom:8px;" id="whatif-res-header">Simulated Diff Comparison</div>
+            <div id="whatif-diff-body" style="font-family:'IBM Plex Mono',monospace; font-size:11px; line-height:1.5;"></div>
+          </div>
+        </div>
+
+        <!-- Cascading Impact Simulator Section (Feature 4) -->
+        <div class="cascade-panel" id="cascade-panel">
+          <div class="prio-card-title"><span class="bullet"></span>Cascading Impact Simulator</div>
+          <p class="section-sub" style="margin-top:4px;">Multi-pass ripple effect analysis — trace downstream schedule delays and financial impact</p>
+          <div class="whatif-form-row">
+            <select class="whatif-select" id="cascade-type" onchange="toggleCascadeInputs()">
+              <option value="berth_outage">Berth Outage</option>
+              <option value="delay_vessel">Vessel Arrival Delay</option>
+            </select>
+            <div id="cascade-berth-group" style="display:flex; gap:8px; align-items:center;">
+              <input type="text" class="whatif-input" id="cascade-berth-id" placeholder="Berth ID (e.g. B1)" value="B1" style="width:140px;">
+              <input type="number" class="whatif-input" id="cascade-berth-hours" placeholder="Hours" value="24" style="width:90px;">
+            </div>
+            <div id="cascade-vessel-group" style="display:none; gap:8px; align-items:center;">
+              <input type="text" class="whatif-input" id="cascade-vessel-id" placeholder="Vessel ID (e.g. V001)" value="V001" style="width:160px;">
+              <input type="number" class="whatif-input" id="cascade-vessel-delay" placeholder="Delay (hrs)" value="10" style="width:100px;">
+            </div>
+            <button class="btn" onclick="runCascadeSimulation()" id="btn-run-cascade" style="margin-left:auto;">
+              Simulate Cascade
+            </button>
+          </div>
+
+          <div class="cascade-results" id="cascade-results">
+            <!-- Headline figures -->
+            <div class="cascade-headlines">
+              <div class="cascade-hl-card hl-primary">
+                <div class="hl-label">Est. Demurrage Cost</div>
+                <div class="hl-val-large" id="cascade-hl-cost">$0.00</div>
+                <div class="hl-sub">Total financial exposure</div>
+              </div>
+              <div class="cascade-hl-card">
+                <div class="hl-label">Vessels Affected</div>
+                <div class="hl-val" id="cascade-hl-vessels">0</div>
+                <div class="hl-sub">Queue ripple hits</div>
+              </div>
+              <div class="cascade-hl-card">
+                <div class="hl-label">Total Delay Hours</div>
+                <div class="hl-val" id="cascade-hl-hours">0h</div>
+                <div class="hl-sub">Cumulative wait shift</div>
+              </div>
+            </div>
+
+            <div style="font-weight:700; color:var(--accent-navy); margin-bottom:8px; font-size:12px;">Waterfall Ripple Timeline:</div>
+            <div class="cascade-waterfall-list" id="cascade-waterfall-list"></div>
+          </div>
         </div>
 
         <!-- Action Required Banner -->
@@ -1916,6 +2559,27 @@
           <h1 class="page-title">Berth Allocation</h1>
           <p class="page-sub">72-hour optimised berth schedule · priority 1 cargo highlighted with brass chart badges</p>
         </div>
+
+        <!-- Berth Utilization Mini-bars Section -->
+        <section class="section" id="section-berth-utilization" style="margin-bottom:24px;">
+          <div class="section-head">
+            <div class="section-title"><span class="bullet"></span>Berth Capacity &amp; Utilization</div>
+            <span class="section-count" id="berth-util-count">6 Active Berths</span>
+          </div>
+          <p class="section-sub">Assigned vessel volume vs berth capacity across 72h window</p>
+          <div class="berth-util-grid" id="berth-util-grid"></div>
+        </section>
+
+        <!-- Optimization Opportunities Card (Feature 2) -->
+        <section class="section" id="section-swap-optimizer" style="margin-bottom:24px;">
+          <div class="section-head">
+            <div class="section-title"><span class="bullet"></span>Top 5 Optimization Techniques</div>
+            <span class="section-count" id="swap-opps-count">Top 5 Suggestions</span>
+          </div>
+          <p class="section-sub">High-impact pairwise berth swaps ranked by highest estimated cost and wait time reduction</p>
+          <div class="swap-opps-grid" id="swap-opps-grid"></div>
+        </section>
+
         <section class="section" id="section-assignments">
           <div class="section-head">
             <div style="display:flex; align-items:center; gap:10px;">
@@ -1935,14 +2599,14 @@
               <table id="assignment-table">
                 <thead>
                   <tr>
-                    <th>Vessel Name</th>
-                    <th>Berth<br>ID</th>
-                    <th>Cranes</th>
-                    <th>Arrival</th>
-                    <th>Berth<br>Start</th>
-                    <th>Est.<br>Departure</th>
-                    <th>Wait</th>
-                    <th>Priority</th>
+                    <th class="sortable-th" onclick="sortAssignmentsTable('vessel_name')" id="th-vessel_name">Vessel Name <span class="sort-icon">↕</span></th>
+                    <th class="sortable-th" onclick="sortAssignmentsTable('berth_id')" id="th-berth_id">Berth<br>ID <span class="sort-icon">↕</span></th>
+                    <th class="sortable-th" onclick="sortAssignmentsTable('crane_count')" id="th-crane_count">Cranes <span class="sort-icon">↕</span></th>
+                    <th class="sortable-th" onclick="sortAssignmentsTable('arrival')" id="th-arrival">Arrival <span class="sort-icon">↕</span></th>
+                    <th class="sortable-th" onclick="sortAssignmentsTable('berth_start')" id="th-berth_start">Berth<br>Start <span class="sort-icon">↕</span></th>
+                    <th class="sortable-th" onclick="sortAssignmentsTable('departure_est')" id="th-departure_est">Est.<br>Departure <span class="sort-icon">↕</span></th>
+                    <th class="sortable-th" onclick="sortAssignmentsTable('wait_hours')" id="th-wait_hours">Wait <span class="sort-icon">↕</span></th>
+                    <th class="sortable-th" onclick="sortAssignmentsTable('priority')" id="th-priority">Priority <span class="sort-icon">↕</span></th>
                     <th>Reason</th>
                   </tr>
                 </thead>
@@ -2170,12 +2834,494 @@ function renderActionRequired(plan) {
   $ar.classList.add('visible');
 }
 
+// ── State for Live Timer & Table Sort ─────────────────────────────────────
+let lastPlanLoadedAt = Date.now();
+let liveTimerInterval = null;
+let currentSortState = { col: null, asc: true };
+
+function startLiveTimer() {
+  lastPlanLoadedAt = Date.now();
+  if (liveTimerInterval) clearInterval(liveTimerInterval);
+  updateLiveTimerDisplay();
+  liveTimerInterval = setInterval(updateLiveTimerDisplay, 1000);
+}
+
+function updateLiveTimerDisplay() {
+  const elapsedSec = Math.floor((Date.now() - lastPlanLoadedAt) / 1000);
+  let text = 'Updated 0s ago';
+  if (elapsedSec < 60) {
+    text = `Updated ${elapsedSec}s ago`;
+  } else if (elapsedSec < 3600) {
+    const mins = Math.floor(elapsedSec / 60);
+    const secs = elapsedSec % 60;
+    text = `Updated ${mins}m ${secs}s ago`;
+  } else {
+    const hrs = Math.floor(elapsedSec / 3600);
+    text = `Updated ${hrs}h ago`;
+  }
+  const $txt = document.getElementById('live-timer-text');
+  if ($txt) $txt.textContent = text;
+}
+
+// ── Priority Breakdown Visual ──────────────────────────────────────────────
+function renderPriorityBreakdown(plan) {
+  const assignments = plan.berth_assignments || [];
+  const reroutes = plan.reroute_suggestions || [];
+  const allVessels = [...assignments, ...reroutes];
+  const total = allVessels.length;
+
+  let p1 = 0, p2 = 0, p3 = 0;
+  allVessels.forEach(v => {
+    const p = v.priority ?? 2;
+    if (p === 1) p1++;
+    else if (p === 2) p2++;
+    else p3++;
+  });
+
+  const p1Pct = total > 0 ? Math.round((p1 / total) * 100) : 0;
+  const p2Pct = total > 0 ? Math.round((p2 / total) * 100) : 0;
+  const p3Pct = total > 0 ? Math.round((p3 / total) * 100) : 0;
+
+  const $total = document.getElementById('prio-total-vessels');
+  const $p1Val = document.getElementById('p1-count-val');
+  const $p2Val = document.getElementById('p2-count-val');
+  const $p3Val = document.getElementById('p3-count-val');
+
+  if ($total) $total.textContent = `${total} Vessels Total`;
+  if ($p1Val) $p1Val.textContent = `${p1} (${p1Pct}%)`;
+  if ($p2Val) $p2Val.textContent = `${p2} (${p2Pct}%)`;
+  if ($p3Val) $p3Val.textContent = `${p3} (${p3Pct}%)`;
+
+  const $b1 = document.getElementById('p1-bar-seg');
+  const $b2 = document.getElementById('p2-bar-seg');
+  const $b3 = document.getElementById('p3-bar-seg');
+
+  if ($b1) $b1.style.width = p1Pct + '%';
+  if ($b2) $b2.style.width = p2Pct + '%';
+  if ($b3) $b3.style.width = p3Pct + '%';
+}
+
+// ── Berth Utilization Mini-Bars ────────────────────────────────────────────
+function renderBerthUtilization(plan) {
+  const $grid = document.getElementById('berth-util-grid');
+  if (!$grid) return;
+
+  const assignments = plan.berth_assignments || [];
+  
+  const berthCaps = {
+    B1: 16000,
+    B2: 14000,
+    B3: 18000,
+    B4: 15000,
+    B5: 12000,
+    B6: 15000
+  };
+
+  const berthData = {};
+  Object.keys(berthCaps).forEach(bId => {
+    berthData[bId] = { count: 0, totalTeu: 0, capTeu: berthCaps[bId] };
+  });
+
+  assignments.forEach(a => {
+    const bId = (a.berth_id || 'B1').toUpperCase();
+    if (!berthData[bId]) {
+      berthData[bId] = { count: 0, totalTeu: 0, capTeu: 15000 };
+    }
+    berthData[bId].count++;
+    const size = a.size_teu ? parseInt(a.size_teu, 10) : 6500;
+    berthData[bId].totalTeu += size;
+  });
+
+  let html = '';
+  Object.keys(berthData).sort().forEach(bId => {
+    const b = berthData[bId];
+    const pct = Math.min(100, Math.round((b.totalTeu / b.capTeu) * 100));
+    let barColor = '#1a5c3a'; // Green
+    if (pct > 85) barColor = '#8b1a1a'; // Red
+    else if (pct > 60) barColor = '#b8720b'; // Amber
+
+    html += `
+      <div class="berth-util-card">
+        <div class="berth-util-top">
+          <span class="berth-util-id">Berth ${escapeHtml(bId)}</span>
+          <span class="berth-util-vessels">${b.count} vessel(s)</span>
+        </div>
+        <div class="berth-util-vol">
+          <span>${b.totalTeu.toLocaleString()} TEU</span>
+          <span>${pct}% / ${b.capTeu.toLocaleString()} TEU</span>
+        </div>
+        <div class="berth-util-track">
+          <div class="berth-util-fill" style="width:${pct}%; background:${barColor}"></div>
+        </div>
+      </div>
+    `;
+  });
+
+  $grid.innerHTML = html;
+}
+
+// ── Sortable Table ────────────────────────────────────────────────────────
+function sortAssignmentsTable(colKey) {
+  if (!currentPlan || !currentPlan.berth_assignments) return;
+
+  if (currentSortState.col === colKey) {
+    currentSortState.asc = !currentSortState.asc;
+  } else {
+    currentSortState.col = colKey;
+    currentSortState.asc = true;
+  }
+
+  const sorted = [...currentPlan.berth_assignments].sort((a, b) => {
+    let valA = a[colKey];
+    let valB = b[colKey];
+
+    if (valA == null) valA = '';
+    if (valB == null) valB = '';
+
+    if (typeof valA === 'number' && typeof valB === 'number') {
+      return currentSortState.asc ? valA - valB : valB - valA;
+    }
+    const strA = String(valA).toLowerCase();
+    const strB = String(valB).toLowerCase();
+    if (strA < strB) return currentSortState.asc ? -1 : 1;
+    if (strA > strB) return currentSortState.asc ? 1 : -1;
+    return 0;
+  });
+
+  // Update header styling
+  document.querySelectorAll('.sortable-th').forEach(th => {
+    th.classList.remove('active-sort');
+    const icon = th.querySelector('.sort-icon');
+    if (icon) icon.textContent = '↕';
+  });
+
+  const activeTh = document.getElementById(`th-${colKey}`);
+  if (activeTh) {
+    activeTh.classList.add('active-sort');
+    const icon = activeTh.querySelector('.sort-icon');
+    if (icon) icon.textContent = currentSortState.asc ? '▲' : '▼';
+  }
+
+  renderAssignmentRows(sorted);
+}
+
+// ── Render Assignment Rows ────────────────────────────────────────────────
+function renderAssignmentRows(assignments) {
+  const $tbody = document.getElementById('assignment-tbody');
+  document.getElementById('assignment-count').textContent = assignments.length + ' vessels';
+
+  if (!assignments.length) {
+    $tbody.innerHTML = '<tr><td colspan="9" class="empty-state" style="border-radius:0;">No vessels assigned.</td></tr>';
+  } else {
+    window._vesselMap = {};
+    $tbody.innerHTML = assignments.map((a, i) => {
+      const p = a.priority ?? 3;
+      const pCls = (p >= 1 && p <= 2) ? p : 3;
+      const waitStr = a.wait_hours != null ? `${a.wait_hours}h` : '—';
+      const craneStr = a.crane_count != null ? String(a.crane_count) : '—';
+      const searchVal = ((a.vessel_name || '') + ' ' + (a.berth_id || '') + ' ' + (a.vessel_id || '')).toLowerCase();
+      const vKey = a.vessel_id || ('v_' + i);
+      window._vesselMap[vKey] = a;
+
+      return `
+      <tr class="animate-in assignment-row" data-search="${escapeHtml(searchVal)}" onclick="openVesselDetailModal(window._vesselMap['${escapeHtml(vKey)}'])" style="animation-delay:${i * 0.03}s">
+        <td><span class="vessel-p${pCls}">${escapeHtml(a.vessel_name)}</span></td>
+        <td><span class="berth-id">${escapeHtml(a.berth_id)}</span></td>
+        <td>${craneStr}</td>
+        <td>${escapeHtml(a.arrival)}</td>
+        <td><span class="berth-start-bold">${escapeHtml(a.berth_start)}</span></td>
+        <td>${escapeHtml(a.departure_est)}</td>
+        <td>${waitStr}</td>
+        <td><span class="prio-tag prio-${pCls}">P${p}</span></td>
+        <td class="reason-cell">${escapeHtml(a.reason)}</td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+// ── Vessel Detail Modal ────────────────────────────────────────────────────
+function openVesselDetailModal(vessel) {
+  if (!vessel) return;
+  const $modal = document.getElementById('vessel-detail-modal');
+  const $title = document.getElementById('modal-vessel-title');
+  const $sub = document.getElementById('modal-vessel-subtitle');
+  const $body = document.getElementById('modal-vessel-body');
+  if (!$modal || !$body) return;
+
+  $title.textContent = vessel.vessel_name || vessel.name || 'Vessel Details';
+  $sub.textContent = `ID: ${vessel.vessel_id || '—'} · Priority P${vessel.priority ?? '—'}`;
+
+  const waitStr = vessel.wait_hours != null ? `${vessel.wait_hours} hours` : '0 hours';
+  const berthStr = vessel.berth_id ? `Berth ${vessel.berth_id}` : 'Unassigned / Rerouted';
+  const cranesStr = vessel.crane_count != null ? `${vessel.crane_count} Cranes` : 'Standard Allocation';
+
+  $body.innerHTML = `
+    <div class="modal-detail-grid">
+      <div class="modal-detail-item">
+        <div class="modal-detail-label">Status &amp; Berth</div>
+        <div class="modal-detail-value">${escapeHtml(berthStr)}</div>
+      </div>
+      <div class="modal-detail-item">
+        <div class="modal-detail-label">Crane Allocation</div>
+        <div class="modal-detail-value">${escapeHtml(cranesStr)}</div>
+      </div>
+      <div class="modal-detail-item">
+        <div class="modal-detail-label">Arrival (ETA)</div>
+        <div class="modal-detail-value">${escapeHtml(vessel.arrival || vessel.eta || '—')}</div>
+      </div>
+      <div class="modal-detail-item">
+        <div class="modal-detail-label">Berth Start Time</div>
+        <div class="modal-detail-value">${escapeHtml(vessel.berth_start || '—')}</div>
+      </div>
+      <div class="modal-detail-item">
+        <div class="modal-detail-label">Est. Departure</div>
+        <div class="modal-detail-value">${escapeHtml(vessel.departure_est || '—')}</div>
+      </div>
+      <div class="modal-detail-item">
+        <div class="modal-detail-label">Queue Wait Duration</div>
+        <div class="modal-detail-value">${escapeHtml(waitStr)}</div>
+      </div>
+    </div>
+    <div style="font-size:10px; font-weight:600; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px;">Allocation Rationale &amp; Operational Notes</div>
+    <div class="modal-reason-box">
+      ${escapeHtml(vessel.reason || vessel.reason_unassigned || 'Optimised priority allocation based on draft depth and turnaround schedule.')}
+    </div>
+  `;
+
+  $modal.classList.add('open');
+}
+
+function closeVesselDetailModal() {
+  const $modal = document.getElementById('vessel-detail-modal');
+  if ($modal) $modal.classList.remove('open');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeVesselDetailModal();
+});
+
+// ── KPI Strip Visual ───────────────────────────────────────────────────────
+function renderKpiStrip(plan) {
+  const kpis = plan.kpis || {};
+  const avgWait = kpis.avg_wait_hours != null ? `${kpis.avg_wait_hours}h` : '—';
+  const util = kpis.berth_utilization_pct != null ? `${kpis.berth_utilization_pct}%` : '—';
+  const unassigned = kpis.vessels_at_risk != null ? kpis.vessels_at_risk : '—';
+  const emissions = kpis.estimated_emissions_saved_kg != null ? `${kpis.estimated_emissions_saved_kg.toLocaleString()} kg` : '—';
+
+  const $avg = document.getElementById('kpi-avg-wait');
+  const $util = document.getElementById('kpi-utilization');
+  const $unassigned = document.getElementById('kpi-unassigned');
+  const $emissions = document.getElementById('kpi-emissions');
+
+  if ($avg) $avg.textContent = avgWait;
+  if ($util) $util.textContent = util;
+  if ($unassigned) $unassigned.textContent = unassigned;
+  if ($emissions) $emissions.textContent = emissions;
+}
+
+// ── What-If Scenario Simulator JS (Feature 3) ──────────────────────────────
+function toggleWhatifInputs() {
+  const type = document.getElementById('whatif-type').value;
+  const $berthGrp = document.getElementById('whatif-berth-group');
+  const $vesselGrp = document.getElementById('whatif-vessel-group');
+  if (type === 'berth_outage') {
+    $berthGrp.style.display = 'flex';
+    $vesselGrp.style.display = 'none';
+  } else {
+    $berthGrp.style.display = 'none';
+    $vesselGrp.style.display = 'flex';
+  }
+}
+
+async function runWhatifScenario() {
+  const type = document.getElementById('whatif-type').value;
+  const $btn = document.getElementById('btn-run-whatif');
+  const $res = document.getElementById('whatif-results');
+  const $body = document.getElementById('whatif-diff-body');
+
+  let scenarioSpec = { type: type };
+  if (type === 'berth_outage') {
+    scenarioSpec.berth_id = document.getElementById('whatif-berth-id').value.trim();
+    scenarioSpec.hours = parseFloat(document.getElementById('whatif-berth-hours').value) || 24;
+  } else {
+    scenarioSpec.vessel_id = document.getElementById('whatif-vessel-id').value.trim();
+    scenarioSpec.delay_hours = parseFloat(document.getElementById('whatif-vessel-delay').value) || 6;
+  }
+
+  $btn.disabled = true;
+  $btn.textContent = 'Simulating…';
+
+  try {
+    const res = await fetch(`${API_BASE}/plan/whatif`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ scenario: scenarioSpec }),
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const diff = data.diff_summary || {};
+
+    let html = `
+      <div style="display:flex; gap:16px; margin-bottom:10px;">
+        <span class="whatif-diff-pill" style="background:#b8720b; color:#fff;">Reassigned: ${diff.reassigned_count || 0}</span>
+        <span class="whatif-diff-pill" style="background:#8b1a1a; color:#fff;">Newly Unassigned: ${diff.newly_unassigned_count || 0}</span>
+      </div>
+    `;
+
+    if (diff.reassigned_vessels && diff.reassigned_vessels.length) {
+      html += '<div style="margin-top:6px; font-weight:700; color:var(--accent-navy);">Reassigned Vessels:</div><ul style="margin-left:18px; margin-bottom:8px;">';
+      diff.reassigned_vessels.forEach(r => {
+        html += `<li><strong>${escapeHtml(r.vessel_name)}</strong> (${escapeHtml(r.vessel_id)}): Berth ${escapeHtml(r.baseline_berth)} → <strong>Berth ${escapeHtml(r.modified_berth)}</strong> (Start: ${escapeHtml(r.modified_start)})</li>`;
+      });
+      html += '</ul>';
+    }
+
+    if (diff.newly_unassigned_vessels && diff.newly_unassigned_vessels.length) {
+      html += '<div style="margin-top:6px; font-weight:700; color:#8b1a1a;">Newly Unassigned / Rerouted:</div><ul style="margin-left:18px; margin-bottom:8px;">';
+      diff.newly_unassigned_vessels.forEach(u => {
+        html += `<li style="color:#8b1a1a;"><strong>${escapeHtml(u.vessel_name)}</strong> (${escapeHtml(u.vessel_id)}) — ${escapeHtml(u.reason)}</li>`;
+      });
+      html += '</ul>';
+    }
+
+    if (!diff.reassigned_count && !diff.newly_unassigned_count) {
+      html += '<div style="color:var(--accent-green); margin-top:6px;">✓ Scenario absorbed smoothly with no vessel reassignments or queue overflows.</div>';
+    }
+
+    $body.innerHTML = html;
+    $res.classList.add('visible');
+    showToast('What-If scenario simulation complete', 'success');
+  } catch (err) {
+    console.error('What-If simulation failed:', err);
+    showToast('What-If simulation failed: ' + err.message, 'error');
+  } finally {
+    $btn.disabled = false;
+    $btn.textContent = 'Run Scenario';
+  }
+}
+
+// ── Cascading Impact Simulator JS (Feature 4) ──────────────────────────────
+function toggleCascadeInputs() {
+  const type = document.getElementById('cascade-type').value;
+  const $berthGrp = document.getElementById('cascade-berth-group');
+  const $vesselGrp = document.getElementById('cascade-vessel-group');
+  if (type === 'berth_outage') {
+    $berthGrp.style.display = 'flex';
+    $vesselGrp.style.display = 'none';
+  } else {
+    $berthGrp.style.display = 'none';
+    $vesselGrp.style.display = 'flex';
+  }
+}
+
+async function runCascadeSimulation() {
+  const type = document.getElementById('cascade-type').value;
+  const $btn = document.getElementById('btn-run-cascade');
+  const $res = document.getElementById('cascade-results');
+  const $cost = document.getElementById('cascade-hl-cost');
+  const $vessels = document.getElementById('cascade-hl-vessels');
+  const $hours = document.getElementById('cascade-hl-hours');
+  const $list = document.getElementById('cascade-waterfall-list');
+
+  let disruptionSpec = { type: type };
+  if (type === 'berth_outage') {
+    disruptionSpec.berth_id = document.getElementById('cascade-berth-id').value.trim();
+    disruptionSpec.hours = parseFloat(document.getElementById('cascade-berth-hours').value) || 24;
+  } else {
+    disruptionSpec.vessel_id = document.getElementById('cascade-vessel-id').value.trim();
+    disruptionSpec.delay_hours = parseFloat(document.getElementById('cascade-vessel-delay').value) || 10;
+  }
+
+  $btn.disabled = true;
+  $btn.textContent = 'Simulating Cascade…';
+
+  try {
+    const res = await fetch(`${API_BASE}/cascade-simulation`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ disruption: disruptionSpec, max_iterations: 5 }),
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    const costVal = data.total_estimated_cost != null ? `$${data.total_estimated_cost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : '$0.00';
+    $cost.textContent = costVal;
+    $vessels.textContent = data.total_vessels_affected || 0;
+    $hours.textContent = `${data.total_cascade_delay_hours || 0}h`;
+
+    const affected = data.affected_vessels || [];
+    if (!affected.length) {
+      $list.innerHTML = '<div class="empty-state">No downstream cascading delays triggered — schedule absorbed disruption cleanly.</div>';
+    } else {
+      $list.innerHTML = affected.map(v => {
+        const vCost = v.cost_impact != null ? `$${v.cost_impact.toLocaleString()}` : '$0';
+        return `
+          <div class="waterfall-item">
+            <div>
+              <span class="waterfall-depth-tag">Pass #${v.cascade_depth}</span>
+              <strong>${escapeHtml(v.vessel_name)}</strong> (${escapeHtml(v.vessel_id)})
+              <span style="color:var(--text-secondary); margin-left:8px;">${escapeHtml(v.reason)}</span>
+            </div>
+            <div style="font-weight:700; color:var(--accent-brass); flex-shrink:0;">${vCost} (${v.delay_hours}h delay)</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    $res.classList.add('visible');
+    showToast('Cascading impact simulation complete', 'success');
+  } catch (err) {
+    console.error('Cascade simulation failed:', err);
+    showToast('Cascade simulation failed: ' + err.message, 'error');
+  } finally {
+    $btn.disabled = false;
+    $btn.textContent = 'Simulate Cascade';
+  }
+}
+
+// ── Swap Opportunities Visual (Feature 2) ─────────────────────────────────
+function renderSwapOpportunities(plan) {
+  const $grid = document.getElementById('swap-opps-grid');
+  const $count = document.getElementById('swap-opps-count');
+  if (!$grid) return;
+
+  const opps = (plan.swap_opportunities || []).slice(0, 5);
+  if ($count) $count.textContent = opps.length ? `Top ${opps.length} Technique${opps.length === 1 ? '' : 's'}` : '0 Suggestions';
+
+  if (!opps.length) {
+    $grid.innerHTML = '<div class="empty-state">No berth swap optimizations recommended at this time — current schedule is optimal.</div>';
+    return;
+  }
+
+  $grid.innerHTML = opps.map((s, i) => {
+    const costStr = s.estimated_cost_saved != null ? `$${s.estimated_cost_saved.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : '$0.00';
+    const hoursStr = s.hours_saved != null ? `${s.hours_saved}h saved` : '';
+    return `
+      <div class="swap-card animate-in" style="animation-delay:${i * 0.05}s">
+        <div class="swap-card-head">
+          <div class="swap-headline">${costStr}</div>
+          <span class="swap-savings-tag">${hoursStr}</span>
+        </div>
+        <div class="swap-vessel-names">⚓ ${escapeHtml(s.vessel_1_name)} ↔ ${escapeHtml(s.vessel_2_name)}</div>
+        <div class="swap-reason">${escapeHtml(s.reason)}</div>
+      </div>
+    `;
+  }).join('');
+}
+
 // ── Render ──────────────────────────────────────────────────────────────────
 function renderPlan(plan) {
   currentPlan = plan;
+  startLiveTimer();
   setHeroUpdated(plan.generated_at);
+  renderKpiStrip(plan);
   renderWarnings(plan);
   renderActionRequired(plan);
+  renderPriorityBreakdown(plan);
+  renderBerthUtilization(plan);
+  renderSwapOpportunities(plan);
 
   // Clear search filters so stale text from a previous dataset doesn't hide rows
   const $searchAssign = document.getElementById('search-assignment');
@@ -2221,36 +3367,8 @@ function renderPlan(plan) {
   }
 
   // Assignments
-  const $tbody = document.getElementById('assignment-tbody');
   const assignments = plan.berth_assignments || [];
-  document.getElementById('assignment-count').textContent = assignments.length + ' vessels';
-
-  if (!assignments.length) {
-    $tbody.innerHTML = '<tr><td colspan="9" class="empty-state" style="border-radius:0;">No vessels assigned.</td></tr>';
-  } else {
-    $tbody.innerHTML = assignments.map((a, i) => {
-      // Use nullish coalescing: priority 0 is theoretically invalid per schema (ge=1),
-      // but guard against null/undefined — fall back to 3 (standard styling).
-      const p = a.priority ?? 3;
-      // Clamp to known CSS classes: prio-1 / prio-2 / prio-3; anything else → prio-3
-      const pCls = (p >= 1 && p <= 2) ? p : 3;
-      const waitStr = a.wait_hours != null ? `${a.wait_hours}h` : '—';
-      const craneStr = a.crane_count != null ? String(a.crane_count) : '—';
-      const searchVal = ((a.vessel_name || '') + ' ' + (a.berth_id || '') + ' ' + (a.vessel_id || '')).toLowerCase();
-      return `
-      <tr class="animate-in assignment-row" data-search="${escapeHtml(searchVal)}" style="animation-delay:${i * 0.03}s">
-        <td><span class="vessel-p${pCls}">${escapeHtml(a.vessel_name)}</span></td>
-        <td><span class="berth-id">${escapeHtml(a.berth_id)}</span></td>
-        <td>${craneStr}</td>
-        <td>${escapeHtml(a.arrival)}</td>
-        <td><span class="berth-start-bold">${escapeHtml(a.berth_start)}</span></td>
-        <td>${escapeHtml(a.departure_est)}</td>
-        <td>${waitStr}</td>
-        <td><span class="prio-tag prio-${pCls}">P${p}</span></td>
-        <td class="reason-cell">${escapeHtml(a.reason)}</td>
-      </tr>`;
-    }).join('');
-  }
+  renderAssignmentRows(assignments);
 
   // Reroute
   const $rr = document.getElementById('reroute-list');
@@ -3108,5 +4226,22 @@ loadDefaultPlan();
 
 })();
 </script>
+  <!-- Vessel Detail Modal -->
+  <div class="modal-backdrop" id="vessel-detail-modal" role="dialog" aria-hidden="true" onclick="if(event.target===this)closeVesselDetailModal()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="modal-vessel-title">Vessel Details</div>
+          <div class="modal-subtitle" id="modal-vessel-subtitle">ID: —</div>
+        </div>
+        <button class="modal-close" onclick="closeVesselDetailModal()" title="Close">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-vessel-body"></div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeVesselDetailModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

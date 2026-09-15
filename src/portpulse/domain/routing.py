@@ -148,7 +148,7 @@ def _suggest_for_vessel(
 ) -> dict[str, Any]:
     """Produce one reroute suggestion, degrading to template text on any failure."""
     vessel_id = str(vessel.get("vessel_id") or "UNKNOWN")
-    vessel_name = str(vessel.get("name") or "Unknown Vessel")
+    vessel_name = str(vessel.get("name") or vessel.get("vessel_name") or "Unknown Vessel")
     candidates = _rank_candidates(vessel, ports)
 
     reason_unassigned = DEFAULT_REASON_UNASSIGNED

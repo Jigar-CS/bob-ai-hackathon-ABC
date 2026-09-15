@@ -2,38 +2,40 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from unittest.mock import MagicMock
 
-from portpulse.csv_io import read_csv_file
 from portpulse.datasets import load_berths
 from portpulse.domain.chat import _SCOPE_REJECTION, _build_prompt, answer
 from portpulse.domain.planner import generate_ops_plan
 
 
 def get_sample_plan():
-    vessels_path = Path("test_comprehensive_vessels.csv")
-    if vessels_path.exists():
-        vessels = read_csv_file(vessels_path)
-    else:
-        vessels = [
-            {
-                "vessel_id": "V001",
-                "name": "MV Horizon-1",
-                "eta": "2026-09-25 01:00",
-                "size_teu": "16000",
-                "cargo_type": "general",
-                "priority": "1",
-            },
-            {
-                "vessel_id": "V108",
-                "name": "MV Chemical Voyager",
-                "eta": "2026-09-25 09:00",
-                "size_teu": "18000",
-                "cargo_type": "hazmat",
-                "priority": "1",
-            },
-        ]
+    vessels = [
+        {
+            "vessel_id": "V001",
+            "name": "MV Horizon-1",
+            "eta": "2026-09-25 01:00",
+            "size_teu": "16000",
+            "cargo_type": "general",
+            "priority": "1",
+        },
+        {
+            "vessel_id": "V101",
+            "name": "MV Pacific Titan",
+            "eta": "2026-09-25 04:00",
+            "size_teu": "14000",
+            "cargo_type": "reefer",
+            "priority": "1",
+        },
+        {
+            "vessel_id": "V108",
+            "name": "MV Chemical Voyager",
+            "eta": "2026-09-25 09:00",
+            "size_teu": "18000",
+            "cargo_type": "hazmat",
+            "priority": "1",
+        },
+    ]
     berths = load_berths()
     return generate_ops_plan(vessels, berths)
 
@@ -203,3 +205,11 @@ def test_chat_refuses_additional_out_of_scope_questions():
     for q in out_of_scope:
         res = answer(q, plan)
         assert res["reply"] == _SCOPE_REJECTION
+
+
+def test_cant_query_matches_domain():
+    plan = get_sample_plan()
+    res = answer("Why can't V108 be berthed?", plan)
+    assert isinstance(res["reply"], str)
+    assert res["reply"] != _SCOPE_REJECTION
+    assert "V108" in res["reply"] or "Rerouting" in res["reply"]

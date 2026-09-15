@@ -35,3 +35,7 @@ PLANNING_HORIZON_DAYS: Final[int] = 3
 VESSELS_FILENAME: Final[str] = "vessels.csv"
 BERTHS_FILENAME: Final[str] = "berths.csv"
 ALTERNATE_PORTS_FILENAME: Final[str] = "alternate_ports.json"
+
+#: Deliberately conservative, illustrative demo estimate ($0.05/TEU-hour) — not a quoted real-world
+#: rate — chosen to keep displayed cost figures realistic and demo-credible.
+DEMURRAGE_RATE_PER_TEU_HOUR: Final[float] = 0.05

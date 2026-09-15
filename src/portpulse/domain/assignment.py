@@ -193,6 +193,7 @@ def assign_berths(
                 "departure_est": departure.strftime(ETA_FORMAT),
                 "wait_hours": round(best_wait, 1),
                 "priority": vessel.priority,
+                "size_teu": vessel.size_teu,
                 "reason": reason,
             }
         )

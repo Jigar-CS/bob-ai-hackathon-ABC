@@ -202,7 +202,6 @@ _PORT_KEYWORDS = (
     "cargo",
     "hazmat",
     "reefer",
-    "general",
     "p1",
     "p2",
     "p3",
@@ -212,12 +211,6 @@ _PORT_KEYWORDS = (
     "departure",
     "unassigned",
     "eta",
-    "b1",
-    "b2",
-    "b3",
-    "b4",
-    "b5",
-    "b6",
     "ensenada",
     "oakland",
     "tacoma",
@@ -244,7 +237,7 @@ _PORT_KEYWORDS = (
 def _is_out_of_scope(msg: str, plan: dict[str, Any]) -> bool:
     """Return True if user_message is strictly outside PortPulse domain boundaries."""
     raw_lower = msg.lower()
-    clean_text = re.sub(r"[^\w\s-]", " ", raw_lower)
+    clean_text = re.sub(r"[^\w\s'-]", " ", raw_lower)
 
     # Explicit out-of-scope keyword check
     has_out_of_scope = any(term in clean_text for term in _OUT_OF_SCOPE_TERMS)
@@ -274,7 +267,7 @@ def _is_out_of_scope(msg: str, plan: dict[str, Any]) -> bool:
 def _fallback_reply(user_message: str, plan: dict[str, Any]) -> str:
     """Advanced, highly detailed domain reply when watsonx.ai is not active."""
     raw_lower = user_message.lower()
-    msg = re.sub(r"[^\w\s-]", " ", raw_lower)
+    msg = re.sub(r"[^\w\s'-]", " ", raw_lower)
 
     forecast = plan.get("congestion_forecast") or []
     assignments = plan.get("berth_assignments") or []
@@ -427,7 +420,8 @@ def _fallback_reply(user_message: str, plan: dict[str, Any]) -> str:
                     for a in alts
                 ]
                 alt_cat_block = "\n".join(alt_lines)
-            except Exception:
+            except Exception as err:
+                logger.warning("Could not load alternate ports (%s) — using fallback.", err)
                 alt_cat_block = (
                     "- **Port of Ensenada**: 240 km away | 4,000 TEU spare capacity\n"
                     "- **Port of Oakland**: 620 km away | 9,000 TEU spare capacity\n"

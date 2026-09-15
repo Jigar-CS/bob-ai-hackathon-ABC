@@ -70,6 +70,33 @@ class CustomPlanRequest(_Model):
     berths: list[BerthIn] = Field(min_length=1, max_length=500)
 
 
+class ScenarioSpec(_Model):
+    """Scenario modification specification."""
+
+    type: Literal["delay_vessel", "berth_outage"] = Field(examples=["delay_vessel"])
+    vessel_id: str | None = Field(default=None, examples=["V001"])
+    delay_hours: float | None = Field(default=None, ge=0, examples=[6.0])
+    berth_id: str | None = Field(default=None, examples=["B1"])
+    hours: float | None = Field(default=None, ge=0, examples=[24.0])
+
+
+class WhatIfRequest(_Model):
+    """Input payload for What-If simulation."""
+
+    vessels: list[VesselIn] | None = Field(default=None)
+    berths: list[BerthIn] | None = Field(default=None)
+    scenario: ScenarioSpec
+
+
+class CascadeRequest(_Model):
+    """Input payload for Cascading Impact simulation."""
+
+    vessels: list[VesselIn] | None = Field(default=None)
+    berths: list[BerthIn] | None = Field(default=None)
+    disruption: ScenarioSpec
+    max_iterations: int = Field(default=5, ge=1, le=10)
+
+
 # ── Outputs ──────────────────────────────────────────────────────────────────
 
 
@@ -99,6 +126,7 @@ class BerthAssignment(BaseModel):
     departure_est: str
     wait_hours: float = Field(ge=0)
     priority: int | None = None
+    size_teu: int | None = Field(default=None, description="Vessel capacity volume in TEU")
     reason: str
 
 
@@ -124,6 +152,36 @@ class RerouteSuggestion(BaseModel):
     alternatives: list[AlternatePort] = Field(default_factory=list)
 
 
+class KpiSummary(BaseModel):
+    """High-level operations performance metrics calculated from the plan."""
+
+    avg_wait_hours: float = Field(
+        ge=0, description="Average queue wait hours across assigned vessels"
+    )
+    berth_utilization_pct: float = Field(
+        ge=0, description="Total assigned TEU volume vs berth capacity percentage"
+    )
+    vessels_at_risk: int = Field(ge=0, description="Count of unassigned / rerouted vessels")
+    estimated_emissions_saved_kg: float = Field(
+        ge=0,
+        description="Illustrative estimate of CO2 emissions saved (kg) (estimate, not quoted rate)",
+    )
+
+
+class SwapOpportunity(BaseModel):
+    """Advisory recommendation to swap two berthed vessels."""
+
+    vessel_1_id: str
+    vessel_1_name: str
+    vessel_2_id: str
+    vessel_2_name: str
+    hours_saved: float = Field(gt=0)
+    estimated_cost_saved: float = Field(
+        ge=0, description="Cost savings using DEMURRAGE_RATE_PER_TEU_HOUR"
+    )
+    reason: str
+
+
 class OpsPlan(BaseModel):
     """The complete 72-hour operations plan returned to the dashboard."""
 
@@ -131,10 +189,12 @@ class OpsPlan(BaseModel):
     freshness_status: Literal["FRESH", "STALE"] = "FRESH"
     data_age_seconds: int = Field(default=0, ge=0)
     source_name: str = "TOS"
+    kpis: KpiSummary | None = None
     congestion_forecast: list[CongestionWindow] = Field(default_factory=list)
     berth_assignments: list[BerthAssignment] = Field(default_factory=list)
     unassigned_count: int = Field(default=0, ge=0)
     reroute_suggestions: list[RerouteSuggestion] = Field(default_factory=list)
+    swap_opportunities: list[SwapOpportunity] = Field(default_factory=list)
     warnings: list[str] = Field(
         default_factory=list,
         description="Non-fatal degradations, e.g. a sub-engine that failed.",
