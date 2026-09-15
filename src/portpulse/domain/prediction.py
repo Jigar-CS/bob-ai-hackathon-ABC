@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 
 from portpulse.config import get_settings
 from portpulse.constants import ETA_FORMAT, PLANNING_HORIZON_DAYS
-from portpulse.csv_io import Row
+from portpulse.csv_io import Row, parse_eta
 from portpulse.errors import PlanningError
 
 logger = logging.getLogger(__name__)
@@ -35,7 +35,7 @@ def _parse_arrivals(vessels: list[Row]) -> list[tuple[datetime, int]]:
     arrivals: list[tuple[datetime, int]] = []
     for vessel in vessels:
         try:
-            eta = datetime.strptime(str(vessel["eta"]), ETA_FORMAT)
+            eta = parse_eta(vessel.get("eta"))
             size = int(vessel["size_teu"])
         except (KeyError, TypeError, ValueError) as err:
             logger.warning(

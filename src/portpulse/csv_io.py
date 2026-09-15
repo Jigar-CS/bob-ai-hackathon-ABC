@@ -10,6 +10,7 @@ import csv
 import io
 import logging
 from collections.abc import Iterable, Sequence
+from datetime import datetime
 from pathlib import Path
 
 from portpulse.errors import CsvValidationError, DataFileError
@@ -32,6 +33,83 @@ def read_csv_file(path: Path) -> list[Row]:
         raise DataFileError(f"Dataset not found: {path.name}") from err
     except (OSError, UnicodeDecodeError) as err:
         raise DataFileError(f"Could not read dataset {path.name}: {err}") from err
+
+
+COLUMN_ALIASES: dict[str, str] = {
+    # Vessel column aliases
+    "vesselid": "vessel_id",
+    "vessel_id": "vessel_id",
+    "vessel": "vessel_id",
+    "id": "vessel_id",
+    "vessel_name": "name",
+    "vesselname": "name",
+    "name": "name",
+    "ship_name": "name",
+    "eta": "eta",
+    "arrival": "eta",
+    "arrival_time": "eta",
+    "estimated_arrival": "eta",
+    "size_teu": "size_teu",
+    "sizeteu": "size_teu",
+    "teu": "size_teu",
+    "size": "size_teu",
+    "cargo_type": "cargo_type",
+    "cargotype": "cargo_type",
+    "cargo": "cargo_type",
+    "type": "cargo_type",
+    "priority": "priority",
+    "prio": "priority",
+    "priority_level": "priority",
+    # Berth column aliases
+    "berth_id": "berth_id",
+    "berthid": "berth_id",
+    "berth": "berth_id",
+    "capacity_teu": "capacity_teu",
+    "capacityteu": "capacity_teu",
+    "max_teu": "capacity_teu",
+    "capacity": "capacity_teu",
+    "crane_count": "crane_count",
+    "cranecount": "crane_count",
+    "cranes": "crane_count",
+    "crane": "crane_count",
+    "avg_dwell_hours": "avg_dwell_hours",
+    "avgdwellhours": "avg_dwell_hours",
+    "dwell_hours": "avg_dwell_hours",
+    "dwell": "avg_dwell_hours",
+    "avg_dwell": "avg_dwell_hours",
+}
+
+
+def normalize_column_name(col: str) -> str:
+    cleaned = col.strip().lower()
+    return COLUMN_ALIASES.get(cleaned, cleaned)
+
+
+def parse_eta(val: object) -> datetime:
+    """Parse ETA strings in various standard formats into a datetime object."""
+    from portpulse.constants import ETA_FORMAT
+
+    if not val:
+        raise ValueError("ETA string is empty")
+
+    raw = str(val).strip().replace("T", " ")
+    for fmt in (
+        ETA_FORMAT,
+        "%Y-%m-%d %H:%M:%S",
+        "%Y/%m/%d %H:%M:%S",
+        "%Y/%m/%d %H:%M",
+        "%d/%m/%Y %H:%M:%S",
+        "%d/%m/%Y %H:%M",
+        "%d-%m-%Y %H:%M",
+    ):
+        try:
+            return datetime.strptime(raw, fmt)
+        except ValueError:
+            pass
+    try:
+        return datetime.fromisoformat(str(val).strip())
+    except ValueError as err:
+        raise ValueError(f"Unparseable ETA format: {val}") from err
 
 
 def decode_upload(raw: bytes) -> str:
@@ -58,13 +136,21 @@ def parse_csv_text(content: str, required_columns: Iterable[str]) -> list[Row]:
     if not reader.fieldnames:
         raise CsvValidationError("CSV file is empty or missing a header row.")
 
-    headers = {column.strip() for column in reader.fieldnames if column}
-    missing = sorted(set(required_columns) - headers)
+    column_mapping = {col: normalize_column_name(col) for col in reader.fieldnames if col}
+    normalized_headers = set(column_mapping.values())
+    missing = sorted(set(required_columns) - normalized_headers)
     if missing:
         raise CsvValidationError(f"CSV missing required columns: {', '.join(missing)}")
 
     try:
-        rows = [{(k.strip() if k else k): v for k, v in row.items()} for row in reader]
+        rows = [
+            {
+                column_mapping[k]: (v.strip() if isinstance(v, str) else v)
+                for k, v in row.items()
+                if k and k in column_mapping
+            }
+            for row in reader
+        ]
     except csv.Error as err:
         raise CsvValidationError(f"Malformed CSV content: {err}") from err
 

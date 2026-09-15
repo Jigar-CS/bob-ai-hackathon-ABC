@@ -3976,7 +3976,13 @@ async function uploadCSV(type, input) {
     }
     const plan = await res.json();
     renderPlan(plan);
-    const label = `Custom ${type.charAt(0).toUpperCase() + type.slice(1)} Active`;
+    window._activeCustomUploads = window._activeCustomUploads || {};
+    window._activeCustomUploads[type] = true;
+
+    const label = (window._activeCustomUploads.vessels && window._activeCustomUploads.berths)
+      ? 'Custom Vessels & Berths Active'
+      : `Custom ${type.charAt(0).toUpperCase() + type.slice(1)} Active`;
+
     setStatus('READY', 'ready');
     setDatasourceRow('custom', label);
     showToast(`${file.name} uploaded — plan regenerated`, 'success');
@@ -3992,7 +3998,9 @@ async function uploadCSV(type, input) {
 }
 
 async function resetDefaultData() {
+  window._activeCustomUploads = {};
   setStatus('LOADING…', 'loading');
+
   setDatasourceRow('loading');
   try {
     const res = await fetch(`${API_BASE}/datasets/reset`, { method: 'POST' });

@@ -22,7 +22,7 @@ from datetime import datetime, timedelta
 
 from portpulse.config import get_settings
 from portpulse.constants import ETA_FORMAT
-from portpulse.csv_io import Row
+from portpulse.csv_io import Row, parse_eta
 from portpulse.errors import PlanningError
 
 logger = logging.getLogger(__name__)
@@ -107,7 +107,7 @@ def _parse_vessels(vessels: list[Row]) -> tuple[list[_Vessel], list[Row]]:
     rejected: list[Row] = []
     for vessel in vessels:
         try:
-            eta = datetime.strptime(str(vessel["eta"]), ETA_FORMAT)
+            eta = parse_eta(vessel.get("eta"))
             size_teu = int(vessel["size_teu"])
             if size_teu <= 0:
                 raise ValueError("size_teu must be positive")
