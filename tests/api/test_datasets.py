@@ -44,6 +44,38 @@ def test_uploaded_berths_replace_the_default_capacity(client: TestClient) -> Non
     assert {record["berth_id"] for record in assignments} == {"B9"}
 
 
+def test_uploading_vessels_then_berths_combines_both_datasets(client: TestClient) -> None:
+    res_vessels = upload(client, "vessels", VESSEL_UPLOAD)
+    assert res_vessels.status_code == 200
+
+    res_berths = upload(client, "berths", BERTH_UPLOAD)
+    assert res_berths.status_code == 200
+
+    assignments = res_berths.json()["berth_assignments"]
+    assert len(assignments) == 1
+    assert assignments[0]["vessel_id"] == "V100"
+    assert assignments[0]["berth_id"] == "B9"
+
+    # Subsequent GET /api/v1/plan must also reflect both uploaded datasets
+    plan_res = client.get("/api/v1/plan")
+    assert plan_res.status_code == 200
+    plan_assignments = plan_res.json()["berth_assignments"]
+    assert len(plan_assignments) == 1
+    assert plan_assignments[0]["vessel_id"] == "V100"
+    assert plan_assignments[0]["berth_id"] == "B9"
+
+
+def test_reset_datasets_restores_default_sample_data(client: TestClient) -> None:
+    upload(client, "vessels", VESSEL_UPLOAD)
+    upload(client, "berths", BERTH_UPLOAD)
+
+    reset_res = client.post("/api/v1/datasets/reset")
+    assert reset_res.status_code == 200
+    assignments = reset_res.json()["berth_assignments"]
+    # Default datasets have 3 vessels V001, V002, V003
+    assert len(assignments) == 3
+
+
 def test_non_csv_extension_is_rejected(client: TestClient) -> None:
     response = upload(client, "vessels", VESSEL_UPLOAD, filename="schedule.xlsx")
     assert response.status_code == 400

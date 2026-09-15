@@ -25,6 +25,37 @@ FALLBACK_ALTERNATE_PORTS: tuple[dict[str, Any], ...] = (
 )
 
 
+def ensure_sample_backups(settings: Settings | None = None) -> None:
+    """Backup default bundled sample CSV datasets on first load if backups do not exist."""
+    settings = settings or get_settings()
+    sample_vessels = settings.app.data_dir / "vessels.sample.csv"
+    sample_berths = settings.app.data_dir / "berths.sample.csv"
+
+    if not sample_vessels.exists() and settings.app.vessels_path.exists():
+        try:
+            sample_vessels.write_bytes(settings.app.vessels_path.read_bytes())
+        except OSError as err:
+            logger.debug("Could not write sample vessels backup: %s", err)
+
+    if not sample_berths.exists() and settings.app.berths_path.exists():
+        try:
+            sample_berths.write_bytes(settings.app.berths_path.read_bytes())
+        except OSError as err:
+            logger.debug("Could not write sample berths backup: %s", err)
+
+
+def reset_default_datasets(settings: Settings | None = None) -> None:
+    """Reset vessel schedule and berth capacity tables back to default sample data."""
+    settings = settings or get_settings()
+    sample_vessels = settings.app.data_dir / "vessels.sample.csv"
+    sample_berths = settings.app.data_dir / "berths.sample.csv"
+
+    if sample_vessels.exists():
+        settings.app.vessels_path.write_bytes(sample_vessels.read_bytes())
+    if sample_berths.exists():
+        settings.app.berths_path.write_bytes(sample_berths.read_bytes())
+
+
 def load_vessels(settings: Settings | None = None) -> list[Row]:
     """Load the default vessel schedule.
 
@@ -32,6 +63,7 @@ def load_vessels(settings: Settings | None = None) -> list[Row]:
         DataFileError: if the dataset is missing or unreadable.
     """
     settings = settings or get_settings()
+    ensure_sample_backups(settings)
     return read_csv_file(settings.app.vessels_path)
 
 
@@ -42,6 +74,7 @@ def load_berths(settings: Settings | None = None) -> list[Row]:
         DataFileError: if the dataset is missing or unreadable.
     """
     settings = settings or get_settings()
+    ensure_sample_backups(settings)
     return read_csv_file(settings.app.berths_path)
 
 

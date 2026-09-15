@@ -96,9 +96,25 @@ async def upload_dataset(
     rows: list[Row] = parse_csv_text(decode_upload(raw), _REQUIRED_COLUMNS[dataset])
     logger.info("Accepted %s upload '%s' with %d rows", dataset.value, filename, len(rows))
 
-    if dataset is DatasetName.vessels:
-        return OpsPlan.model_validate(generate_ops_plan(rows, load_berths(settings)))
-    return OpsPlan.model_validate(generate_ops_plan(load_vessels(settings), rows))
+    target_path = (
+        settings.app.vessels_path if dataset is DatasetName.vessels else settings.app.berths_path
+    )
+    target_path.write_bytes(raw)
+
+    return OpsPlan.model_validate(generate_ops_plan(load_vessels(settings), load_berths(settings)))
+
+
+@router.post(
+    "/datasets/reset",
+    response_model=OpsPlan,
+    summary="Reset datasets back to default sample data",
+)
+def reset_datasets(settings: Settings = Depends(get_settings)) -> OpsPlan:
+    """Restore original bundled vessel schedule and berth capacity tables."""
+    from portpulse.datasets import reset_default_datasets
+
+    reset_default_datasets(settings)
+    return OpsPlan.model_validate(generate_ops_plan(load_vessels(settings), load_berths(settings)))
 
 
 @router.get(

@@ -3951,11 +3951,26 @@ async function uploadCSV(type, input) {
   }
 }
 
-function resetDefaultData() {
+async function resetDefaultData() {
   setStatus('LOADING…', 'loading');
   setDatasourceRow('loading');
-  loadDefaultPlan();
+  try {
+    const res = await fetch(`${API_BASE}/datasets/reset`, { method: 'POST' });
+    if (res.ok) {
+      const plan = await res.json();
+      renderPlan(plan);
+      setStatus('READY', 'ready');
+      setDatasourceRow('default');
+      showToast('Reset to default sample datasets', 'success');
+      loadSummary();
+    } else {
+      loadDefaultPlan();
+    }
+  } catch (err) {
+    loadDefaultPlan();
+  }
 }
+
 
 // ── Side-Panel Navigation Switcher ──────────────────────────────────────────
 (function () {
