@@ -9,11 +9,19 @@ unversioned so orchestrators have a stable probe URL.
 
 ## Authentication
 
-Read endpoints are public. Write endpoints — `POST /api/v1/plan/custom` and
-`POST /api/v1/uploads/{dataset}` — require an `X-API-Key` header **when**
-`PORTPULSE_API_KEY` is configured. If it is unset, they are open, which is
-intended for local use only; the application refuses to start in production
-without a key.
+Read endpoints are public. Write endpoints require an `X-API-Key` header **when**
+`PORTPULSE_API_KEY` is configured:
+
+| Endpoint | Requires key |
+|---|---|
+| `POST /api/v1/plan/custom` | ✓ |
+| `POST /api/v1/uploads/{dataset}` | ✓ |
+| `POST /api/v1/chat` | ✓ |
+| All `GET` endpoints | — |
+| `POST /api/v1/summary` | — |
+
+If `PORTPULSE_API_KEY` is unset, write endpoints are open — which is intended for
+local use only. The application refuses to start in production without a key.
 
 ```bash
 curl -X POST http://127.0.0.1:8000/api/v1/plan/custom \
@@ -21,6 +29,12 @@ curl -X POST http://127.0.0.1:8000/api/v1/plan/custom \
   -H "Content-Type: application/json" \
   -d @plan-request.json
 ```
+
+## Rate limiting
+
+`POST` requests to `/api/v1/chat`, `/api/v1/uploads/*`, and `/api/v1/plan/custom`
+are subject to a sliding-window limit of **30 requests per minute per IP**. Excess
+requests receive `429` with a `Retry-After: 60` header.
 
 ## Errors
 
@@ -36,6 +50,7 @@ Every failure returns the same envelope:
 | `401` | Missing or incorrect `X-API-Key`. |
 | `413` | Upload exceeds `PORTPULSE_MAX_UPLOAD_BYTES`. |
 | `422` | Request body failed validation, or a plan is impossible from the input. |
+| `429` | Rate limit exceeded. |
 | `500` | Unexpected error. The response carries a reference matching the `X-Request-ID` in the logs. |
 | `503` | Default datasets are missing or unreadable. |
 
@@ -70,6 +85,9 @@ The full 72-hour operations plan built from the configured datasets.
 ```json
 {
   "generated_at": "2026-09-13T09:15:00+00:00",
+  "freshness_status": "FRESH",
+  "data_age_seconds": 0,
+  "source_name": "TOS",
   "congestion_forecast": [
     {
       "day": 1,
@@ -199,3 +217,86 @@ vessel_id,vessel_name,status,berth_id,crane_count,arrival,berth_start,departure_
 
 Rerouted rows leave the berth columns empty and carry the reason plus the ranked
 alternatives in `notes`.
+
+---
+
+## `GET /api/v1/summary`
+
+Returns a 3–4 sentence plain-language summary of the current ops plan from the
+bundled datasets. Uses watsonx.ai when configured; falls back to a deterministic
+template otherwise. Never returns a 500.
+
+```json
+{
+  "summary": "Day 1 is at HIGH congestion risk with 14 vessels exceeding berth capacity. ...",
+  "ai_generated": true
+}
+```
+
+---
+
+## `POST /api/v1/summary`
+
+Same as `GET /api/v1/summary` but generates a summary for a plan already computed
+by the caller — used by the dashboard after a CSV upload so the summary reflects
+the uploaded data rather than the defaults. The request body is a full `OpsPlan`
+object (same shape as `GET /api/v1/plan`).
+
+```json
+{
+  "summary": "All vessels have been assigned to berths. ...",
+  "ai_generated": false
+}
+```
+
+---
+
+## `POST /api/v1/chat`
+
+Answer one plain-English question from a shift supervisor, grounded in the
+supplied ops plan. Requires `X-API-Key` when `PORTPULSE_API_KEY` is set.
+
+### Request
+
+```json
+{
+  "message": "Which vessel is assigned to B3, and when does it depart?",
+  "plan": { ... },
+  "history": [
+    { "role": "user",      "content": "What is the congestion level today?" },
+    { "role": "assistant", "content": "Day 1 is at HIGH risk with 14 vessels..." }
+  ]
+}
+```
+
+| Field | Type | Constraints |
+|---|---|---|
+| `message` | `string` | 1–1,000 characters |
+| `plan` | `OpsPlan` | Full plan object from `GET /api/v1/plan` |
+| `history` | array of `{role, content}` | Optional; max 20 turns; `role` must be `"user"` or `"assistant"`; content max 5,000 chars |
+
+### Response
+
+```json
+{
+  "reply": "MV Horizon-4 is berthed at **Berth B3**. It arrived at 2026-09-15 07:30 ...",
+  "ai_generated": true
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `reply` | Markdown-formatted answer. Always present; never a 500. |
+| `ai_generated` | `true` if the text came from watsonx.ai, `false` if it used the rule-based fallback. |
+
+### Scope guardrail
+
+Questions outside port operations (general knowledge, coding, recipes, sports,
+etc.) receive a fixed refusal reply regardless of the `ai_generated` path:
+
+```json
+{
+  "reply": "I am PortPulse Assistant, dedicated exclusively to PortPulse port operations, vessel allocations, congestion forecasting, and alternate berth routing. I cannot answer questions outside of this domain.",
+  "ai_generated": false
+}
+```

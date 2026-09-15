@@ -7,7 +7,7 @@ Everything needed to run, configure and deploy PortPulse.
 - Python 3.10 or newer
 - pip
 - Docker (optional, for the container route)
-- IBM watsonx.ai credentials (optional, enables AI-written routing text)
+- IBM watsonx.ai or BOB Agent credentials (optional; enables AI-written routing text and the conversational assistant)
 
 ## Install
 
@@ -48,23 +48,45 @@ portpulse
 Copy the template and edit as needed:
 
 ```bash
-cp .env.example .env
+cp src/.env.example .env
 ```
 
 Every setting has a working default, so an empty `.env` is valid. Environment
-variables always take precedence over `.env`.
+variables always take precedence over `.env`. The application searches for `.env`
+in the repository root, `src/`, and the parent directory — whichever is found first
+is loaded.
 
-### IBM watsonx.ai
+### IBM watsonx.ai / BOB Agent
+
+The application accepts credentials from either the `WATSONX_*` or `BOB_AGENT_*`
+variable families. Both resolve to the same settings fields; whichever is non-empty
+is used. `BOB_AGENT_*` is checked first.
+
+**BOB Agent variables (preferred for IBM Bob deployments):**
 
 | Variable | Default | Notes |
 |---|---|---|
-| `WATSONX_API_KEY` | *(unset)* | Enables AI routing text. Without it, template text is used. |
+| `BOB_AGENT_API_KEY` | *(unset)* | Alias for `WATSONX_API_KEY`. Enables AI routing text and chat. |
+| `BOB_AGENT_PROJECT_ID` | `"bob-agent-project"` | Alias for `WATSONX_PROJECT_ID`. Defaults to `"bob-agent-project"` when the API key is set but this is blank. |
+| `BOB_AGENT_URL` | `https://us-south.ml.cloud.ibm.com` | Alias for `WATSONX_URL`. |
+
+**watsonx.ai variables (standard IBM Cloud credentials):**
+
+| Variable | Default | Notes |
+|---|---|---|
+| `WATSONX_API_KEY` | *(unset)* | IBM Cloud API key. Enables AI routing text and chat. Without it, template text is used. |
 | `WATSONX_PROJECT_ID` | *(unset)* | Required alongside the API key. |
-| `WATSONX_URL` | `https://us-south.ml.cloud.ibm.com` | Regional endpoint. |
+| `WATSONX_URL` | `https://us-south.ml.cloud.ibm.com` | Regional endpoint. Change for `eu-de` or `jp-tok` deployments. |
 | `WATSONX_MODEL_ID` | `ibm/granite-3-8b-instruct` | Any watsonx.ai text-generation model. |
-| `WATSONX_MAX_RETRIES` | `3` | Retries on 429 and 5xx responses. |
+| `WATSONX_API_VERSION` | `2024-05-01` | watsonx.ai REST API version string. |
+| `WATSONX_IAM_URL` | `https://iam.cloud.ibm.com/identity/token` | IBM IAM token endpoint. |
+| `WATSONX_IAM_TIMEOUT_SECONDS` | `10` | Timeout for IAM token requests. |
 | `WATSONX_REQUEST_TIMEOUT_SECONDS` | `60` | Generation call timeout. |
+| `WATSONX_MAX_RETRIES` | `3` | Retries on 429 and 5xx responses. |
+| `WATSONX_BACKOFF_FACTOR` | `0.5` | Exponential backoff base (with jitter). |
+| `WATSONX_MAX_NEW_TOKENS` | `300` | Maximum tokens to generate per call. |
 | `WATSONX_AUTH_COOLDOWN_SECONDS` | `60` | Circuit-breaker window after an auth failure. |
+| `WATSONX_TOKEN_EXPIRY_BUFFER_SECONDS` | `300` | Renew the IAM token this many seconds before it expires. |
 
 Values that look like an unedited template (containing `your_`, `_here`, or
 `changeme`) are treated as unset. This is deliberate: a placeholder key would
@@ -80,7 +102,7 @@ vessel before falling back.
 | `PORTPULSE_PORT` | `8000` | Bind port. |
 | `PORTPULSE_LOG_LEVEL` | `INFO` | Standard logging levels. |
 | `PORTPULSE_LOG_JSON` | `false` | `true` emits one JSON object per line. |
-| `PORTPULSE_API_KEY` | *(unset)* | When set, write endpoints require an `X-API-Key` header. |
+| `PORTPULSE_API_KEY` | *(unset)* | When set, write endpoints (`POST /plan/custom`, `POST /uploads/*`, `POST /chat`) require an `X-API-Key` header. |
 | `PORTPULSE_CORS_ALLOW_ORIGINS` | `http://localhost:8000,http://127.0.0.1:8000` | Comma-separated allowlist. |
 | `PORTPULSE_MAX_UPLOAD_BYTES` | `5242880` | 5 MB; enforced while streaming, not after buffering. |
 
@@ -132,6 +154,14 @@ Or with Compose, which defaults to production mode and therefore requires an API
 PORTPULSE_API_KEY=choose-a-strong-value docker compose up --build
 ```
 
+To also enable AI features with Compose:
+
+```bash
+PORTPULSE_API_KEY=choose-a-strong-value \
+BOB_AGENT_API_KEY=your-ibm-api-key \
+docker compose up --build
+```
+
 The image runs as an unprivileged user, contains no development dependencies, and
 excludes `.env` via `.dockerignore` so local credentials are never baked in.
 
@@ -152,9 +182,11 @@ each test gets a temporary dataset directory.
 |---|---|
 | `ModuleNotFoundError: portpulse` | The package is not installed. Run `pip install -e .` from the repository root. |
 | `/health` returns 503, dashboard shows an error | Datasets are missing. Run `python scripts/generate_sample_data.py` or check `PORTPULSE_DATA_DIR`. |
-| Reroute text is generic rather than AI-written | `WATSONX_API_KEY` / `WATSONX_PROJECT_ID` are unset or placeholders. Check the startup log line about watsonx configuration. |
-| `401 Invalid or missing API key` | `PORTPULSE_API_KEY` is set; send it in the `X-API-Key` header. |
+| Reroute text is generic rather than AI-written | `WATSONX_API_KEY` / `BOB_AGENT_API_KEY` is unset or a placeholder. Check the startup log line about watsonx configuration. |
+| Chat replies are structured text, not natural language | Same as above — watsonx.ai is not configured. The rule-based fallback is active. |
+| `401 Invalid or missing API key` | `PORTPULSE_API_KEY` is set; send it in the `X-API-Key` header on write endpoints. |
+| `429 Rate limit exceeded` | More than 30 POSTs per minute from one IP. Wait 60 seconds and retry. |
 | Startup fails with `PORTPULSE_API_KEY must be set` | Expected in production mode. Set the key, or use `PORTPULSE_ENVIRONMENT=development` locally. |
 | `413` on upload | The file exceeds `PORTPULSE_MAX_UPLOAD_BYTES`. |
 | Port 8000 already in use | `uvicorn portpulse.main:app --port 8001`. |
-| Dashboard loads but shows stale numbers | The plan is computed per request; use the Reset button to refetch. |
+| Dashboard loads but shows stale numbers | The plan is computed per request; reload the page or use the data upload to refresh. |
