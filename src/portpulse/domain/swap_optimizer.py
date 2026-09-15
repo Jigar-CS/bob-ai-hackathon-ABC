@@ -55,7 +55,7 @@ def find_swap_opportunities(
             id1 = str(v1.get("vessel_id", f"V{i}"))
             id2 = str(v2.get("vessel_id", f"V{j}"))
 
-            pair_key = tuple(sorted([id1, id2]))
+            pair_key: tuple[str, str] = (min(id1, id2), max(id1, id2))
             if pair_key in seen_pairs:
                 continue
 

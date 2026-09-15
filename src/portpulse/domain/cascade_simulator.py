@@ -151,19 +151,19 @@ def simulate_cascade(
             if vid in iter_assignments:
                 v["eta"] = iter_assignments[vid].get("berth_start", v.get("eta"))
 
-    affected_list = list(affected_map.values())
-    affected_list.sort(key=lambda x: (x["cascade_depth"], -x["delay_hours"]))
+    affected_list: list[dict[str, Any]] = list(affected_map.values())
+    affected_list.sort(key=lambda x: (int(x["cascade_depth"]), -float(x["delay_hours"])))
 
     total_vessels_affected = len(affected_list)
     total_cascade_delay_hours = round(sum(v["delay_hours"] for v in affected_list), 2)
 
     # Demurrage cost calculation
     total_cost = 0.0
-    for v in affected_list:
-        delay = float(v.get("delay_hours", 0.0))
-        size = int(v.get("size_teu", 6500))
+    for item in affected_list:
+        delay = float(item.get("delay_hours", 0.0))
+        size = int(item.get("size_teu", 6500))
         cost = delay * size * DEMURRAGE_RATE_PER_TEU_HOUR
-        v["cost_impact"] = round(cost, 2)
+        item["cost_impact"] = round(cost, 2)
         total_cost += cost
 
     return {
