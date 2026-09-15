@@ -106,6 +106,7 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = "tests.*"
 disallow_untyped_defs = false
+check_untyped_defs = false
 
 # ── pytest ───────────────────────────────────────────────────────────────────
 [tool.pytest.ini_options]

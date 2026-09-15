@@ -87,6 +87,8 @@ def _parse_vessels(vessels: list[Row]) -> tuple[list[_Vessel], list[Row]]:
         try:
             eta = datetime.strptime(str(vessel["eta"]), ETA_FORMAT)
             size_teu = int(vessel["size_teu"])
+            if size_teu <= 0:
+                raise ValueError("size_teu must be positive")
         except (KeyError, TypeError, ValueError) as err:
             logger.warning(
                 "Vessel %s has an unusable ETA or size (%s) — marking unassigned.",
@@ -95,6 +97,12 @@ def _parse_vessels(vessels: list[Row]) -> tuple[list[_Vessel], list[Row]]:
             )
             rejected.append(vessel)
             continue
+
+        raw_priority = _to_int(vessel.get("priority"))
+        if raw_priority is not None:
+            # Clamp priority to valid range [1, 5] so negative numbers can't jump the queue
+            raw_priority = max(1, min(5, raw_priority))
+
         parsed.append(
             _Vessel(
                 row=vessel,
@@ -102,7 +110,7 @@ def _parse_vessels(vessels: list[Row]) -> tuple[list[_Vessel], list[Row]]:
                 name=str(vessel.get("name") or "Unknown Vessel"),
                 eta=eta,
                 size_teu=size_teu,
-                priority=_to_int(vessel.get("priority")),
+                priority=raw_priority,
             )
         )
     return parsed, rejected

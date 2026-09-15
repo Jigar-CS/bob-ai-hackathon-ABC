@@ -26,7 +26,11 @@ from portpulse.errors import (
     PlanningError,
 )
 from portpulse.logging_setup import configure_logging
-from portpulse.middleware import RequestContextMiddleware
+from portpulse.middleware import (
+    RateLimitMiddleware,
+    RequestContextMiddleware,
+    SecurityHeadersMiddleware,
+)
 from portpulse.security import API_KEY_HEADER_NAME
 
 logger = logging.getLogger(__name__)
@@ -159,12 +163,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         description=DESCRIPTION,
         version=__version__,
         lifespan=_lifespan,
-        docs_url="/api/docs",
+        docs_url=None if settings.app.is_production else "/api/docs",
         redoc_url=None,
-        openapi_url="/api/openapi.json",
+        openapi_url=None if settings.app.is_production else "/api/openapi.json",
     )
     app.state.settings = settings
 
+    app.add_middleware(RateLimitMiddleware)
+    app.add_middleware(SecurityHeadersMiddleware)
     app.add_middleware(RequestContextMiddleware)
     app.add_middleware(
         CORSMiddleware,

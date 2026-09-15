@@ -36,6 +36,9 @@ def test_get_plan_returns_every_section(client: TestClient) -> None:
     plan = response.json()
     assert set(plan) == {
         "generated_at",
+        "freshness_status",
+        "data_age_seconds",
+        "source_name",
         "congestion_forecast",
         "berth_assignments",
         "unassigned_count",

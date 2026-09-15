@@ -78,3 +78,14 @@ def test_rows_to_csv_of_empty_input_is_empty() -> None:
 
 def test_table_to_csv_writes_header_and_rows() -> None:
     assert table_to_csv(("x", "y"), [[1, 2], [3, 4]]).splitlines() == ["x,y", "1,2", "3,4"]
+
+
+def test_table_to_csv_escapes_formula_injection_vectors() -> None:
+    records = [
+        ["=SUM(1+1)", "+12345"],
+        ["-calc", "@macro"],
+    ]
+    csv_out = table_to_csv(("col1", "col2"), records)
+    lines = csv_out.splitlines()
+    assert lines[1] == "'=SUM(1+1),'+12345"
+    assert lines[2] == "'-calc,'@macro"

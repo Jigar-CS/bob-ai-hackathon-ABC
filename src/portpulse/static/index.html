@@ -2135,9 +2135,13 @@ loadDefaultPlan();
         .slice(-12)
         .map(t => ({ role: t.role, content: (t.content || '').slice(0, 1500) }));
 
+      const headers = { 'Content-Type': 'application/json' };
+      const apiKey = window.PORTPULSE_API_KEY || localStorage.getItem('PORTPULSE_API_KEY');
+      if (apiKey) headers['X-API-Key'] = apiKey;
+
       const res = await fetch(`${API_BASE}/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: headers,
         body: JSON.stringify({
           message: text,
           plan: plan,
@@ -2148,8 +2152,18 @@ loadDefaultPlan();
       typingEl.remove();
 
       if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.detail || `Server error (${res.status})`);
+        let errMsg = `Server error (${res.status})`;
+        if (res.status === 401) {
+          errMsg = 'Authentication required: Missing or invalid X-API-Key.';
+        } else if (res.status === 429) {
+          errMsg = 'Rate limit reached: Too many requests. Please wait before asking another question.';
+        } else if (res.status === 422) {
+          errMsg = 'Validation error: The message or history format was rejected by the server.';
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          if (errData.detail) errMsg = errData.detail;
+        }
+        throw new Error(errMsg);
       }
       const data = await res.json();
       const reply = data.reply || '\u2014';
@@ -2173,9 +2187,10 @@ loadDefaultPlan();
       }
     } catch (err) {
       typingEl.remove();
-      appendBubble('system', 'Chat error: ' + err.message);
+      appendBubble('system', err.message);
       console.warn('Chat error:', err.message);
-    } finally {
+    }
+ finally {
       isBusy = false;
       $send.disabled = false;
       $input.focus();

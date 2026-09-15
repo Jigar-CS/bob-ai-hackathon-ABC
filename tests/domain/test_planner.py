@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from datetime import datetime
+from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -18,7 +20,7 @@ _NOW = datetime(2026, 10, 1, 8, 0)
 
 
 def test_plan_contains_every_section(
-    settings, vessel_rows: list[Row], berth_rows: list[Row]
+    settings: Any, vessel_rows: list[Row], berth_rows: list[Row]
 ) -> None:
     plan = generate_ops_plan(vessel_rows, berth_rows, now=_NOW)
 
@@ -31,13 +33,13 @@ def test_plan_contains_every_section(
 
 
 def test_plan_validates_against_the_response_schema(
-    settings, vessel_rows: list[Row], berth_rows: list[Row]
+    settings: Any, vessel_rows: list[Row], berth_rows: list[Row]
 ) -> None:
     """Guards against the domain layer and the API contract drifting apart."""
     OpsPlan.model_validate(generate_ops_plan(vessel_rows, berth_rows, now=_NOW))
 
 
-def test_oversized_vessels_flow_into_reroute_suggestions(settings) -> None:
+def test_oversized_vessels_flow_into_reroute_suggestions(settings: Any) -> None:
     vessels = [
         {
             "vessel_id": "V1",
@@ -59,7 +61,7 @@ def test_oversized_vessels_flow_into_reroute_suggestions(settings) -> None:
 
 
 def test_a_failing_engine_degrades_to_a_warning(
-    settings, monkeypatch: pytest.MonkeyPatch, vessel_rows: list[Row], berth_rows: list[Row]
+    settings: Any, monkeypatch: pytest.MonkeyPatch, vessel_rows: list[Row], berth_rows: list[Row]
 ) -> None:
     def boom(*_args: object, **_kwargs: object) -> None:
         raise PlanningError("forecast engine offline")
@@ -74,7 +76,7 @@ def test_a_failing_engine_degrades_to_a_warning(
 
 
 def test_unexpected_engine_error_does_not_leak_details(
-    settings, monkeypatch: pytest.MonkeyPatch, vessel_rows: list[Row], berth_rows: list[Row]
+    settings: Any, monkeypatch: pytest.MonkeyPatch, vessel_rows: list[Row], berth_rows: list[Row]
 ) -> None:
     def boom(*_args: object, **_kwargs: object) -> None:
         raise RuntimeError("connection string postgres://user:secret@host/db")
@@ -86,7 +88,22 @@ def test_unexpected_engine_error_does_not_leak_details(
     assert "secret" not in str(plan)
 
 
-def test_missing_berths_produce_warnings_not_an_exception(settings, vessel_rows: list[Row]) -> None:
+def test_missing_berths_produce_warnings_not_an_exception(
+    settings: Any, vessel_rows: list[Row]
+) -> None:
     plan = generate_ops_plan(vessel_rows, [])
     assert len(plan["warnings"]) == 2
     assert plan["unassigned_count"] == 3
+
+
+def test_50_record_datasets_plan_generation() -> None:
+    vessels_path = Path("test_vessels_50.csv")
+    berths_path = Path("test_berths_50.csv")
+    if vessels_path.exists() and berths_path.exists():
+        from portpulse.csv_io import read_csv_file
+        vessels = read_csv_file(vessels_path)
+        berths = read_csv_file(berths_path)
+        start_now = datetime(2026, 9, 20, 0, 0)
+        plan = generate_ops_plan(vessels, berths, now=start_now)
+        assert len(plan["berth_assignments"]) + plan["unassigned_count"] == 50
+        OpsPlan.model_validate(plan)

@@ -73,6 +73,13 @@ def parse_csv_text(content: str, required_columns: Iterable[str]) -> list[Row]:
     return rows
 
 
+def _sanitize_csv_cell(value: object) -> object:
+    """Escape values starting with =, +, -, @ to prevent spreadsheet formula injection."""
+    if isinstance(value, str) and value.startswith(("=", "+", "-", "@")):
+        return f"'{value}"
+    return value
+
+
 def rows_to_csv(rows: Sequence[Row], fieldnames: Sequence[str] | None = None) -> str:
     """Serialise row dicts back to CSV text."""
     if not rows:
@@ -81,7 +88,11 @@ def rows_to_csv(rows: Sequence[Row], fieldnames: Sequence[str] | None = None) ->
     buffer = io.StringIO()
     writer = csv.DictWriter(buffer, fieldnames=columns, extrasaction="ignore")
     writer.writeheader()
-    writer.writerows(rows)
+    sanitized_rows = [
+        {k: str(_sanitize_csv_cell(v)) for k, v in row.items()}
+        for row in rows
+    ]
+    writer.writerows(sanitized_rows)
     return buffer.getvalue()
 
 
@@ -90,5 +101,7 @@ def table_to_csv(header: Sequence[str], records: Iterable[Sequence[object]]) -> 
     buffer = io.StringIO()
     writer = csv.writer(buffer)
     writer.writerow(header)
-    writer.writerows(records)
+    for record in records:
+        sanitized_row = [_sanitize_csv_cell(cell) for cell in record]
+        writer.writerow(sanitized_row)
     return buffer.getvalue()

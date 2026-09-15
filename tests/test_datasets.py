@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -17,7 +18,7 @@ from portpulse.datasets import (
 from portpulse.errors import DataFileError
 
 
-def test_default_datasets_load(settings) -> None:
+def test_default_datasets_load(settings: Any) -> None:
     assert len(load_vessels(settings)) == 3
     assert len(load_berths(settings)) == 2
     assert datasets_available(settings) is True
@@ -34,7 +35,7 @@ def test_missing_datasets_raise_and_are_reported_unavailable(
     assert datasets_available(settings) is False
 
 
-def test_catalogue_is_read_from_disk(settings, data_dir: Path) -> None:
+def test_catalogue_is_read_from_disk(settings: Any, data_dir: Path) -> None:
     (data_dir / "alternate_ports.json").write_text(
         json.dumps([{"port": "Port of Lisbon", "distance_km": 12, "spare_capacity_teu": 3000}]),
         encoding="utf-8",
@@ -44,7 +45,7 @@ def test_catalogue_is_read_from_disk(settings, data_dir: Path) -> None:
     ]
 
 
-def test_missing_catalogue_falls_back_to_demo_ports(settings) -> None:
+def test_missing_catalogue_falls_back_to_demo_ports(settings: Any) -> None:
     assert load_alternate_ports(settings) == [dict(port) for port in FALLBACK_ALTERNATE_PORTS]
 
 
@@ -53,7 +54,7 @@ def test_missing_catalogue_falls_back_to_demo_ports(settings) -> None:
     ["not json at all", "{}", "[]", '"a string"'],
 )
 def test_unusable_catalogue_falls_back_to_demo_ports(
-    settings,
+    settings: Any,
     data_dir: Path,
     content: str,
 ) -> None:
@@ -62,7 +63,7 @@ def test_unusable_catalogue_falls_back_to_demo_ports(
 
 
 def test_malformed_entries_are_skipped_but_good_ones_kept(
-    settings,
+    settings: Any,
     data_dir: Path,
 ) -> None:
     (data_dir / "alternate_ports.json").write_text(
@@ -82,7 +83,7 @@ def test_malformed_entries_are_skipped_but_good_ones_kept(
 
 
 def test_entirely_malformed_catalogue_falls_back(
-    settings,
+    settings: Any,
     data_dir: Path,
 ) -> None:
     (data_dir / "alternate_ports.json").write_text(

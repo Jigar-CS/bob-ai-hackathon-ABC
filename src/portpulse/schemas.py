@@ -128,6 +128,9 @@ class OpsPlan(BaseModel):
     """The complete 72-hour operations plan returned to the dashboard."""
 
     generated_at: str
+    freshness_status: Literal["FRESH", "STALE"] = "FRESH"
+    data_age_seconds: int = Field(default=0, ge=0)
+    source_name: str = "TOS"
     congestion_forecast: list[CongestionWindow] = Field(default_factory=list)
     berth_assignments: list[BerthAssignment] = Field(default_factory=list)
     unassigned_count: int = Field(default=0, ge=0)

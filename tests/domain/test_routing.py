@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import pytest
 
 from portpulse.domain.routing import (
@@ -137,7 +139,7 @@ def test_empty_reply_parses_to_nothing(text: str) -> None:
 # ── End-to-end suggestion behaviour ──────────────────────────────────────────
 
 
-def test_template_text_is_used_when_watsonx_is_unconfigured(settings) -> None:
+def test_template_text_is_used_when_watsonx_is_unconfigured(settings: Any) -> None:
     results = suggest_alternates([VESSEL])
     assert len(results) == 1
     assert results[0]["ai_generated"] is False
@@ -145,7 +147,7 @@ def test_template_text_is_used_when_watsonx_is_unconfigured(settings) -> None:
     assert results[0]["alternatives"], "a vessel must always get at least one alternative"
 
 
-def test_ai_text_is_used_when_the_model_replies(settings) -> None:
+def test_ai_text_is_used_when_the_model_replies(settings: Any) -> None:
     fake = FakeWatsonx("No berth had capacity. Send it to Port of Ensenada, only 240km away.")
     results = suggest_alternates([VESSEL], client=fake)  # type: ignore[arg-type]
 
@@ -163,26 +165,26 @@ def test_ai_text_is_used_when_the_model_replies(settings) -> None:
         RuntimeError("something unexpected"),
     ],
 )
-def test_llm_failures_fall_back_to_template_text(settings, error: Exception) -> None:
+def test_llm_failures_fall_back_to_template_text(settings: Any, error: Exception) -> None:
     results = suggest_alternates([VESSEL], client=FakeWatsonx(error=error))  # type: ignore[arg-type]
     assert results[0]["ai_generated"] is False
     assert results[0]["reason_unassigned"] == DEFAULT_REASON_UNASSIGNED
     assert results[0]["alternatives"]
 
 
-def test_unparseable_reply_falls_back_to_template_text(settings) -> None:
+def test_unparseable_reply_falls_back_to_template_text(settings: Any) -> None:
     results = suggest_alternates([VESSEL], client=FakeWatsonx("   "))  # type: ignore[arg-type]
     assert results[0]["ai_generated"] is False
 
 
-def test_reply_with_only_reason_reports_ai_generated_false(settings) -> None:
+def test_reply_with_only_reason_reports_ai_generated_false(settings: Any) -> None:
     fake = FakeWatsonx("No berth was available in 72h window.")
     results = suggest_alternates([VESSEL], client=fake)  # type: ignore[arg-type]
     assert results[0]["reason_unassigned"] == "No berth was available in 72h window."
     assert results[0]["ai_generated"] is False
 
 
-def test_llm_call_budget_is_enforced(settings) -> None:
+def test_llm_call_budget_is_enforced(settings: Any) -> None:
     fake = FakeWatsonx("Reason one. Recommendation two.")
     vessels = [{**VESSEL, "vessel_id": f"V{index:03d}"} for index in range(4)]
 
@@ -192,7 +194,7 @@ def test_llm_call_budget_is_enforced(settings) -> None:
     assert [record["ai_generated"] for record in results] == [True, True, False, False]
 
 
-def test_candidates_are_ranked_by_distance_among_ports_that_fit(settings) -> None:
+def test_candidates_are_ranked_by_distance_among_ports_that_fit(settings: Any) -> None:
     # 3,500 TEU fits every demo port, so the nearest (Ensenada, 240km) must come first.
     alternatives = suggest_alternates([VESSEL])[0]["alternatives"]
     assert alternatives[0]["port"] == "Port of Ensenada"

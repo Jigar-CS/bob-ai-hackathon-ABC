@@ -161,7 +161,7 @@ def post_summary(payload: OpsPlan) -> dict[str, object]:
 
 
 class _ChatTurn(BaseModel):
-    role: str = Field(pattern="^(user|assistant|system)$")
+    role: str = Field(pattern="^(user|assistant)$")
     content: str = Field(min_length=1, max_length=5000)
 
 
@@ -174,6 +174,7 @@ class _ChatRequest(BaseModel):
 @router.post(
     "/chat",
     summary="Ask a plain-English question about the live ops plan",
+    dependencies=[Depends(require_api_key)],
 )
 def post_chat(payload: _ChatRequest) -> dict[str, Any]:
     """Answer one supervisor question grounded in the supplied ops plan.

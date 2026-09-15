@@ -114,3 +114,31 @@ def test_production_refuses_wildcard_cors(
         TestClient(create_app(get_settings())),
     ):
         pass  # pragma: no cover
+
+
+def test_chat_endpoint_protected_when_key_configured(secured_client: TestClient) -> None:
+    plan = {
+        "generated_at": "2026-09-25T00:00:00",
+        "congestion_forecast": [],
+        "berth_assignments": [],
+        "unassigned_count": 0,
+        "reroute_suggestions": [],
+        "warnings": [],
+    }
+    chat_payload = {"message": "Which vessel is at B1?", "plan": plan, "history": []}
+    res = secured_client.post("/api/v1/chat", json=chat_payload)
+    assert res.status_code == 401
+    assert res.json()["detail"] == "Invalid or missing API key."
+
+    res_ok = secured_client.post(
+        "/api/v1/chat", json=chat_payload, headers={"X-API-Key": API_KEY}
+    )
+    assert res_ok.status_code == 200
+
+
+def test_security_headers_present_on_responses(client: TestClient) -> None:
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert "Content-Security-Policy" in response.headers
+    assert response.headers["X-Content-Type-Options"] == "nosniff"
+    assert response.headers["X-Frame-Options"] == "DENY"

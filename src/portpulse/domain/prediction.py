@@ -144,9 +144,13 @@ def predict_congestion(
             beyond_horizon,
         )
 
+    if not windows:
+        return []
+
+    max_window_idx = max(windows.keys())
     results: list[dict[str, object]] = []
-    for window_index in sorted(windows):
-        sizes = windows[window_index]
+    for window_index in range(max_window_idx + 1):
+        sizes = windows.get(window_index, [])
         incoming_teu = sum(sizes)
         risk_ratio = incoming_teu / total_capacity
         if risk_ratio > high:
@@ -159,6 +163,14 @@ def predict_congestion(
         window_start = horizon_start + timedelta(hours=WINDOW_HOURS * window_index)
         window_end = window_start + timedelta(hours=WINDOW_HOURS)
 
+        if sizes:
+            reason = (
+                f"{len(sizes)} vessels ({incoming_teu:,} TEU) arriving vs "
+                f"{total_capacity:,} TEU total berth capacity"
+            )
+        else:
+            reason = f"No incoming vessels scheduled in Day {window_index + 1} 24-hour window."
+
         results.append(
             {
                 "day": window_index + 1,
@@ -169,10 +181,7 @@ def predict_congestion(
                 "total_capacity_teu": total_capacity,
                 "risk_ratio": round(risk_ratio, 2),
                 "risk_level": risk_level,
-                "reason": (
-                    f"{len(sizes)} vessels ({incoming_teu:,} TEU) arriving vs "
-                    f"{total_capacity:,} TEU total berth capacity"
-                ),
+                "reason": reason,
             }
         )
 
