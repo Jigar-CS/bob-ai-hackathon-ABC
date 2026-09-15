@@ -11,7 +11,7 @@
 | **Team Name** | ABC |
 | **Track** | AI |
 | **Category** | Logistics & Ports — L1 Container Congestion Predictor & Port Operations Optimiser |
-| **Team Lead** | Hetvi Taank — `hetvi.taank@ibm.com` |
+| **Team Lead** | Hetvi Tank — `hetvitaank07@gmail.com` |
 | **Members** | Trusha Patel, Jigar Sakhia, Priyansh Sukhdia |
 
 ---
