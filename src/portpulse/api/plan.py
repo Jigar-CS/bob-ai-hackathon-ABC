@@ -175,6 +175,7 @@ def post_summary(payload: OpsPlan) -> dict[str, object]:
 @router.post(
     "/plan/whatif",
     summary="Run a sandboxed What-If simulation comparing baseline vs modified scenario",
+    dependencies=[Depends(require_api_key)],
 )
 def post_whatif_plan(payload: WhatIfRequest) -> dict[str, Any]:
     """Simulate a single scenario modification (delay vessel or berth outage) vs baseline.
@@ -194,6 +195,7 @@ def post_whatif_plan(payload: WhatIfRequest) -> dict[str, Any]:
 @router.post(
     "/cascade-simulation",
     summary="Simulate iterative cascading impact across vessel schedule",
+    dependencies=[Depends(require_api_key)],
     responses={
         status.HTTP_400_BAD_REQUEST: {
             "model": ErrorResponse,
@@ -224,7 +226,7 @@ def post_cascade_simulation(payload: CascadeRequest) -> dict[str, Any]:
         logger.warning("Cascade simulation failed: %s", err)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Cascade simulation error: {err}",
+            detail="Cascade simulation error: Invalid simulation parameters.",
         ) from err
 
 

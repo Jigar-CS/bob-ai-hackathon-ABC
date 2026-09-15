@@ -10,6 +10,7 @@ import logging
 from datetime import datetime, timedelta
 from typing import Any
 
+from portpulse.config import get_settings
 from portpulse.constants import DEMURRAGE_RATE_PER_TEU_HOUR, ETA_FORMAT
 from portpulse.csv_io import Row
 from portpulse.domain.planner import generate_ops_plan
@@ -105,10 +106,11 @@ def simulate_cascade(
             if vid not in iter_assignments:
                 # Pushed to unassigned
                 if vid not in affected_map:
+                    max_wait = float(get_settings().app.max_berth_wait_hours)
                     affected_map[vid] = {
                         "vessel_id": vid,
                         "vessel_name": vname,
-                        "delay_hours": 12.0,  # Max wait penalty
+                        "delay_hours": max_wait,  # Max wait penalty
                         "cascade_depth": iter_num,
                         "reason": f"Pushed to unassigned queue during pass #{iter_num}",
                         "size_teu": int(base_vessel_map.get(vid, {}).get("size_teu", 6500)),
@@ -145,10 +147,10 @@ def simulate_cascade(
 
         prev_starts = current_starts
 
-        # Propagate delays into vessel ETAs for subsequent pass
+        # Propagate delays into vessel ETAs for subsequent pass (only for affected vessels)
         for v in curr_vessels:
             vid = str(v.get("vessel_id"))
-            if vid in iter_assignments:
+            if vid in iter_assignments and vid in affected_map:
                 v["eta"] = iter_assignments[vid].get("berth_start", v.get("eta"))
 
     affected_list: list[dict[str, Any]] = list(affected_map.values())

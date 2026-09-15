@@ -18,7 +18,6 @@ from fastapi.staticfiles import StaticFiles
 from portpulse import __version__
 from portpulse.api import api_v1_router, health_router
 from portpulse.config import STATIC_DIR, Settings, get_settings
-from portpulse.datasets import datasets_available
 from portpulse.errors import (
     ConfigurationError,
     CsvValidationError,
@@ -74,6 +73,10 @@ def _verify_startup_configuration(settings: Settings) -> None:
             "PORTPULSE_API_KEY is not set — upload and custom-plan endpoints are "
             "unauthenticated. Acceptable for local use; set it before exposing the service."
         )
+
+    from portpulse.datasets import datasets_available, ensure_sample_backups
+
+    ensure_sample_backups(settings)
 
     if not datasets_available(settings):
         logger.warning(

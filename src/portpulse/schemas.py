@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from portpulse.constants import ETA_FORMAT
 
@@ -79,6 +79,14 @@ class ScenarioSpec(_Model):
     berth_id: str | None = Field(default=None, examples=["B1"])
     hours: float | None = Field(default=None, ge=0, examples=[24.0])
 
+    @model_validator(mode="after")
+    def _validate_scenario_fields(self) -> ScenarioSpec:
+        if self.type == "delay_vessel" and (not self.vessel_id or self.delay_hours is None):
+            raise ValueError("vessel_id and delay_hours are required when type='delay_vessel'")
+        if self.type == "berth_outage" and (not self.berth_id or self.hours is None):
+            raise ValueError("berth_id and hours are required when type='berth_outage'")
+        return self
+
 
 class WhatIfRequest(_Model):
     """Input payload for What-If simulation."""
@@ -86,6 +94,12 @@ class WhatIfRequest(_Model):
     vessels: list[VesselIn] | None = Field(default=None)
     berths: list[BerthIn] | None = Field(default=None)
     scenario: ScenarioSpec
+
+    @model_validator(mode="after")
+    def _validate_datasets(self) -> WhatIfRequest:
+        if (self.vessels is None) != (self.berths is None):
+            raise ValueError("vessels and berths must both be provided or both be omitted")
+        return self
 
 
 class CascadeRequest(_Model):
@@ -95,6 +109,12 @@ class CascadeRequest(_Model):
     berths: list[BerthIn] | None = Field(default=None)
     disruption: ScenarioSpec
     max_iterations: int = Field(default=5, ge=1, le=10)
+
+    @model_validator(mode="after")
+    def _validate_datasets(self) -> CascadeRequest:
+        if (self.vessels is None) != (self.berths is None):
+            raise ValueError("vessels and berths must both be provided or both be omitted")
+        return self
 
 
 # ── Outputs ──────────────────────────────────────────────────────────────────

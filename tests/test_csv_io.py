@@ -10,6 +10,7 @@ from portpulse.constants import VESSEL_COLUMNS
 from portpulse.csv_io import (
     decode_upload,
     parse_csv_text,
+    parse_eta,
     read_csv_file,
     rows_to_csv,
     table_to_csv,
@@ -89,3 +90,11 @@ def test_table_to_csv_escapes_formula_injection_vectors() -> None:
     lines = csv_out.splitlines()
     assert lines[1] == "'=SUM(1+1),'+12345"
     assert lines[2] == "'-calc,'@macro"
+
+
+def test_parse_eta_handles_z_suffix() -> None:
+    dt = parse_eta("2026-10-01T08:00:00Z")
+    assert dt.year == 2026
+    assert dt.month == 10
+    assert dt.day == 1
+    assert dt.hour == 8

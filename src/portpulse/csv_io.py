@@ -40,7 +40,6 @@ COLUMN_ALIASES: dict[str, str] = {
     "vesselid": "vessel_id",
     "vessel_id": "vessel_id",
     "vessel": "vessel_id",
-    "id": "vessel_id",
     "vessel_name": "name",
     "vesselname": "name",
     "name": "name",
@@ -56,7 +55,6 @@ COLUMN_ALIASES: dict[str, str] = {
     "cargo_type": "cargo_type",
     "cargotype": "cargo_type",
     "cargo": "cargo_type",
-    "type": "cargo_type",
     "priority": "priority",
     "prio": "priority",
     "priority_level": "priority",
@@ -92,7 +90,8 @@ def parse_eta(val: object) -> datetime:
     if not val:
         raise ValueError("ETA string is empty")
 
-    raw = str(val).strip().replace("T", " ")
+    cleaned_str = str(val).strip()
+    raw = cleaned_str.rstrip("Zz").replace("T", " ")
     for fmt in (
         ETA_FORMAT,
         "%Y-%m-%d %H:%M:%S",
@@ -107,7 +106,8 @@ def parse_eta(val: object) -> datetime:
         except ValueError:
             pass
     try:
-        return datetime.fromisoformat(str(val).strip())
+        iso_str = cleaned_str[:-1] + "+00:00" if cleaned_str.endswith(("Z", "z")) else cleaned_str
+        return datetime.fromisoformat(iso_str)
     except ValueError as err:
         raise ValueError(f"Unparseable ETA format: {val}") from err
 

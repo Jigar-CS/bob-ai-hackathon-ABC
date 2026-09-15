@@ -10,11 +10,9 @@ import logging
 from typing import Any
 
 from portpulse.config import get_settings
+from portpulse.constants import DEMURRAGE_RATE_PER_TEU_HOUR
 
 logger = logging.getLogger(__name__)
-
-#: Illustrative estimate multiplier (0.05 kg CO2 per TEU-hour of avoided idle queuing).
-EMISSIONS_KG_PER_TEU_HOUR_ESTIMATE = 0.05
 
 
 def calculate_plan_kpis(plan: dict[str, Any]) -> dict[str, float | int]:
@@ -40,21 +38,20 @@ def calculate_plan_kpis(plan: dict[str, Any]) -> dict[str, float | int]:
         avg_wait_hours = 0.0
 
     # 2. Berth utilization percentage
-    # Total assigned TEU volume vs total available berth throughput capacity
+    # Total assigned TEU volume vs port single-window berth throughput capacity
     total_assigned_teu = 0
     for a in assignments:
         size = a.get("size_teu")
         if size is not None:
             total_assigned_teu += int(size)
         else:
-            # Standard average vessel TEU fallback if size is not in assignment dict
             total_assigned_teu += 6500
 
-    total_capacity_teu = sum(int(w.get("total_capacity_teu", 0)) for w in forecast)
-    if total_capacity_teu > 0:
-        berth_utilization_pct = round((total_assigned_teu / total_capacity_teu) * 100, 1)
+    single_window_capacity = max((int(w.get("total_capacity_teu", 0)) for w in forecast), default=0)
+    if single_window_capacity > 0:
+        berth_utilization_pct = round((total_assigned_teu / single_window_capacity) * 100, 1)
     else:
-        # Default 72h berth capacity baseline (6 berths * ~15k TEU)
+        # Default single-window berth capacity baseline (6 berths * ~15k TEU = 90k)
         berth_utilization_pct = (
             round((total_assigned_teu / 90000) * 100, 1) if total_assigned_teu else 0.0
         )
@@ -63,15 +60,14 @@ def calculate_plan_kpis(plan: dict[str, Any]) -> dict[str, float | int]:
     vessels_at_risk = int(unassigned_count)
 
     # 4. Estimated emissions saved (kg)
-    # Formula: idle_hours_avoided * vessel_size_teu * 0.05 kg/TEU-hour
-    # Note: This is an illustrative estimate, not a quoted real rate.
+    # Formula: idle_hours_avoided * vessel_size_teu * DEMURRAGE_RATE_PER_TEU_HOUR
     max_wait = float(get_settings().app.max_berth_wait_hours)
     total_emissions_saved = 0.0
     for a in assignments:
         wait = float(a.get("wait_hours", 0.0))
         size = int(a.get("size_teu", 6500))
         idle_hours_avoided = max(0.0, max_wait - wait)
-        total_emissions_saved += idle_hours_avoided * size * EMISSIONS_KG_PER_TEU_HOUR_ESTIMATE
+        total_emissions_saved += idle_hours_avoided * size * DEMURRAGE_RATE_PER_TEU_HOUR
 
     estimated_emissions_saved_kg = round(total_emissions_saved, 1)
 

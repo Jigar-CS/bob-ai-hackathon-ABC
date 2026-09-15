@@ -33,6 +33,8 @@ def find_swap_opportunities(
     """
     if len(assignments) < 2:
         return []
+    if len(assignments) > 200:
+        assignments = assignments[:200]
 
     # Map berth capacities if provided
     berth_caps: dict[str, int] = {}
@@ -102,7 +104,7 @@ def find_swap_opportunities(
                 )
             # Condition 2: Overall wait time reduction
             elif (w1 + w2) > 3.0 and abs(w1 - w2) >= 1.5:
-                hours_saved = round(abs(w1 - w2) / 2.0, 2)
+                hours_saved = round(abs(w1 - w2), 2)
                 higher_wait_vessel = v1.get("vessel_name") if w1 > w2 else v2.get("vessel_name")
                 reason = (
                     f"Re-allocating {higher_wait_vessel} balances berth crane loading "

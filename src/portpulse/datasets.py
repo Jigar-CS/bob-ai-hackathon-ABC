@@ -63,7 +63,6 @@ def load_vessels(settings: Settings | None = None) -> list[Row]:
         DataFileError: if the dataset is missing or unreadable.
     """
     settings = settings or get_settings()
-    ensure_sample_backups(settings)
     return read_csv_file(settings.app.vessels_path)
 
 
@@ -74,7 +73,6 @@ def load_berths(settings: Settings | None = None) -> list[Row]:
         DataFileError: if the dataset is missing or unreadable.
     """
     settings = settings or get_settings()
-    ensure_sample_backups(settings)
     return read_csv_file(settings.app.berths_path)
 
 

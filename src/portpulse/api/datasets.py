@@ -99,7 +99,8 @@ async def upload_dataset(
     target_path = (
         settings.app.vessels_path if dataset is DatasetName.vessels else settings.app.berths_path
     )
-    target_path.write_bytes(raw)
+    normalized_csv = rows_to_csv(rows, _REQUIRED_COLUMNS[dataset])
+    target_path.write_text(normalized_csv, encoding="utf-8")
 
     return OpsPlan.model_validate(generate_ops_plan(load_vessels(settings), load_berths(settings)))
 
@@ -108,6 +109,7 @@ async def upload_dataset(
     "/datasets/reset",
     response_model=OpsPlan,
     summary="Reset datasets back to default sample data",
+    dependencies=[Depends(require_api_key)],
 )
 def reset_datasets(settings: Settings = Depends(get_settings)) -> OpsPlan:
     """Restore original bundled vessel schedule and berth capacity tables."""

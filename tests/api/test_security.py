@@ -140,3 +140,20 @@ def test_security_headers_present_on_responses(client: TestClient) -> None:
     assert "Content-Security-Policy" in response.headers
     assert response.headers["X-Content-Type-Options"] == "nosniff"
     assert response.headers["X-Frame-Options"] == "DENY"
+
+
+def test_reset_whatif_cascade_protected_when_key_configured(secured_client: TestClient) -> None:
+    res1 = secured_client.post("/api/v1/datasets/reset")
+    assert res1.status_code == 401
+
+    res2 = secured_client.post(
+        "/api/v1/plan/whatif",
+        json={"scenario": {"type": "berth_outage", "berth_id": "B1", "hours": 12.0}},
+    )
+    assert res2.status_code == 401
+
+    res3 = secured_client.post(
+        "/api/v1/cascade-simulation",
+        json={"disruption": {"type": "berth_outage", "berth_id": "B1", "hours": 12.0}},
+    )
+    assert res3.status_code == 401

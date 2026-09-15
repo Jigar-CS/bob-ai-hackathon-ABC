@@ -40,6 +40,6 @@ def test_calculate_plan_kpis_with_data():
     }
     kpis = calculate_plan_kpis(plan)
     assert kpis["avg_wait_hours"] == 3.0
-    assert kpis["berth_utilization_pct"] == 22.5
+    assert kpis["berth_utilization_pct"] == 45.0
     assert kpis["vessels_at_risk"] == 1
     assert kpis["estimated_emissions_saved_kg"] > 0
