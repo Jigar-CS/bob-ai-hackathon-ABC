@@ -116,8 +116,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
                 response.headers[header] = value
 
         is_https = (
-            request.url.scheme == "https"
-            or request.headers.get("x-forwarded-proto") == "https"
+            request.url.scheme == "https" or request.headers.get("x-forwarded-proto") == "https"
         )
         if is_https and "Strict-Transport-Security" not in response.headers:
             response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"

@@ -11,9 +11,28 @@ def generate_datasets() -> None:
 
     # 1. Vessels (50 records)
     vessel_names = [
-        "Horizon", "Pacific", "Ocean", "Global", "Atlantic", "Titan", "Voyager", "Express",
-        "Neptune", "Star", "Pioneer", "Mermaid", "Poseidon", "Mariner", "Endeavour",
-        "Navigator", "Trader", "Carrier", "Frontier", "Discovery", "Valor", "Apex",
+        "Horizon",
+        "Pacific",
+        "Ocean",
+        "Global",
+        "Atlantic",
+        "Titan",
+        "Voyager",
+        "Express",
+        "Neptune",
+        "Star",
+        "Pioneer",
+        "Mermaid",
+        "Poseidon",
+        "Mariner",
+        "Endeavour",
+        "Navigator",
+        "Trader",
+        "Carrier",
+        "Frontier",
+        "Discovery",
+        "Valor",
+        "Apex",
     ]
     cargo_types = ["general", "reefer", "hazmat", "bulk"]
 
@@ -52,4 +71,3 @@ def generate_datasets() -> None:
 
 if __name__ == "__main__":
     generate_datasets()
-

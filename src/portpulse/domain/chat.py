@@ -243,9 +243,7 @@ def _fallback_reply(user_message: str, plan: dict[str, Any]) -> str:
 
     # 2. Search for specific berth query
     known_berths = {
-        str(a.get("berth_id", "")).strip().upper()
-        for a in assignments
-        if a.get("berth_id")
+        str(a.get("berth_id", "")).strip().upper() for a in assignments if a.get("berth_id")
     }
     matched_berth = None
     for bid in sorted(known_berths, key=len, reverse=True):

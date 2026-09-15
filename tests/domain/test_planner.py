@@ -101,6 +101,7 @@ def test_50_record_datasets_plan_generation() -> None:
     berths_path = Path("test_berths_50.csv")
     if vessels_path.exists() and berths_path.exists():
         from portpulse.csv_io import read_csv_file
+
         vessels = read_csv_file(vessels_path)
         berths = read_csv_file(berths_path)
         start_now = datetime(2026, 9, 20, 0, 0)

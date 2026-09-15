@@ -19,9 +19,7 @@ def test_template_summary_fallback_with_high_risk_and_reroutes() -> None:
             {"vessel_id": "V2", "priority": "2"},
         ],
         "unassigned_count": 2,
-        "reroute_suggestions": [
-            {"vessel_name": "MV Alpha", "alternatives": [{"port": "Oakland"}]}
-        ],
+        "reroute_suggestions": [{"vessel_name": "MV Alpha", "alternatives": [{"port": "Oakland"}]}],
     }
 
     res = generate_ops_summary(plan)
@@ -85,4 +83,3 @@ def test_generate_ops_summary_falls_back_on_watsonx_error() -> None:
     res = generate_ops_summary(plan, client=mock_client)
     assert res["ai_generated"] is False
     assert "No HIGH-risk congestion windows" in str(res["summary"])
-

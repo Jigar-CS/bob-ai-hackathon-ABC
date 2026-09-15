@@ -88,10 +88,7 @@ def rows_to_csv(rows: Sequence[Row], fieldnames: Sequence[str] | None = None) ->
     buffer = io.StringIO()
     writer = csv.DictWriter(buffer, fieldnames=columns, extrasaction="ignore")
     writer.writeheader()
-    sanitized_rows = [
-        {k: str(_sanitize_csv_cell(v)) for k, v in row.items()}
-        for row in rows
-    ]
+    sanitized_rows = [{k: str(_sanitize_csv_cell(v)) for k, v in row.items()} for row in rows]
     writer.writerows(sanitized_rows)
     return buffer.getvalue()
 

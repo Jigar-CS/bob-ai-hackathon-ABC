@@ -130,9 +130,7 @@ def test_chat_endpoint_protected_when_key_configured(secured_client: TestClient)
     assert res.status_code == 401
     assert res.json()["detail"] == "Invalid or missing API key."
 
-    res_ok = secured_client.post(
-        "/api/v1/chat", json=chat_payload, headers={"X-API-Key": API_KEY}
-    )
+    res_ok = secured_client.post("/api/v1/chat", json=chat_payload, headers={"X-API-Key": API_KEY})
     assert res_ok.status_code == 200
 
 
