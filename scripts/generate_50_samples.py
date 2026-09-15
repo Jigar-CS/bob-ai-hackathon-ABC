@@ -73,4 +73,3 @@ def generate_datasets() -> None:
 
 if __name__ == "__main__":
     generate_datasets()
-

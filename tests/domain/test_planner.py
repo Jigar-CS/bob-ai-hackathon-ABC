@@ -109,4 +109,3 @@ def test_50_record_datasets_plan_generation() -> None:
         plan = generate_ops_plan(vessels, berths, now=start_now)
         assert len(plan["berth_assignments"]) + plan["unassigned_count"] == 50
         OpsPlan.model_validate(plan)
-
