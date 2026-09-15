@@ -124,6 +124,7 @@ cp .env.example .env
 # Note: If credentials are not provided, PortPulse seamlessly uses smart template fallbacks!
 
 # 5. Start the PortPulse application server
+cd src
 python -m portpulse
 
 # 6. Access the web dashboard & API docs
