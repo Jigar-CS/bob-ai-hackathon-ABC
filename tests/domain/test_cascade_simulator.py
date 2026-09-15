@@ -65,3 +65,24 @@ def test_simulate_cascade_crane_count_impact():
 
     # Fewer cranes on B1 increases effective dwell time, leading to higher overall cascade delay
     assert res_slow["total_cascade_delay_hours"] != res_fast["total_cascade_delay_hours"]
+
+
+def test_simulate_cascade_vessel_truncation_warning():
+    # 550 vessels
+    vessels = [
+        {
+            "vessel_id": f"V{i:03d}",
+            "name": f"MV Ship {i}",
+            "eta": "2026-10-01 08:00",
+            "size_teu": "5000",
+            "cargo_type": "reefer",
+            "priority": "1",
+        }
+        for i in range(550)
+    ]
+    berths = load_berths()
+    disruption = {"type": "berth_outage", "berth_id": "B1", "hours": 12.0}
+
+    res = simulate_cascade(vessels, berths, disruption)
+    assert "warnings" in res
+    assert any("Input truncated" in w for w in res["warnings"])

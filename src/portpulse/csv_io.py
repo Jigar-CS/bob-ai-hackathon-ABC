@@ -39,7 +39,6 @@ COLUMN_ALIASES: dict[str, str] = {
     # Vessel column aliases
     "vesselid": "vessel_id",
     "vessel_id": "vessel_id",
-    "vessel": "vessel_id",
     "vessel_name": "name",
     "vesselname": "name",
     "name": "name",
@@ -51,17 +50,14 @@ COLUMN_ALIASES: dict[str, str] = {
     "size_teu": "size_teu",
     "sizeteu": "size_teu",
     "teu": "size_teu",
-    "size": "size_teu",
     "cargo_type": "cargo_type",
     "cargotype": "cargo_type",
-    "cargo": "cargo_type",
     "priority": "priority",
     "prio": "priority",
     "priority_level": "priority",
     # Berth column aliases
     "berth_id": "berth_id",
     "berthid": "berth_id",
-    "berth": "berth_id",
     "capacity_teu": "capacity_teu",
     "capacityteu": "capacity_teu",
     "max_teu": "capacity_teu",
@@ -73,7 +69,6 @@ COLUMN_ALIASES: dict[str, str] = {
     "avg_dwell_hours": "avg_dwell_hours",
     "avgdwellhours": "avg_dwell_hours",
     "dwell_hours": "avg_dwell_hours",
-    "dwell": "avg_dwell_hours",
     "avg_dwell": "avg_dwell_hours",
 }
 

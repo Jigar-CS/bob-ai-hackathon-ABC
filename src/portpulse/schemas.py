@@ -75,16 +75,24 @@ class ScenarioSpec(_Model):
 
     type: Literal["delay_vessel", "berth_outage"] = Field(examples=["delay_vessel"])
     vessel_id: str | None = Field(default=None, examples=["V001"])
-    delay_hours: float | None = Field(default=None, ge=0, examples=[6.0])
+    delay_hours: float | None = Field(default=None, gt=0, examples=[6.0])
     berth_id: str | None = Field(default=None, examples=["B1"])
-    hours: float | None = Field(default=None, ge=0, examples=[24.0])
+    hours: float | None = Field(default=None, gt=0, examples=[24.0])
 
     @model_validator(mode="after")
     def _validate_scenario_fields(self) -> ScenarioSpec:
-        if self.type == "delay_vessel" and (not self.vessel_id or self.delay_hours is None):
-            raise ValueError("vessel_id and delay_hours are required when type='delay_vessel'")
-        if self.type == "berth_outage" and (not self.berth_id or self.hours is None):
-            raise ValueError("berth_id and hours are required when type='berth_outage'")
+        if self.type == "delay_vessel" and (
+            not self.vessel_id or self.delay_hours is None or self.delay_hours <= 0
+        ):
+            raise ValueError(
+                "vessel_id and positive delay_hours (> 0) are required when type='delay_vessel'"
+            )
+        if self.type == "berth_outage" and (
+            not self.berth_id or self.hours is None or self.hours <= 0
+        ):
+            raise ValueError(
+                "berth_id and positive hours (> 0) are required when type='berth_outage'"
+            )
         return self
 
 

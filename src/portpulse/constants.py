@@ -39,3 +39,6 @@ ALTERNATE_PORTS_FILENAME: Final[str] = "alternate_ports.json"
 #: Deliberately conservative, illustrative demo estimate ($0.05/TEU-hour) — not a quoted real-world
 #: rate — chosen to keep displayed cost figures realistic and demo-credible.
 DEMURRAGE_RATE_PER_TEU_HOUR: Final[float] = 0.05
+
+#: Illustrative demo estimate of CO2 emissions saved per idle TEU-hour (0.05 kg CO2/TEU-hour).
+EMISSIONS_KG_PER_TEU_HOUR_ESTIMATE: Final[float] = 0.05

@@ -10,7 +10,7 @@ import logging
 from typing import Any
 
 from portpulse.config import get_settings
-from portpulse.constants import DEMURRAGE_RATE_PER_TEU_HOUR
+from portpulse.constants import EMISSIONS_KG_PER_TEU_HOUR_ESTIMATE
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ def calculate_plan_kpis(plan: dict[str, Any]) -> dict[str, float | int]:
         if size is not None:
             total_assigned_teu += int(size)
         else:
-            total_assigned_teu += 6500
+            logger.warning("Assignment missing size_teu for vessel %s", a.get("vessel_id"))
 
     single_window_capacity = max((int(w.get("total_capacity_teu", 0)) for w in forecast), default=0)
     if single_window_capacity > 0:
@@ -60,14 +60,15 @@ def calculate_plan_kpis(plan: dict[str, Any]) -> dict[str, float | int]:
     vessels_at_risk = int(unassigned_count)
 
     # 4. Estimated emissions saved (kg)
-    # Formula: idle_hours_avoided * vessel_size_teu * DEMURRAGE_RATE_PER_TEU_HOUR
+    # Formula: idle_hours_avoided * vessel_size_teu * EMISSIONS_KG_PER_TEU_HOUR_ESTIMATE
     max_wait = float(get_settings().app.max_berth_wait_hours)
     total_emissions_saved = 0.0
     for a in assignments:
         wait = float(a.get("wait_hours", 0.0))
-        size = int(a.get("size_teu", 6500))
-        idle_hours_avoided = max(0.0, max_wait - wait)
-        total_emissions_saved += idle_hours_avoided * size * DEMURRAGE_RATE_PER_TEU_HOUR
+        size = int(a.get("size_teu", 0))
+        if size > 0:
+            idle_hours_avoided = max(0.0, max_wait - wait)
+            total_emissions_saved += idle_hours_avoided * size * EMISSIONS_KG_PER_TEU_HOUR_ESTIMATE
 
     estimated_emissions_saved_kg = round(total_emissions_saved, 1)
 

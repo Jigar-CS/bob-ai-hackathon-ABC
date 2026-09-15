@@ -40,7 +40,9 @@ def simulate_cascade(
         ``total_cascade_delay_hours``, ``total_estimated_cost``, and ``affected_vessels``.
     """
     # Safety guards for live demos
+    warnings: list[str] = []
     if len(vessels) > HARD_MAX_VESSELS:
+        warnings.append(f"Input truncated from {len(vessels)} to {HARD_MAX_VESSELS} vessels.")
         vessels = vessels[:HARD_MAX_VESSELS]
     iterations_cap = min(max(1, max_iterations), HARD_MAX_ITERATIONS)
 
@@ -60,6 +62,8 @@ def simulate_cascade(
     if scen_type == "delay_vessel":
         target_vid = str(disruption.get("vessel_id", "")).strip().lower()
         delay_hrs = float(disruption.get("delay_hours", 0.0))
+        if delay_hrs <= 0:
+            warnings.append("delay_hours must be greater than 0; disruption ignored.")
         for v in curr_vessels:
             vid = str(v.get("vessel_id", "")).strip().lower()
             if vid == target_vid:
@@ -175,4 +179,5 @@ def simulate_cascade(
         "total_cascade_delay_hours": total_cascade_delay_hours,
         "total_estimated_cost": round(total_cost, 2),
         "affected_vessels": affected_list,
+        "warnings": warnings,
     }

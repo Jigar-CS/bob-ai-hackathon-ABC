@@ -47,7 +47,6 @@ def find_swap_opportunities(
                 berth_caps[bid] = 16000
 
     opportunities: list[dict[str, Any]] = []
-    seen_pairs: set[tuple[str, str]] = set()
 
     for i in range(len(assignments)):
         for j in range(i + 1, len(assignments)):
@@ -56,10 +55,6 @@ def find_swap_opportunities(
 
             id1 = str(v1.get("vessel_id", f"V{i}"))
             id2 = str(v2.get("vessel_id", f"V{j}"))
-
-            pair_key: tuple[str, str] = (min(id1, id2), max(id1, id2))
-            if pair_key in seen_pairs:
-                continue
 
             b1_id = str(v1.get("berth_id", "B1")).strip().upper()
             b2_id = str(v2.get("berth_id", "B2")).strip().upper()
@@ -77,6 +72,17 @@ def find_swap_opportunities(
 
             # Vessel 1 must fit Berth 2, Vessel 2 must fit Berth 1
             if size1 > cap2 or size2 > cap1:
+                continue
+
+            # Temporal schedule check: vessel cannot start berthing before its arrival
+            arr1 = str(v1.get("arrival", "")).strip()
+            b1_start = str(v1.get("berth_start", "")).strip()
+            arr2 = str(v2.get("arrival", "")).strip()
+            b2_start = str(v2.get("berth_start", "")).strip()
+
+            if arr1 and b2_start and arr1 > b2_start:
+                continue
+            if arr2 and b1_start and arr2 > b1_start:
                 continue
 
             p1 = int(v1.get("priority", 2))
@@ -127,7 +133,6 @@ def find_swap_opportunities(
                         "reason": reason,
                     }
                 )
-                seen_pairs.add(pair_key)
 
     # Sort all opportunities by highest cost saved
     opportunities.sort(key=lambda x: x["estimated_cost_saved"], reverse=True)

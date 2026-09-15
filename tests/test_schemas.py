@@ -15,11 +15,14 @@ def test_scenario_spec_valid_delay_vessel() -> None:
 
 
 def test_scenario_spec_invalid_delay_vessel_missing_fields() -> None:
-    with pytest.raises(ValidationError, match="vessel_id and delay_hours are required"):
+    with pytest.raises(ValidationError, match="vessel_id and positive delay_hours"):
         ScenarioSpec(type="delay_vessel", delay_hours=5.0)
 
-    with pytest.raises(ValidationError, match="vessel_id and delay_hours are required"):
+    with pytest.raises(ValidationError, match="vessel_id and positive delay_hours"):
         ScenarioSpec(type="delay_vessel", vessel_id="V001")
+
+    with pytest.raises(ValidationError):
+        ScenarioSpec(type="delay_vessel", vessel_id="V001", delay_hours=0.0)
 
 
 def test_scenario_spec_valid_berth_outage() -> None:
@@ -29,11 +32,14 @@ def test_scenario_spec_valid_berth_outage() -> None:
 
 
 def test_scenario_spec_invalid_berth_outage_missing_fields() -> None:
-    with pytest.raises(ValidationError, match="berth_id and hours are required"):
+    with pytest.raises(ValidationError, match="berth_id and positive hours"):
         ScenarioSpec(type="berth_outage", hours=12.0)
 
-    with pytest.raises(ValidationError, match="berth_id and hours are required"):
+    with pytest.raises(ValidationError, match="berth_id and positive hours"):
         ScenarioSpec(type="berth_outage", berth_id="B1")
+
+    with pytest.raises(ValidationError):
+        ScenarioSpec(type="berth_outage", berth_id="B1", hours=0.0)
 
 
 def test_whatif_request_datasets_validation() -> None:

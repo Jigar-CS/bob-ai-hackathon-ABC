@@ -41,6 +41,8 @@ def simulate_whatif(
     if scen_type == "delay_vessel":
         target_vid = str(scenario.get("vessel_id", "")).strip().lower()
         delay_hrs = float(scenario.get("delay_hours", 0.0))
+        if delay_hrs <= 0:
+            logger.warning("Delay hours must be greater than 0; received %s", delay_hrs)
 
         for v in mod_vessels:
             vid = str(v.get("vessel_id", "")).strip().lower()
