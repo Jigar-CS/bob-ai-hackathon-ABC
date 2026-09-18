@@ -17,6 +17,12 @@ from portpulse.domain.planner import generate_ops_plan
 logger = logging.getLogger(__name__)
 
 
+def _normalize_berth_id(bid: str) -> str:
+    b_str = str(bid).strip().upper()
+    b_num = b_str.lstrip("B").lstrip("0")
+    return f"B{b_num}" if b_num.isdigit() else b_str
+
+
 def simulate_whatif(
     vessels: list[Row],
     berths: list[Row],
@@ -56,10 +62,10 @@ def simulate_whatif(
                     logger.warning("Could not parse eta '%s' for delay scenario", raw_eta)
 
     elif scen_type == "berth_outage":
-        target_bid = str(scenario.get("berth_id", "")).strip().lower()
+        target_bid = _normalize_berth_id(str(scenario.get("berth_id", "")))
         # Remove or disable target berth from schedule
         mod_berths = [
-            b for b in mod_berths if str(b.get("berth_id", "")).strip().lower() != target_bid
+            b for b in mod_berths if _normalize_berth_id(str(b.get("berth_id", ""))) != target_bid
         ]
 
     modified_plan = generate_ops_plan(mod_vessels, mod_berths)

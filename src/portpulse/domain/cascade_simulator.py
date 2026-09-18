@@ -21,6 +21,12 @@ HARD_MAX_ITERATIONS = 10
 HARD_MAX_VESSELS = 500
 
 
+def _normalize_berth_id(bid: str) -> str:
+    b_str = str(bid).strip().upper()
+    b_num = b_str.lstrip("B").lstrip("0")
+    return f"B{b_num}" if b_num.isdigit() else b_str
+
+
 def simulate_cascade(
     vessels: list[Row],
     berths: list[Row],
@@ -75,9 +81,9 @@ def simulate_cascade(
                     logger.warning("Invalid eta '%s' in cascade disruption", raw_eta)
 
     elif scen_type == "berth_outage":
-        target_bid = str(disruption.get("berth_id", "")).strip().lower()
+        target_bid = _normalize_berth_id(str(disruption.get("berth_id", "")))
         curr_berths = [
-            b for b in curr_berths if str(b.get("berth_id", "")).strip().lower() != target_bid
+            b for b in curr_berths if _normalize_berth_id(str(b.get("berth_id", ""))) != target_bid
         ]
 
     affected_map: dict[str, dict[str, Any]] = {}

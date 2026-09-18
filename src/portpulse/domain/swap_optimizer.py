@@ -79,7 +79,7 @@ def find_swap_opportunities(
             if size1 > cap2 or size2 > cap1:
                 continue
 
-            # Temporal schedule check: vessel cannot start berthing long after or before target departure
+            # Temporal schedule check: vessel cannot start berthing after target departure
             arr1 = str(v1.get("arrival", "")).strip()
             arr2 = str(v2.get("arrival", "")).strip()
             b1_dep = str(v1.get("departure_est", "")).strip()
@@ -116,22 +116,24 @@ def find_swap_opportunities(
                     f"{v1.get('vessel_name')} (P{p1}) prioritizes time-critical "
                     f"cargo and reduces P1 queue wait by {hours_saved}h."
                 )
-            # Condition 2: Priority-Crane Resource Optimization (higher priority gets higher crane count berth)
+            # Condition 2: Priority-Crane Resource Optimization
             elif p1 < p2 and c2 > c1:
                 dwell1 = float(v1.get("effective_dwell_hours", 36.0))
                 saved_dwell = round(dwell1 * (1.0 - c1 / c2), 1)
                 hours_saved = max(saved_dwell, 1.0)
                 reason = (
-                    f"Re-allocating {v1.get('vessel_name')} (P{p1}) from Berth {b1_id} ({c1} cranes) "
-                    f"to Berth {b2_id} ({c2} cranes) accelerates time-critical cargo turnaround by {hours_saved}h."
+                    f"Re-allocating {v1.get('vessel_name')} (P{p1}) from Berth {b1_id} "
+                    f"({c1} cranes) to Berth {b2_id} ({c2} cranes) accelerates "
+                    f"time-critical cargo turnaround by {hours_saved}h."
                 )
             elif p2 < p1 and c1 > c2:
                 dwell2 = float(v2.get("effective_dwell_hours", 36.0))
                 saved_dwell = round(dwell2 * (1.0 - c2 / c1), 1)
                 hours_saved = max(saved_dwell, 1.0)
                 reason = (
-                    f"Re-allocating {v2.get('vessel_name')} (P{p2}) from Berth {b2_id} ({c2} cranes) "
-                    f"to Berth {b1_id} ({c1} cranes) accelerates time-critical cargo turnaround by {hours_saved}h."
+                    f"Re-allocating {v2.get('vessel_name')} (P{p2}) from Berth {b2_id} "
+                    f"({c2} cranes) to Berth {b1_id} ({c1} cranes) accelerates "
+                    f"time-critical cargo turnaround by {hours_saved}h."
                 )
             # Condition 3: Queue wait / load balancing
             elif (w1 + w2) > 2.0 or (w1 > 0 and w2 == 0) or (w2 > 0 and w1 == 0):
