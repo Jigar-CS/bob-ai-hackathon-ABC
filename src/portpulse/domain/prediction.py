@@ -116,8 +116,18 @@ def predict_congestion(
                 "anchoring forecast to earliest ETA %s.",
                 horizon_start.strftime(ETA_FORMAT),
             )
-        else:
+        elif future_etas:
             horizon_start = wall_clock
+        else:
+            # All vessel ETAs in the dataset lie in the past relative to wall clock.
+            # Anchor the horizon to the earliest arrival in the dataset so a past-dated
+            # dataset (e.g. bundled sample CSVs) produces a complete, useful forecast.
+            horizon_start = min(eta for eta, _ in arrivals)
+            logger.info(
+                "All vessel ETAs are in the past relative to system time; "
+                "anchoring forecast to earliest ETA %s.",
+                horizon_start.strftime(ETA_FORMAT),
+            )
 
     horizon_end = horizon_start + timedelta(hours=WINDOW_HOURS * horizon_days)
 

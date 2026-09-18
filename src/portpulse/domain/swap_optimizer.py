@@ -36,8 +36,9 @@ def find_swap_opportunities(
     if len(assignments) > 200:
         assignments = assignments[:200]
 
-    # Map berth capacities if provided
+    # Map berth capacities and crane counts if provided
     berth_caps: dict[str, int] = {}
+    berth_cranes: dict[str, int] = {}
     if berths:
         for b in berths:
             bid = str(b.get("berth_id", "")).strip().upper()
@@ -45,6 +46,10 @@ def find_swap_opportunities(
                 berth_caps[bid] = int(b.get("capacity_teu", 16000))
             except (ValueError, TypeError):
                 berth_caps[bid] = 16000
+            try:
+                berth_cranes[bid] = int(b.get("crane_count", 2))
+            except (ValueError, TypeError):
+                berth_cranes[bid] = 2
 
     opportunities: list[dict[str, Any]] = []
 
@@ -74,15 +79,15 @@ def find_swap_opportunities(
             if size1 > cap2 or size2 > cap1:
                 continue
 
-            # Temporal schedule check: vessel cannot start berthing before its arrival
+            # Temporal schedule check: vessel cannot start berthing long after or before target departure
             arr1 = str(v1.get("arrival", "")).strip()
-            b1_start = str(v1.get("berth_start", "")).strip()
             arr2 = str(v2.get("arrival", "")).strip()
-            b2_start = str(v2.get("berth_start", "")).strip()
+            b1_dep = str(v1.get("departure_est", "")).strip()
+            b2_dep = str(v2.get("departure_est", "")).strip()
 
-            if arr1 and b2_start and arr1 > b2_start:
+            if arr1 and b2_dep and arr1 > b2_dep:
                 continue
-            if arr2 and b1_start and arr2 > b1_start:
+            if arr2 and b1_dep and arr2 > b1_dep:
                 continue
 
             p1 = int(v1.get("priority", 2))
@@ -90,10 +95,13 @@ def find_swap_opportunities(
             w1 = float(v1.get("wait_hours", 0.0))
             w2 = float(v2.get("wait_hours", 0.0))
 
+            c1 = int(v1.get("crane_count") or berth_cranes.get(b1_id, 2))
+            c2 = int(v2.get("crane_count") or berth_cranes.get(b2_id, 2))
+
             hours_saved = 0.0
             reason = ""
 
-            # Condition 1: P1 vessel waiting longer than P2/P3 vessel at a different berth
+            # Condition 1: P1/higher priority vessel waiting longer than P2/P3 vessel
             if p1 < p2 and w1 > w2:
                 hours_saved = round(w1 - w2, 2)
                 reason = (
@@ -108,13 +116,30 @@ def find_swap_opportunities(
                     f"{v1.get('vessel_name')} (P{p1}) prioritizes time-critical "
                     f"cargo and reduces P1 queue wait by {hours_saved}h."
                 )
-            # Condition 2: Overall wait time reduction
-            elif (w1 + w2) > 3.0 and abs(w1 - w2) >= 1.5:
-                hours_saved = round(abs(w1 - w2), 2)
-                higher_wait_vessel = v1.get("vessel_name") if w1 > w2 else v2.get("vessel_name")
+            # Condition 2: Priority-Crane Resource Optimization (higher priority gets higher crane count berth)
+            elif p1 < p2 and c2 > c1:
+                dwell1 = float(v1.get("effective_dwell_hours", 36.0))
+                saved_dwell = round(dwell1 * (1.0 - c1 / c2), 1)
+                hours_saved = max(saved_dwell, 1.0)
+                reason = (
+                    f"Re-allocating {v1.get('vessel_name')} (P{p1}) from Berth {b1_id} ({c1} cranes) "
+                    f"to Berth {b2_id} ({c2} cranes) accelerates time-critical cargo turnaround by {hours_saved}h."
+                )
+            elif p2 < p1 and c1 > c2:
+                dwell2 = float(v2.get("effective_dwell_hours", 36.0))
+                saved_dwell = round(dwell2 * (1.0 - c2 / c1), 1)
+                hours_saved = max(saved_dwell, 1.0)
+                reason = (
+                    f"Re-allocating {v2.get('vessel_name')} (P{p2}) from Berth {b2_id} ({c2} cranes) "
+                    f"to Berth {b1_id} ({c1} cranes) accelerates time-critical cargo turnaround by {hours_saved}h."
+                )
+            # Condition 3: Queue wait / load balancing
+            elif (w1 + w2) > 2.0 or (w1 > 0 and w2 == 0) or (w2 > 0 and w1 == 0):
+                hours_saved = round(max(abs(w1 - w2), w1, w2), 2)
+                higher_wait_vessel = v1.get("vessel_name") if w1 >= w2 else v2.get("vessel_name")
                 reason = (
                     f"Re-allocating {higher_wait_vessel} balances berth crane loading "
-                    f"and saves approximately {hours_saved}h combined queue wait."
+                    f"and saves approximately {hours_saved}h queue wait."
                 )
 
             if hours_saved > 0.0:
