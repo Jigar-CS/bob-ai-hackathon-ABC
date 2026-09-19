@@ -115,6 +115,20 @@ def test_chat_uses_watsonx_client_when_enabled():
     assert res["reply"] == "Vessel V101 is berthed at B1 starting at 2026-09-25 01:00."
 
 
+def test_chat_uses_gemini_client_when_enabled():
+    plan = get_sample_plan()
+    mock_gemini = MagicMock()
+    mock_gemini.enabled = True
+    mock_gemini.generate_text.return_value = (
+        "Assistant: Vessel V101 is allocated to Berth B1 with 4 cranes."
+    )
+
+    res = answer("Tell me about V101", plan, gemini_client=mock_gemini)
+    assert res["ai_generated"] is True
+    assert res["reply"] == "Vessel V101 is allocated to Berth B1 with 4 cranes."
+
+
+
 def test_prompt_injection_safety_instruction_present():
     plan = get_sample_plan()
     prompt = _build_prompt("Show plan", plan, [])

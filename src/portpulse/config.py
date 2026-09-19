@@ -193,6 +193,74 @@ class WatsonxSettings(BaseSettings):
         return f"{self.url}/ml/v1/text/generation?version={self.api_version}"
 
 
+class GeminiSettings(BaseSettings):
+    """Google Gemini API connection settings.
+
+    Supports ``GEMINI_API_KEY`` or ``GOOGLE_API_KEY`` environment variables.
+    """
+
+    model_config = _ENV_FILE_CONFIG
+
+    api_key: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices(
+            "GEMINI_API_KEY", "GOOGLE_API_KEY", "PORTPULSE_GEMINI_API_KEY"
+        ),
+    )
+    model_id: str = Field(
+        default="gemini-flash-latest",
+        validation_alias=AliasChoices("GEMINI_MODEL_ID", "PORTPULSE_GEMINI_MODEL_ID"),
+    )
+
+
+
+    url: str = Field(
+        default="https://generativelanguage.googleapis.com/v1beta",
+        validation_alias=AliasChoices("GEMINI_URL", "PORTPULSE_GEMINI_URL"),
+    )
+    request_timeout_seconds: float = Field(
+        default=30.0,
+        gt=0,
+        validation_alias=AliasChoices(
+            "GEMINI_REQUEST_TIMEOUT_SECONDS", "PORTPULSE_GEMINI_REQUEST_TIMEOUT_SECONDS"
+        ),
+    )
+    max_retries: int = Field(
+        default=3,
+        ge=1,
+        le=10,
+        validation_alias=AliasChoices("GEMINI_MAX_RETRIES", "PORTPULSE_GEMINI_MAX_RETRIES"),
+    )
+    backoff_factor: float = Field(
+        default=0.5,
+        ge=0,
+        validation_alias=AliasChoices(
+            "GEMINI_BACKOFF_FACTOR", "PORTPULSE_GEMINI_BACKOFF_FACTOR"
+        ),
+    )
+
+    @field_validator("api_key", mode="before")
+    @classmethod
+    def _clean_credentials(cls, value: str | None) -> str | None:
+        return _blank_to_none(value)
+
+    @field_validator("url")
+    @classmethod
+    def _strip_trailing_slash(cls, value: str) -> str:
+        return value.rstrip("/")
+
+    @property
+    def enabled(self) -> bool:
+        """True when a valid Gemini API key is present."""
+        return bool(self.api_key)
+
+    @property
+    def generation_endpoint(self) -> str:
+        """Return full generateContent URL including API key parameter."""
+        key = self.api_key or ""
+        return f"{self.url}/models/{self.model_id}:generateContent?key={key}"
+
+
 class AppSettings(BaseSettings):
     """Application behaviour settings (``PORTPULSE_*`` environment variables)."""
 
@@ -274,7 +342,7 @@ class AppSettings(BaseSettings):
 
 @dataclass(frozen=True)
 class Settings:
-    """Root settings object composing the two independent env namespaces.
+    """Root settings object composing the independent env namespaces.
 
     Deliberately a plain dataclass rather than a ``BaseSettings`` model: nesting
     settings models would make pydantic look for ``APP`` / ``WATSONX`` env vars
@@ -283,14 +351,20 @@ class Settings:
 
     app: AppSettings
     watsonx: WatsonxSettings
+    gemini: GeminiSettings
 
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
     """Return the process-wide settings singleton."""
-    return Settings(app=AppSettings(), watsonx=WatsonxSettings())
+    return Settings(
+        app=AppSettings(),
+        watsonx=WatsonxSettings(),
+        gemini=GeminiSettings(),
+    )
 
 
 def reset_settings_cache() -> None:
     """Drop the cached settings so the next :func:`get_settings` re-reads the env."""
     get_settings.cache_clear()
+

@@ -15,6 +15,7 @@ from typing import Any
 
 from portpulse.config import get_settings
 from portpulse.datasets import load_alternate_ports
+from portpulse.integrations.gemini import GeminiClient, GeminiError, get_gemini_client
 from portpulse.integrations.watsonx import WatsonxClient, WatsonxError, get_client
 
 logger = logging.getLogger(__name__)
@@ -234,6 +235,21 @@ _PORT_KEYWORDS = (
 )
 
 
+_GREETING_KEYWORDS = (
+    "hi",
+    "hello",
+    "hey",
+    "greetings",
+    "good morning",
+    "good afternoon",
+    "good evening",
+    "who are you",
+    "what are you",
+    "help",
+    "start",
+)
+
+
 def _is_out_of_scope(msg: str, plan: dict[str, Any]) -> bool:
     """Return True if user_message is strictly outside PortPulse domain boundaries."""
     raw_lower = msg.lower()
@@ -242,6 +258,10 @@ def _is_out_of_scope(msg: str, plan: dict[str, Any]) -> bool:
     # Explicit out-of-scope keyword check
     has_out_of_scope = any(term in clean_text for term in _OUT_OF_SCOPE_TERMS)
     has_port_kw = any(kw in clean_text for kw in _PORT_KEYWORDS)
+    has_greeting = any(re.search(r"\b" + re.escape(g) + r"\b", clean_text) for g in _GREETING_KEYWORDS)
+
+    if has_greeting and not has_out_of_scope:
+        return False
 
     if has_out_of_scope and not has_port_kw:
         return True
@@ -265,7 +285,7 @@ def _is_out_of_scope(msg: str, plan: dict[str, Any]) -> bool:
 
 
 def _fallback_reply(user_message: str, plan: dict[str, Any]) -> str:
-    """Advanced, highly detailed domain reply when watsonx.ai is not active."""
+    """Advanced, highly detailed domain reply when LLM is not active."""
     raw_lower = user_message.lower()
     msg = re.sub(r"[^\w\s'-]", " ", raw_lower)
 
@@ -275,6 +295,25 @@ def _fallback_reply(user_message: str, plan: dict[str, Any]) -> str:
 
     if _is_out_of_scope(user_message, plan):
         return _SCOPE_REJECTION
+
+    # 0. Greetings handling
+    clean_words = set(msg.split())
+    if (
+        clean_words.intersection({"hi", "hello", "hey", "greetings", "start"})
+        or "who are you" in msg
+        or "good morning" in msg
+        or "good afternoon" in msg
+        or "help" in clean_words
+    ):
+        return (
+            "Hello! I am PortPulse Assistant, dedicated to PortPulse container port operations.\n\n"
+            "How can I assist you today? You can ask me about:\n"
+            "1. **Vessel Berth Assignments & Schedules** (e.g. 'Where is V101 berthed?')\n"
+            "2. **Berth Capacity & Schedule** (e.g. 'Status of Berth B1')\n"
+            "3. **24-Hour Congestion Forecasts** (e.g. 'Show day 1 risk forecast')\n"
+            "4. **Alternate Port Rerouting** (e.g. 'Why was V108 rerouted?')"
+        )
+
 
     # 1. Search for specific vessel query (e.g. V101, V001, MV Pacific Titan, V108...)
     for a in assignments:
@@ -518,6 +557,7 @@ def answer(
     history: list[dict[str, str]] | None = None,
     *,
     client: WatsonxClient | None = None,
+    gemini_client: GeminiClient | None = None,
 ) -> dict[str, object]:
     """Answer one supervisor question about the live plan.
 
@@ -526,6 +566,7 @@ def answer(
         plan:         The current ops plan dict (same shape as OpsPlan).
         history:      Previous turns as ``[{"role": "user"|"assistant", "content": "..."}]``.
         client:       watsonx client; defaults to the shared singleton.
+        gemini_client: Gemini client; defaults to the shared singleton.
 
     Returns:
         ``{"reply": str, "ai_generated": bool}`` — never raises.
@@ -534,6 +575,22 @@ def answer(
 
     if _is_out_of_scope(user_message, plan):
         return {"reply": _SCOPE_REJECTION, "ai_generated": False}
+
+    active_gemini: GeminiClient = (
+        gemini_client if gemini_client is not None else get_gemini_client()
+    )
+
+    if active_gemini.enabled:
+        try:
+            prompt = _build_prompt(user_message, plan, history)
+            raw = active_gemini.generate_text(prompt)
+            reply = re.sub(r"^[Aa]ssistant:\s*", "", raw).strip()
+            if reply:
+                return {"reply": reply, "ai_generated": True, "provider": "gemini"}
+        except GeminiError as err:
+            logger.warning("Gemini API chat unavailable (%s) — checking watsonx fallback.", err)
+        except Exception:
+            logger.exception("Unexpected error in Gemini chat — checking fallback.")
 
     active_client: WatsonxClient = client if client is not None else get_client()
 
@@ -544,10 +601,17 @@ def answer(
             # Strip any "Assistant:" prefix the model might echo back
             reply = re.sub(r"^[Aa]ssistant:\s*", "", raw).strip()
             if reply:
-                return {"reply": reply, "ai_generated": True}
+                return {"reply": reply, "ai_generated": True, "provider": "watsonx"}
         except WatsonxError as err:
             logger.warning("watsonx.ai chat unavailable (%s) — using fallback.", err)
         except Exception:
             logger.exception("Unexpected error in chat — using fallback.")
 
-    return {"reply": _fallback_reply(user_message, plan), "ai_generated": False}
+    return {
+        "reply": _fallback_reply(user_message, plan),
+        "ai_generated": False,
+        "provider": "rule_based",
+    }
+
+
+

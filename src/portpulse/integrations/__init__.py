@@ -2,4 +2,4 @@
 
 from __future__ import annotations
 
-__all__ = ["watsonx"]
+__all__ = ["gemini", "watsonx"]
