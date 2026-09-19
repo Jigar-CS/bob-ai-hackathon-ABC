@@ -1,4 +1,4 @@
-https://youtu.be/knuwnozYv8o
+https://youtu.be/7eONXoFn9Ls
 
 NOTE TO TEAM: Replace the URL on line 1 above with the real YouTube/Loom/Box link
 before submitting. The GitHub Actions validator checks that line 1 does NOT contain
