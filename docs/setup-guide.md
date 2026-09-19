@@ -9,7 +9,7 @@ Everything needed to run, configure, test, and deploy PortPulse locally or via D
 - Python 3.10 or newer
 - pip
 - Docker (optional, for containerized deployments)
-- IBM watsonx.ai or BOB Agent credentials (optional; enables AI-written routing reasoning and chat assistant)
+- Google Gemini API key and/or IBM watsonx.ai credentials (optional; enables AI-written routing reasoning and chat assistant)
 
 ---
 
@@ -53,9 +53,9 @@ Copy the sample environment file and edit as needed:
 cp .env.example .env
 ```
 
-### IBM watsonx.ai Credentials
+### Google Gemini API & IBM watsonx.ai Credentials
 
-Set `WATSONX_API_KEY`, `WATSONX_PROJECT_ID`, and `WATSONX_URL` (or `BOB_AGENT_API_KEY` / `BOB_AGENT_PROJECT_ID`). If credentials are not provided, PortPulse degrades gracefully to template fallbacks without throwing 500 errors!
+Set `GEMINI_API_KEY` (from [Google AI Studio](https://aistudio.google.com/)) and/or `WATSONX_API_KEY`, `WATSONX_PROJECT_ID`, and `WATSONX_URL` (or `BOB_AGENT_API_KEY` / `BOB_AGENT_PROJECT_ID`). If credentials are not provided, PortPulse degrades gracefully to template fallbacks without throwing 500 errors!
 
 ---
 
@@ -64,7 +64,7 @@ Set `WATSONX_API_KEY`, `WATSONX_PROJECT_ID`, and `WATSONX_URL` (or `BOB_AGENT_AP
 Run the full automated test suite and linters:
 
 ```bash
-# Run pytest test suite (180 tests)
+# Run pytest test suite (246 tests)
 pytest tests/
 
 # Run Ruff linter and code format check
@@ -72,7 +72,7 @@ ruff check .
 ruff format --check .
 
 # Run Mypy static type checker
-mypy .
+mypy src
 ```
 
 ---
@@ -86,3 +86,4 @@ docker build -t portpulse:local .
 # Run containerized application
 docker run --rm -p 8000:8000 -e PORTPULSE_ENVIRONMENT=development portpulse:local
 ```
+

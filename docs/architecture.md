@@ -45,9 +45,12 @@ graph TD
     end
 
     subgraph External["External Services & Datasets"]
+        Gemini["integrations/gemini.py Client"]
+        GeminiAI["Google Gemini API (gemini-flash-latest)"]
         Watsonx["integrations/watsonx.py Client"]
         WatsonxAI["IBM watsonx.ai (ibm/granite-3-8b-instruct)"]
-        CSVData["File Datasets (vessels.csv & berths.csv)"]
+        OpenMeteo["integrations/open_meteo.py (Weather API)"]
+        CSVData["File Datasets (vessels.csv, berths.csv, alternate_ports.json)"]
     end
 
     User -->|"Interacts with UI"| Dashboard
@@ -81,10 +84,14 @@ graph TD
 
     Prediction --> CSVData
     Assignment --> CSVData
+    Routing --> Gemini
     Routing --> Watsonx
+    ChatEngine --> Gemini
     ChatEngine --> Watsonx
+    SummaryEngine --> Gemini
     SummaryEngine --> Watsonx
 
+    Gemini -->|"REST API (gemini-flash-latest)"| GeminiAI
     Watsonx -->|"REST (IAM Auth + Circuit Breaker)"| WatsonxAI
 ```
 
@@ -132,7 +139,7 @@ sequenceDiagram
 | Component | Module | Responsibility |
 |---|---|---|
 | **Application Factory** | `app.py` | Builds FastAPI app instance, registers CORS middleware, rate limiters, security headers, and static mount (`/`). |
-| **Configuration** | `config.py` | Environment settings validator using Pydantic Settings across `PORTPULSE_*` and `WATSONX_*` namespaces. |
+| **Configuration** | `config.py` | Environment settings validator using Pydantic Settings across `GEMINI_*`, `WATSONX_*`, and `PORTPULSE_*` namespaces. |
 | **Schemas** | `schemas.py` | Data contracts (`OpsPlan`, `BerthAssignment`, `SwapOpportunity`, `CascadeRequest`, `WhatIfRequest`, `KpiSummary`). |
 | **Congestion Engine** | `domain/prediction.py` | Buckets arrivals into 24h rolling windows and computes ALSC risk levels (LOW, MEDIUM, HIGH). |
 | **Assignment Engine** | `domain/assignment.py` | Priority-first greedy berth and crane allocation algorithm with crane-adjusted dynamic dwell time and deterministic decision reasons. |
@@ -140,15 +147,18 @@ sequenceDiagram
 | **Swap Optimizer** | `domain/swap_optimizer.py` | Identifies pairwise berth swaps to reduce P1 queue wait times and calculates demurrage cost savings. |
 | **What-If Simulator** | `domain/whatif_simulator.py` | Sandboxed simulation engine comparing baseline vs scenario diffs without mutating live data. |
 | **Cascade Simulator** | `domain/cascade_simulator.py` | Multi-pass schedule ripple engine tracing downstream delays and financial demurrage impact. |
-| **Routing Engine** | `domain/routing.py` | Ranks regional alternate ports (distance/fit) and uses IBM watsonx.ai to generate plain-language justifications. |
-| **Conversational Assistant** | `domain/chat.py` | Scope-gated AI assistant answering operator questions grounded in live 72-hour ops plan data. |
+| **Routing Engine** | `domain/routing.py` | Ranks regional alternate ports (distance/fit) and uses Google Gemini API / watsonx.ai to generate plain-language justifications. |
+| **Conversational Assistant** | `domain/chat.py` | Scope-gated AI assistant answering operator questions grounded in live 72-hour ops plan data with greeting support. |
+| **Gemini REST Client** | `integrations/gemini.py` | Google Gemini REST API client supporting `gemini-flash-latest` model endpoint and JSON content parsing. |
 | **watsonx.ai Client** | `integrations/watsonx.py` | IAM authentication, token caching, exponential retries with jitter, and circuit breaker fallback. |
+| **Weather Integration** | `integrations/open_meteo.py` | Open-Meteo REST client sampling marine weather metrics (wind speed, wave height) along marine waypoints. |
+| **Weather Predictor ML** | `ml/weather_predictor.py` | Machine Learning model predicting marine weather delays and ETA adjustments from weather feeds. |
 
 ---
 
 ## 🖼️ Architecture & Workflow Visual Diagrams
 
-- **[Tech Stack Flowchart](images/tech_stack_flowchart.svg)**: Complete breakdown of presentation, web server, domain engine, and IBM watsonx.ai integration layers.
+- **[Tech Stack Flowchart](images/tech_stack_flowchart.svg)**: Complete breakdown of presentation, web server, domain engine, Google Gemini API, and IBM watsonx.ai integration layers.
 - **[Website & Dashboard Feature Map](images/website_feature_flowchart.svg)**: Map of side-panel navigation layout, 4 tabs, simulation controls, and floating chat assistant.
 - **[Cascading Impact Simulation Workflow](images/cascading_simulation_workflow.svg)**: Detailed step-by-step workflow of multi-pass schedule ripple analysis.
 
@@ -162,4 +172,5 @@ sequenceDiagram
 | **Prompt Injection Defense** | Pre-LLM keyword scope gate rejects off-topic queries; vessel input text is stripped of control characters and length-capped. |
 | **Rate Limiting** | Sliding 60-second window rate limiter (30 req/min per IP) on POST endpoints. |
 | **HTTP Security Headers** | Injects `Content-Security-Policy`, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, and `Permissions-Policy`. |
-| **Zero-Downtime Fallback** | Isolated engine execution degrades watsonx.ai network or auth failures to structured template text without returning 500 errors. |
+| **Zero-Downtime Fallback** | Isolated engine execution degrades Gemini API or watsonx.ai network/auth failures to structured template text without returning 500 errors. |
+

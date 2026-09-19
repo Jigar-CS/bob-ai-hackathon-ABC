@@ -8,6 +8,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Google Gemini API Integration**: Added `GeminiClient` in `src/portpulse/integrations/gemini.py` using `gemini-flash-latest` model endpoint via Google AI Studio REST API. Configured `GeminiSettings` (`GEMINI_API_KEY`, `GEMINI_MODEL_ID`) in `src/portpulse/config.py`.
+- **Conversational Ops Assistant Greetings & Provider Metadata**: Expanded `domain/chat.py` scope guard to handle common shift greetings ("hi", "hello", "hey") gracefully with a friendly domain intro, and attached `"provider": "gemini"` to chat response metadata when served by Google Gemini.
+- **Application Screenshot Roster & Visual Tour**: Standardized 10 high-resolution dashboard screenshots in `demo/screenshots/` (`01-dashboard-overview.png` ... `10-congestion-forecast.png`) and updated `demo/screenshots/README.md` and root `README.md`.
+- **Expanded Pytest Test Suite**: Added 7 unit tests in `tests/test_gemini.py` bringing the total test suite to 246 tests across Python 3.10–3.13 (100% pass rate).
 - **Crane-sensitive berth dwell time**: `crane_count` on berths now dynamically scales
   effective dwell time (`effective_dwell_hours`) relative to `baseline_crane_count` (default 4),
   clamped to configurable min/max bounds (`crane_dwell_min_multiplier` = 0.5,

@@ -60,6 +60,7 @@ Liveness and readiness check. Returns `200` when datasets are readable and `503`
   "service": "portpulse",
   "version": "1.0.0",
   "environment": "development",
+  "gemini_configured": true,
   "watsonx_configured": true,
   "datasets_available": true
 }
