@@ -1,24 +1,33 @@
-# Screenshots
+# Application Screenshots
 
-Screenshots captured from the running PortPulse dashboard using the bundled
-sample vessel and berth datasets.
+High-resolution screenshots captured from the running PortPulse dashboard using sample vessel and berth datasets.
 
-## Naming Convention
+## Naming Convention & Roster
 
-Name your screenshots sequentially so they appear in logical order:
+The screenshots are organized sequentially to reflect the operational workflow:
 
-  01-dashboard-overview.png       ← Operations overview and KPIs
-  02-whatif-cascade-simulation.png ← Scenario controls and congestion risk
-  03-berth-capacity.png           ← Berth capacity and utilization
-  04-berth-assignment-plan.png    ← Vessel assignment schedule
-  05-reallocation-routing.png    ← Unassigned vessels and alternate ports
-  06-vessel-map.png               ← Live schematic and reroute corridors
+```text
+01-dashboard-overview.png      ← Berth operations overview, KPI cards, and priority breakdown
+02-berth-capacity.png          ← Berth capacity utilization cards across 72h window
+03-berth-assignment-plan.png   ← Detailed vessel assignment schedule table and demurrage costs
+04-reallocation-routing.png    ← Reroute suggestions and ranked candidate alternate ports
+05-vessel-map.png              ← Interactive global vessel ocean routing corridors map
+06-ops-assistant-chatbot.png   ← Conversational Ops Assistant chatbot widget
+07-weather-impact-feed.png     ← Weather delay engine & dynamic re-allocation feed
+08-global-port-selector.png    ← International port selector & coordinate manager
+09-berth-map-detail.png        ← Detailed marine route waypoints and berth anchorages
+10-congestion-forecast.png     ← 72-Hour rolling 24-hour congestion risk forecast
+```
 
-## Captured Screenshots
+## Visual Tour
 
-1. [Dashboard overview](01-dashboard-overview.png) — 72-hour plan summary, KPIs, and priority roster.
-2. [What-If and cascade simulation](02-whatif-cascade-simulation.png) — scenario controls, action alerts, and congestion forecast.
-3. [Berth capacity](03-berth-capacity.png) — capacity utilization and optimization summary.
-4. [Berth assignment plan](04-berth-assignment-plan.png) — vessel schedule, berth starts, waits, priorities, and decision reasons.
-5. [Reallocation and routing](05-reallocation-routing.png) — unassigned vessels and ranked alternate ports.
-6. [Vessel map](06-vessel-map.png) — schematic terminal layout, berth nodes, vessels, and reroute corridors.
+1. **[Dashboard Overview](01-dashboard-overview.png)** — 72-hour plan summary, KPI tracking strip, and priority roster breakdown.
+2. **[Berth Capacity & Utilization](02-berth-capacity.png)** — Live TEU capacity volume, percentage utilization, docked vessel name, and queue status per berth.
+3. **[Berth Assignment Plan](03-berth-assignment-plan.png)** — Complete vessel schedule table, crane allocations, demurrage costs, weather delays, berth start, and estimated departure.
+4. **[Reallocation & Rerouting](04-reallocation-routing.png)** — Unassigned vessel list with candidate alternate ports ranked by nautical miles distance and transit times.
+5. **[Vessel Ocean Routing Map](05-vessel-map.png)** — Live schematic ocean routing corridors connecting international container hubs.
+6. **[Ops Assistant Chatbot](06-ops-assistant-chatbot.png)** — Conversational AI Chatbot widget grounded directly in live 72-hour ops plan data.
+7. **[Weather Delay Feed](07-weather-impact-feed.png)** — Real-time weather delay engine & dynamic berth re-allocation audit log.
+8. **[Global Port Selector](08-global-port-selector.png)** — Country and port selector supporting international container ports and custom coordinates.
+9. **[Berth Map Detail](09-berth-map-detail.png)** — High-resolution harbor anchorage and vessel berth mapping.
+10. **[72-Hour Congestion Forecast](10-congestion-forecast.png)** — Rolling 24-hour risk level classification comparing inbound TEU vs berth capacity.
