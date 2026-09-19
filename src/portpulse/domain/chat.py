@@ -258,7 +258,10 @@ def _is_out_of_scope(msg: str, plan: dict[str, Any]) -> bool:
     # Explicit out-of-scope keyword check
     has_out_of_scope = any(term in clean_text for term in _OUT_OF_SCOPE_TERMS)
     has_port_kw = any(kw in clean_text for kw in _PORT_KEYWORDS)
-    has_greeting = any(re.search(r"\b" + re.escape(g) + r"\b", clean_text) for g in _GREETING_KEYWORDS)
+    has_greeting = any(
+        re.search(r"\b" + re.escape(g) + r"\b", clean_text) for g in _GREETING_KEYWORDS
+    )
+
 
     if has_greeting and not has_out_of_scope:
         return False
