@@ -8,7 +8,7 @@ the OpenAPI schema a real output contract instead of bare dicts.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Annotated, Literal
+from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -64,9 +64,7 @@ class BerthIn(_Model):
     capacity_teu: Teu = Field(examples=[16000])
     crane_count: int = Field(ge=0, le=50, examples=[4])
     avg_dwell_hours: float = Field(gt=0, le=720, examples=[24.0])
-    allowed_cargo_types: str | None = Field(
-        default=None, examples=["container, bulk, limestone"]
-    )
+    allowed_cargo_types: str | None = Field(default=None, examples=["container, bulk, limestone"])
 
     def to_row(self) -> dict[str, str]:
         return {key: str(value) for key, value in self.model_dump().items() if value is not None}
@@ -209,8 +207,14 @@ class AlternatePort(BaseModel):
     """A candidate port for a vessel that could not be berthed."""
 
     port: str
+    distance_nmi: int = Field(
+        default=0, ge=0, description="Sea route distance in nautical miles (nmi)"
+    )
     distance_km: int = Field(ge=0)
     spare_capacity_teu: int = Field(ge=0)
+    transit_delta_hours: float | None = Field(
+        default=None, description="Transit delay hours to reach this alternate port"
+    )
     reason: str
 
 
@@ -300,10 +304,12 @@ class OpsPlan(BaseModel):
         description="Weather-induced ETA delays applied before berth assignment.",
     )
     ml_enabled: bool = Field(description="True when ML model features and predictions are enabled.")
-    ml_allocation_used: bool = Field(description="True when ML model berth allocation was used for assignments.")
+    ml_allocation_used: bool = Field(
+        description="True when ML model berth allocation was used for assignments."
+    )
     meta: dict[str, Any] | None = Field(
         default=None,
-        description="Home port metadata including home_port_name, home_port_lat, and home_port_lon.",
+        description="Home port metadata including home_port_name, home_port_lat, home_port_lon.",
     )
     warnings: list[str] = Field(
         default_factory=list,

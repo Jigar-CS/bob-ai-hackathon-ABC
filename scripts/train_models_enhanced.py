@@ -24,12 +24,9 @@ Run from project root:
 
 from __future__ import annotations
 
-import os
 import sys
 import warnings
-from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any
 
 # Ensure project src is importable
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -39,34 +36,30 @@ MODEL_DIR = PROJECT_ROOT / "src" / "portpulse" / "ml"
 warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 
-import joblib
-import numpy as np
-import pandas as pd
-from sklearn.ensemble import (
+import joblib  # noqa: E402
+import numpy as np  # noqa: E402
+import pandas as pd  # noqa: E402
+from sklearn.ensemble import (  # noqa: E402
     GradientBoostingRegressor,
     IsolationForest,
     RandomForestClassifier,
     RandomForestRegressor,
-    VotingClassifier,
-    VotingRegressor,
 )
-from sklearn.model_selection import (
-    GridSearchCV,
+from sklearn.metrics import (  # noqa: E402
+    accuracy_score,
+    mean_absolute_error,
+    r2_score,
+)
+from sklearn.model_selection import (  # noqa: E402
     cross_val_score,
     train_test_split,
 )
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.metrics import (
-    accuracy_score,
-    classification_report,
-    mean_absolute_error,
-    mean_squared_error,
-    r2_score,
-)
+from sklearn.preprocessing import LabelEncoder  # noqa: E402
 
 # Try importing advanced ML libraries
 try:
     import xgboost as xgb
+
     HAS_XGBOOST = True
 except ImportError:
     HAS_XGBOOST = False
@@ -74,6 +67,7 @@ except ImportError:
 
 try:
     import lightgbm as lgb
+
     HAS_LIGHTGBM = True
 except ImportError:
     HAS_LIGHTGBM = False
@@ -97,7 +91,7 @@ print("       Including weather features, temporal patterns, and realistic port 
 vessel_sizes = RNG.choice(
     [2000, 4000, 6000, 8000, 10000, 12000, 15000, 18000, 22000],
     size=N_SAMPLES,
-    p=[0.08, 0.12, 0.18, 0.20, 0.18, 0.12, 0.07, 0.03, 0.02]
+    p=[0.08, 0.12, 0.18, 0.20, 0.18, 0.12, 0.07, 0.03, 0.02],
 )
 priority = RNG.choice([1, 2, 3, 4, 5], size=N_SAMPLES, p=[0.15, 0.25, 0.30, 0.20, 0.10])
 cargo_types = RNG.choice([0, 1, 2, 3, 4], size=N_SAMPLES, p=[0.50, 0.20, 0.15, 0.10, 0.05])
@@ -118,14 +112,17 @@ precipitation_mm = RNG.uniform(0, 50, size=N_SAMPLES)
 
 # Weather severity classification
 weather_severity = np.where(
-    (wave_height_m > 5.0) | (wind_speed_kt > 50) | (storm_probability > 0.7), 3,  # Severe
+    (wave_height_m > 5.0) | (wind_speed_kt > 50) | (storm_probability > 0.7),
+    3,  # Severe
     np.where(
-        (wave_height_m > 3.0) | (wind_speed_kt > 35) | (storm_probability > 0.4), 2,  # Moderate
+        (wave_height_m > 3.0) | (wind_speed_kt > 35) | (storm_probability > 0.4),
+        2,  # Moderate
         np.where(
-            (wave_height_m > 1.5) | (wind_speed_kt > 20) | (storm_probability > 0.2), 1,  # Minor
-            0  # None
-        )
-    )
+            (wave_height_m > 1.5) | (wind_speed_kt > 20) | (storm_probability > 0.2),
+            1,  # Minor
+            0,  # None
+        ),
+    ),
 )
 
 # --- Time-Based Features ---
@@ -157,13 +154,13 @@ utilization_ratio = np.clip(incoming_teu / (total_capacity + 1), 0, 2.0)
 
 # Risk score combining multiple factors
 risk_score = (
-    utilization_ratio * 0.35 +
-    (n_vessels_queue / 50) * 0.15 +
-    (avg_port_congestion_last_24h * 0.15) +
-    (weather_severity / 3 * 0.10) +
-    (is_peak_season * 0.10) +
-    (berth_utilization_pct / 100 * 0.10) +
-    RNG.normal(0, 0.05, size=N_SAMPLES)
+    utilization_ratio * 0.35
+    + (n_vessels_queue / 50) * 0.15
+    + (avg_port_congestion_last_24h * 0.15)
+    + (weather_severity / 3 * 0.10)
+    + (is_peak_season * 0.10)
+    + (berth_utilization_pct / 100 * 0.10)
+    + RNG.normal(0, 0.05, size=N_SAMPLES)
 )
 
 risk_level = np.where(risk_score > 0.85, 2, np.where(risk_score > 0.50, 1, 0))
@@ -172,32 +169,31 @@ risk_labels = np.array(["LOW", "MEDIUM", "HIGH"])[risk_level]
 # --- Wait Time (Hours) ---
 # Complex interaction between priority, capacity, weather, and queue
 base_wait = (
-    (n_vessels_queue / n_berths) * 2.5 +  # Queue pressure
-    (vessel_sizes / berth_capacity) * 3.0 +  # Size vs capacity
-    weather_severity * 1.5 +  # Weather impact
-    (5 - priority) * 0.5  # Priority factor
+    (n_vessels_queue / n_berths) * 2.5  # Queue pressure
+    + (vessel_sizes / berth_capacity) * 3.0  # Size vs capacity
+    + weather_severity * 1.5  # Weather impact
+    + (5 - priority) * 0.5  # Priority factor
 )
 
 weather_delay = np.where(
-    weather_severity == 3, RNG.uniform(6, 12, size=N_SAMPLES),
+    weather_severity == 3,
+    RNG.uniform(6, 12, size=N_SAMPLES),
     np.where(
-        weather_severity == 2, RNG.uniform(2, 6, size=N_SAMPLES),
-        np.where(weather_severity == 1, RNG.uniform(0.5, 2, size=N_SAMPLES), 0)
-    )
+        weather_severity == 2,
+        RNG.uniform(2, 6, size=N_SAMPLES),
+        np.where(weather_severity == 1, RNG.uniform(0.5, 2, size=N_SAMPLES), 0),
+    ),
 )
 
-wait_hours = np.clip(
-    base_wait + weather_delay + RNG.normal(0, 1.5, size=N_SAMPLES),
-    0, 48
-)
+wait_hours = np.clip(base_wait + weather_delay + RNG.normal(0, 1.5, size=N_SAMPLES), 0, 48)
 
 # --- Berth Allocation Score (Higher = Better Berth for Vessel) ---
 allocation_score = (
-    (berth_capacity / vessel_sizes) * 10 +  # Capacity fit
-    crane_count * 5 +  # Crane availability
-    (1 - weather_severity / 3) * 15 +  # Weather favorability
-    (1 - berth_utilization_pct / 100) * 10 +  # Availability
-    RNG.normal(0, 2, size=N_SAMPLES)
+    (berth_capacity / vessel_sizes) * 10  # Capacity fit
+    + crane_count * 5  # Crane availability
+    + (1 - weather_severity / 3) * 15  # Weather favorability
+    + (1 - berth_utilization_pct / 100) * 10  # Availability
+    + RNG.normal(0, 2, size=N_SAMPLES)
 )
 
 # Normalize to 0-100
@@ -205,16 +201,15 @@ allocation_score = np.clip((allocation_score / 40) * 100, 0, 100)
 
 # --- Delay Cascade Hours ---
 cascade_delay = np.where(
-    wait_hours > 10,
-    wait_hours * RNG.uniform(0.3, 0.8, size=N_SAMPLES) * (n_vessels_queue / 20),
-    0
+    wait_hours > 10, wait_hours * RNG.uniform(0.3, 0.8, size=N_SAMPLES) * (n_vessels_queue / 20), 0
 ) + RNG.normal(0, 0.5, size=N_SAMPLES)
 cascade_delay = np.clip(cascade_delay, 0, 24)
 
 # --- Demurrage Cost (USD) ---
 base_rate = np.where(
-    cargo_types == 3, 0.20,  # Hazmat premium
-    np.where(cargo_types == 1, 0.12, 0.08)  # Reefer vs general
+    cargo_types == 3,
+    0.20,  # Hazmat premium
+    np.where(cargo_types == 1, 0.12, 0.08),  # Reefer vs general
 )
 priority_mult = np.where(priority == 1, 1.5, np.where(priority == 5, 0.8, 1.0))
 
@@ -223,33 +218,42 @@ demurrage_cost = np.clip(demurrage_cost + RNG.normal(0, 100, size=N_SAMPLES), 0,
 
 # --- Crane Productivity (moves/hour) ---
 crane_productivity = (
-    crane_count * 28 *  # Base moves per crane
-    (1 - vessel_sizes / 30000) *  # Vessel size penalty
-    (1 - weather_severity * 0.15) *  # Weather penalty
-    np.where(np.isin(hour_of_day, [6,7,8,9,10,11,12,13,14,15,16,17]), 1.0, 0.85) +  # Day shift bonus
-    RNG.normal(0, 5, size=N_SAMPLES)
+    crane_count
+    * 28  # Base moves per crane
+    * (1 - vessel_sizes / 30000)  # Vessel size penalty
+    * (1 - weather_severity * 0.15)  # Weather penalty
+    * np.where(
+        np.isin(hour_of_day, [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]), 1.0, 0.85
+    )  # Day shift bonus
+    + RNG.normal(0, 5, size=N_SAMPLES)
 )
 crane_productivity = np.clip(crane_productivity, 10, 300)
 
 # --- Anomaly Detection Labels ---
 anomaly_score = (
-    ((wait_hours > 24) | (wait_hours < 0.5)).astype(float) * 3 +
-    ((vessel_sizes > 20000) & (berth_capacity < 15000)).astype(float) * 2.5 +
-    ((weather_severity == 3) & (priority == 1)).astype(float) * 2 +
-    ((cascade_delay > 12)).astype(float) * 1.5 +
-    RNG.uniform(0, 1, size=N_SAMPLES)
+    ((wait_hours > 24) | (wait_hours < 0.5)).astype(float) * 3
+    + ((vessel_sizes > 20000) & (berth_capacity < 15000)).astype(float) * 2.5
+    + ((weather_severity == 3) & (priority == 1)).astype(float) * 2
+    + (cascade_delay > 12).astype(float) * 1.5
+    + RNG.uniform(0, 1, size=N_SAMPLES)
 )
 
 anomaly_label = np.where(anomaly_score > 4, -1, 1)
 
 # --- Weather Delay Hours ---
-weather_delay_hours = np.where(
-    weather_severity == 3, RNG.uniform(8, 14, size=N_SAMPLES),
+weather_delay_hours = (
     np.where(
-        weather_severity == 2, RNG.uniform(3, 8, size=N_SAMPLES),
-        np.where(weather_severity == 1, RNG.uniform(0.5, 3, size=N_SAMPLES), 0)
+        weather_severity == 3,
+        RNG.uniform(8, 14, size=N_SAMPLES),
+        np.where(
+            weather_severity == 2,
+            RNG.uniform(3, 8, size=N_SAMPLES),
+            np.where(weather_severity == 1, RNG.uniform(0.5, 3, size=N_SAMPLES), 0),
+        ),
     )
-) + (wave_height_m * 0.5) + (wind_speed_kt * 0.05)
+    + (wave_height_m * 0.5)
+    + (wind_speed_kt * 0.05)
+)
 
 # ============================================================================
 # BUILD FEATURE DATAFRAMES
@@ -258,121 +262,137 @@ weather_delay_hours = np.where(
 print("\n[2/10] Building feature matrices...")
 
 # Congestion Risk Features
-X_risk = pd.DataFrame({
-    'vessel_count': n_vessels_queue,
-    'incoming_teu': incoming_teu.astype(int),
-    'total_capacity_teu': total_capacity.astype(int),
-    'utilization_ratio': utilization_ratio.round(4),
-    'day_index': RNG.integers(1, 4, size=N_SAMPLES),
-    'wave_height_m': wave_height_m.round(2),
-    'wind_speed_kt': wind_speed_kt.round(1),
-    'weather_severity': weather_severity,
-    'hour_of_day': hour_of_day,
-    'day_of_week': day_of_week,
-    'month': month,
-    'is_peak_season': is_peak_season,
-    'avg_port_congestion_24h': avg_port_congestion_last_24h.round(3),
-    'berth_utilization_pct': berth_utilization_pct.round(1),
-})
+X_risk = pd.DataFrame(
+    {
+        "vessel_count": n_vessels_queue,
+        "incoming_teu": incoming_teu.astype(int),
+        "total_capacity_teu": total_capacity.astype(int),
+        "utilization_ratio": utilization_ratio.round(4),
+        "day_index": RNG.integers(1, 4, size=N_SAMPLES),
+        "wave_height_m": wave_height_m.round(2),
+        "wind_speed_kt": wind_speed_kt.round(1),
+        "weather_severity": weather_severity,
+        "hour_of_day": hour_of_day,
+        "day_of_week": day_of_week,
+        "month": month,
+        "is_peak_season": is_peak_season,
+        "avg_port_congestion_24h": avg_port_congestion_last_24h.round(3),
+        "berth_utilization_pct": berth_utilization_pct.round(1),
+    }
+)
 
 # Wait Time Features
-X_wait = pd.DataFrame({
-    'size_teu': vessel_sizes,
-    'priority': priority,
-    'crane_count': crane_count,
-    'berth_capacity_teu': berth_capacity,
-    'n_berths': n_berths,
-    'n_vessels_queue': n_vessels_queue,
-    'wave_height_m': wave_height_m.round(2),
-    'wind_speed_kt': wind_speed_kt.round(1),
-    'weather_severity': weather_severity,
-    'storm_probability': storm_probability.round(3),
-    'hour_of_day': hour_of_day,
-    'day_of_week': day_of_week,
-    'month': month,
-    'distance_km': distance_km.round(1),
-    'avg_wait_7d': avg_wait_last_7_days.round(2),
-    'berth_utilization_pct': berth_utilization_pct.round(1),
-})
+X_wait = pd.DataFrame(
+    {
+        "size_teu": vessel_sizes,
+        "priority": priority,
+        "crane_count": crane_count,
+        "berth_capacity_teu": berth_capacity,
+        "n_berths": n_berths,
+        "n_vessels_queue": n_vessels_queue,
+        "wave_height_m": wave_height_m.round(2),
+        "wind_speed_kt": wind_speed_kt.round(1),
+        "weather_severity": weather_severity,
+        "storm_probability": storm_probability.round(3),
+        "hour_of_day": hour_of_day,
+        "day_of_week": day_of_week,
+        "month": month,
+        "distance_km": distance_km.round(1),
+        "avg_wait_7d": avg_wait_last_7_days.round(2),
+        "berth_utilization_pct": berth_utilization_pct.round(1),
+    }
+)
 
 # Berth Allocation Features
-X_allocation = pd.DataFrame({
-    'vessel_size_teu': vessel_sizes,
-    'vessel_priority': priority,
-    'berth_capacity_teu': berth_capacity,
-    'berth_crane_count': crane_count,
-    'berth_utilization_pct': berth_utilization_pct.round(1),
-    'wave_height_m': wave_height_m.round(2),
-    'wind_speed_kt': wind_speed_kt.round(1),
-    'weather_severity': weather_severity,
-    'hour_of_day': hour_of_day,
-    'n_vessels_queue': n_vessels_queue,
-    'capacity_fit_ratio': (berth_capacity / vessel_sizes).round(3),
-})
+X_allocation = pd.DataFrame(
+    {
+        "vessel_size_teu": vessel_sizes,
+        "vessel_priority": priority,
+        "berth_capacity_teu": berth_capacity,
+        "berth_crane_count": crane_count,
+        "berth_utilization_pct": berth_utilization_pct.round(1),
+        "wave_height_m": wave_height_m.round(2),
+        "wind_speed_kt": wind_speed_kt.round(1),
+        "weather_severity": weather_severity,
+        "hour_of_day": hour_of_day,
+        "n_vessels_queue": n_vessels_queue,
+        "capacity_fit_ratio": (berth_capacity / vessel_sizes).round(3),
+    }
+)
 
 # Delay Cascade Features
-X_cascade = pd.DataFrame({
-    'initial_wait_hours': wait_hours,
-    'n_vessels_queue': n_vessels_queue,
-    'n_berths': n_berths,
-    'avg_vessel_size': vessel_sizes,  # Simplified
-    'weather_severity': weather_severity,
-    'priority_avg': priority,  # Simplified
-    'hour_of_day': hour_of_day,
-    'utilization_ratio': utilization_ratio.round(3),
-})
+X_cascade = pd.DataFrame(
+    {
+        "initial_wait_hours": wait_hours,
+        "n_vessels_queue": n_vessels_queue,
+        "n_berths": n_berths,
+        "avg_vessel_size": vessel_sizes,  # Simplified
+        "weather_severity": weather_severity,
+        "priority_avg": priority,  # Simplified
+        "hour_of_day": hour_of_day,
+        "utilization_ratio": utilization_ratio.round(3),
+    }
+)
 
 # Weather Delay Features
-X_weather_delay = pd.DataFrame({
-    'wave_height_m': wave_height_m.round(2),
-    'wind_speed_kt': wind_speed_kt.round(1),
-    'visibility_km': visibility_km.round(1),
-    'storm_probability': storm_probability.round(3),
-    'precipitation_mm': precipitation_mm.round(1),
-    'weather_severity': weather_severity,
-    'distance_km': distance_km.round(1),
-    'month': month,
-    'hour_of_day': hour_of_day,
-    'vessel_size_teu': vessel_sizes,
-})
+X_weather_delay = pd.DataFrame(
+    {
+        "wave_height_m": wave_height_m.round(2),
+        "wind_speed_kt": wind_speed_kt.round(1),
+        "visibility_km": visibility_km.round(1),
+        "storm_probability": storm_probability.round(3),
+        "precipitation_mm": precipitation_mm.round(1),
+        "weather_severity": weather_severity,
+        "distance_km": distance_km.round(1),
+        "month": month,
+        "hour_of_day": hour_of_day,
+        "vessel_size_teu": vessel_sizes,
+    }
+)
 
 # Demurrage Cost Features
-X_demurrage = pd.DataFrame({
-    'wait_hours': wait_hours,
-    'priority': priority,
-    'size_teu': vessel_sizes,
-    'cargo_type_hazmat': (cargo_types == 3).astype(int),
-    'cargo_type_reefer': (cargo_types == 1).astype(int),
-    'weather_severity': weather_severity,
-    'is_peak_season': is_peak_season,
-    'month': month,
-})
+X_demurrage = pd.DataFrame(
+    {
+        "wait_hours": wait_hours,
+        "priority": priority,
+        "size_teu": vessel_sizes,
+        "cargo_type_hazmat": (cargo_types == 3).astype(int),
+        "cargo_type_reefer": (cargo_types == 1).astype(int),
+        "weather_severity": weather_severity,
+        "is_peak_season": is_peak_season,
+        "month": month,
+    }
+)
 
 # Crane Productivity Features
-X_crane = pd.DataFrame({
-    'crane_count': crane_count,
-    'size_teu': vessel_sizes,
-    'priority': priority,
-    'berth_capacity_teu': berth_capacity,
-    'weather_severity': weather_severity,
-    'hour_of_day': hour_of_day,
-    'day_of_week': day_of_week,
-    'wave_height_m': wave_height_m.round(2),
-    'wind_speed_kt': wind_speed_kt.round(1),
-})
+X_crane = pd.DataFrame(
+    {
+        "crane_count": crane_count,
+        "size_teu": vessel_sizes,
+        "priority": priority,
+        "berth_capacity_teu": berth_capacity,
+        "weather_severity": weather_severity,
+        "hour_of_day": hour_of_day,
+        "day_of_week": day_of_week,
+        "wave_height_m": wave_height_m.round(2),
+        "wind_speed_kt": wind_speed_kt.round(1),
+    }
+)
 
 # Anomaly Detection Features
-X_anomaly = pd.DataFrame({
-    'size_teu': vessel_sizes,
-    'wait_hours': wait_hours,
-    'crane_count': crane_count,
-    'priority': priority,
-    'weather_severity': weather_severity,
-    'n_vessels_queue': n_vessels_queue,
-    'berth_utilization_pct': berth_utilization_pct.round(1),
-    'hour_of_day': hour_of_day,
-    'utilization_ratio': utilization_ratio.round(3),
-})
+X_anomaly = pd.DataFrame(
+    {
+        "size_teu": vessel_sizes,
+        "wait_hours": wait_hours,
+        "crane_count": crane_count,
+        "priority": priority,
+        "weather_severity": weather_severity,
+        "n_vessels_queue": n_vessels_queue,
+        "berth_utilization_pct": berth_utilization_pct.round(1),
+        "hour_of_day": hour_of_day,
+        "utilization_ratio": utilization_ratio.round(3),
+    }
+)
 
 # Target variables
 y_risk = risk_labels
@@ -384,11 +404,22 @@ y_demurrage = demurrage_cost
 y_crane = crane_productivity
 y_anomaly = anomaly_label
 
-print(f"       Risk distribution: LOW={np.sum(risk_level==0):,} MEDIUM={np.sum(risk_level==1):,} HIGH={np.sum(risk_level==2):,}")
-print(f"       Wait hours range: {wait_hours.min():.1f}–{wait_hours.max():.1f}h (mean={wait_hours.mean():.2f}h)")
-print(f"       Weather delay range: {weather_delay_hours.min():.1f}–{weather_delay_hours.max():.1f}h")
-print(f"       Demurrage range: ${demurrage_cost.min():.0f}–${demurrage_cost.max():.0f} (mean=${demurrage_cost.mean():.0f})")
-print(f"       Anomalies: {np.sum(anomaly_label==-1):,} / {N_SAMPLES:,}")
+print(
+    f"       Risk distribution: LOW={np.sum(risk_level == 0):,} "
+    f"MEDIUM={np.sum(risk_level == 1):,} HIGH={np.sum(risk_level == 2):,}"
+)
+print(
+    f"       Wait hours range: {wait_hours.min():.1f}-{wait_hours.max():.1f}h "
+    f"(mean={wait_hours.mean():.2f}h)"
+)
+print(
+    f"       Weather delay range: {weather_delay_hours.min():.1f}-{weather_delay_hours.max():.1f}h"
+)
+print(
+    f"       Demurrage range: ${demurrage_cost.min():.0f}-${demurrage_cost.max():.0f} "
+    f"(mean=${demurrage_cost.mean():.0f})"
+)
+print(f"       Anomalies: {np.sum(anomaly_label == -1):,} / {N_SAMPLES:,}")
 
 # ============================================================================
 # TRAIN MODELS
@@ -410,18 +441,18 @@ if HAS_XGBOOST:
         learning_rate=0.1,
         subsample=0.8,
         colsample_bytree=0.8,
-        objective='multi:softprob',
+        objective="multi:softprob",
         random_state=42,
         n_jobs=-1,
         use_label_encoder=False,
-        eval_metric='mlogloss',
+        eval_metric="mlogloss",
     )
 else:
     risk_model = RandomForestClassifier(
         n_estimators=200,
         max_depth=10,
         min_samples_leaf=10,
-        class_weight='balanced',
+        class_weight="balanced",
         random_state=42,
         n_jobs=-1,
     )
@@ -430,7 +461,8 @@ risk_model.fit(X_r_train, y_r_train)
 y_r_pred = risk_model.predict(X_r_test)
 risk_accuracy = accuracy_score(y_r_test, y_r_pred)
 print(f"       Accuracy: {risk_accuracy:.4f}")
-print(f"       Cross-val score: {cross_val_score(risk_model, X_risk, y_risk_enc, cv=5, scoring='accuracy').mean():.4f}")
+cv_risk = cross_val_score(risk_model, X_risk, y_risk_enc, cv=5, scoring="accuracy").mean()
+print(f"       Cross-val score: {cv_risk:.4f}")
 
 print("\n[4/10] Training Wait Time Regressor...")
 
@@ -465,7 +497,10 @@ wait_mae = mean_absolute_error(y_w_test, y_w_pred)
 wait_r2 = r2_score(y_w_test, y_w_pred)
 print(f"       MAE: {wait_mae:.3f}h")
 print(f"       R²: {wait_r2:.4f}")
-print(f"       Cross-val MAE: {-cross_val_score(wait_model, X_wait, y_wait, cv=5, scoring='neg_mean_absolute_error').mean():.3f}h")
+cv_wait = -cross_val_score(
+    wait_model, X_wait, y_wait, cv=5, scoring="neg_mean_absolute_error"
+).mean()
+print(f"       Cross-val MAE: {cv_wait:.3f}h")
 
 print("\n[5/10] Training Berth Allocation Model...")
 
@@ -612,7 +647,7 @@ normal_mask = y_anomaly == 1
 anomaly_model = IsolationForest(
     n_estimators=150,
     contamination=0.08,
-    max_samples='auto',
+    max_samples="auto",
     random_state=42,
     n_jobs=-1,
 )
@@ -645,15 +680,15 @@ print("=" * 80)
 MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
 models_to_save = [
-    ('congestion_risk_model.pkl', risk_model),
-    ('risk_label_encoder.pkl', le),
-    ('wait_time_model.pkl', wait_model),
-    ('berth_allocation_model.pkl', allocation_model),
-    ('delay_cascade_model.pkl', cascade_model),
-    ('weather_delay_model.pkl', weather_delay_model),
-    ('demurrage_cost_model.pkl', demurrage_model),
-    ('crane_productivity_model.pkl', crane_model),
-    ('anomaly_model.pkl', anomaly_model),
+    ("congestion_risk_model.pkl", risk_model),
+    ("risk_label_encoder.pkl", le),
+    ("wait_time_model.pkl", wait_model),
+    ("berth_allocation_model.pkl", allocation_model),
+    ("delay_cascade_model.pkl", cascade_model),
+    ("weather_delay_model.pkl", weather_delay_model),
+    ("demurrage_cost_model.pkl", demurrage_model),
+    ("crane_productivity_model.pkl", crane_model),
+    ("anomaly_model.pkl", anomaly_model),
 ]
 
 for filename, model in models_to_save:
@@ -662,18 +697,18 @@ for filename, model in models_to_save:
 
 # Save feature columns for each model (important for inference)
 feature_columns = {
-    'risk_features': list(X_risk.columns),
-    'wait_features': list(X_wait.columns),
-    'allocation_features': list(X_allocation.columns),
-    'cascade_features': list(X_cascade.columns),
-    'weather_delay_features': list(X_weather_delay.columns),
-    'demurrage_features': list(X_demurrage.columns),
-    'crane_features': list(X_crane.columns),
-    'anomaly_features': list(X_anomaly.columns),
+    "risk_features": list(X_risk.columns),
+    "wait_features": list(X_wait.columns),
+    "allocation_features": list(X_allocation.columns),
+    "cascade_features": list(X_cascade.columns),
+    "weather_delay_features": list(X_weather_delay.columns),
+    "demurrage_features": list(X_demurrage.columns),
+    "crane_features": list(X_crane.columns),
+    "anomaly_features": list(X_anomaly.columns),
 }
 
-joblib.dump(feature_columns, MODEL_DIR / 'feature_columns.pkl')
-print(f"  ✓ feature_columns.pkl")
+joblib.dump(feature_columns, MODEL_DIR / "feature_columns.pkl")
+print("  ✓ feature_columns.pkl")
 
 print("\n" + "=" * 80)
 print("TRAINING COMPLETE")

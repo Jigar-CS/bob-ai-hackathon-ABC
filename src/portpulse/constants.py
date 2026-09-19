@@ -40,9 +40,7 @@ BERTH_COLUMNS: Final[tuple[str, ...]] = (
 )
 
 #: Optional berth columns (backward-compatible).
-BERTH_OPTIONAL_COLUMNS: Final[tuple[str, ...]] = (
-    "allowed_cargo_types",
-)
+BERTH_OPTIONAL_COLUMNS: Final[tuple[str, ...]] = ("allowed_cargo_types",)
 
 #: Planning horizon, in 24-hour windows.
 PLANNING_HORIZON_DAYS: Final[int] = 3

@@ -104,7 +104,9 @@ def _verify_startup_configuration(settings: Settings) -> None:
         )
 
     import time
+
     from portpulse.ml.predictor import _load, get_available_models
+
     t0 = time.perf_counter()
     _load()
     dur = time.perf_counter() - t0

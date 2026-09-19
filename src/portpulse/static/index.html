@@ -580,10 +580,9 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.7px;
-      padding: 11px 16px;
+      padding: 10px 14px;
       border-bottom: 1px solid var(--card-border);
-      /* allow <br> in th cells to actually wrap */
-      white-space: normal;
+      white-space: nowrap;
       line-height: 1.3;
       position: sticky;
       top: 0;
@@ -591,20 +590,23 @@
     }
 
     td {
-      padding: 11px 16px;
+      padding: 9px 14px;
       border-bottom: 1px solid var(--card-border);
       color: var(--text-primary);
-      font-size: 12px;
+      font-size: 11.5px;
       vertical-align: middle;
+      white-space: nowrap;
     }
 
     /* HP-6: reason column in serif italic */
     td.reason-cell {
       font-family: 'IBM Plex Serif', serif;
       font-style: italic;
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--text-secondary);
-      max-width: 260px;
+      max-width: 300px;
+      white-space: normal;
+      line-height: 1.35;
     }
 
     tr:last-child td {
@@ -826,21 +828,35 @@
       margin-bottom: 8px;
     }
 
-    /* Change 11: three-column port row (port name | distance badge | reason) */
+    /* Change 11: clean alternate port card row layout */
     .rc-alt-item {
-      display: grid;
-      grid-template-columns: minmax(80px, auto) 60px 1fr;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 10px 12px;
       background: var(--bg-surface);
       border: 1px solid var(--card-border);
       border-radius: var(--radius-sm);
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .rc-alt-item:last-child {
       margin-bottom: 0;
+    }
+
+    .rc-alt-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .rc-alt-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .rc-alt-port {
@@ -850,24 +866,36 @@
       color: var(--text-primary);
     }
 
+    .rc-alt-transit {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--accent-gold);
+      background: rgba(184, 134, 11, 0.15);
+      border: 1px solid rgba(184, 134, 11, 0.3);
+      padding: 1px 6px;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+    }
+
     .rc-alt-dist {
       font-family: 'IBM Plex Mono', monospace;
       font-size: 11px;
-      font-weight: 500;
-      color: var(--text-muted);
+      font-weight: 600;
+      color: var(--accent-navy);
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: var(--radius-sm);
-      padding: 2px 6px;
-      text-align: center;
+      padding: 2px 8px;
       white-space: nowrap;
+      margin-left: auto;
     }
 
     .rc-alt-reason {
       font-family: 'IBM Plex Serif', serif;
       font-size: 12px;
       color: var(--text-secondary);
-      line-height: 1.4;
+      line-height: 1.45;
     }
 
     /* ── States ─────────────────────────────────────────────────── */
@@ -3953,7 +3981,7 @@
 
           return `
       <tr class="animate-in assignment-row" data-search="${escapeHtml(searchVal)}" onclick="openVesselDetailModal(window._vesselMap['${escapeHtml(vKey)}'])" style="animation-delay:${i * 0.03}s">
-        <td><span class="vessel-p${pCls}">${escapeHtml(a.vessel_name)}</span> ${queueBadge} ${weatherBadge} ${anomalyBadge}</td>
+        <td><span class="vessel-p${pCls}">${escapeHtml(a.vessel_name)}</span> ${queueBadge} ${anomalyBadge}</td>
         <td><span class="berth-id">${escapeHtml(a.berth_id)}</span></td>
         <td>${craneStr}</td>
         <td>${movesStr}</td>
@@ -3964,7 +3992,7 @@
         <td>${escapeHtml(a.departure_est)}</td>
         <td>${waitStr}</td>
         <td><span class="prio-tag prio-${pCls}">P${p}</span></td>
-        <td class="reason-cell">${escapeHtml(a.reason)}</td>
+        <td class="reason-cell" title="${escapeHtml(a.reason)}">${escapeHtml(a.reason)}</td>
       </tr>`;
         }).join('');
       }
@@ -4484,13 +4512,29 @@
         $rr.innerHTML = '<div class="empty-state">All incoming vessels assigned — no rerouting required.</div>';
       } else {
         $rr.innerHTML = reroutes.map((r, i) => {
-          const alts = (r.alternatives || []).map(a =>
-            `<div class="rc-alt-item">
-          <span class="rc-alt-port">${escapeHtml(a.port)}</span>
-          <span class="rc-alt-dist">${a.distance_km != null ? a.distance_km : '—'} km</span>
-          <span class="rc-alt-reason">${escapeHtml(a.reason)}</span>
-        </div>`
-          ).join('');
+          const alts = (r.alternatives || []).map(a => {
+            const distKm = a.distance_km != null ? a.distance_km : null;
+            const distNmi = a.distance_nmi != null ? a.distance_nmi : (distKm ? Math.round(distKm / 1.852) : null);
+            const distStr = distNmi != null ? `${distNmi.toLocaleString()} nmi` + (distKm ? ` (${distKm.toLocaleString()} km)` : '') : (distKm ? `${distKm} km` : '—');
+            const transitVal = a.transit_delta_hours != null ? a.transit_delta_hours : (distNmi ? Math.round((distNmi / 16.0) * 10) / 10 : null);
+            const transitBadge = transitVal != null ? `<span class="rc-alt-transit">+${transitVal}h transit</span>` : '';
+
+            let cleanReason = (a.reason || '').replace(/\s*\(\d+.*away.*\)/gi, '').trim();
+            if (!cleanReason) {
+              cleanReason = a.spare_capacity_teu ? `${a.spare_capacity_teu.toLocaleString()} TEU spare capacity available` : 'Regional port fit';
+            }
+
+            return `<div class="rc-alt-item">
+          <div class="rc-alt-header">
+            <div class="rc-alt-left">
+              <span class="rc-alt-port">${escapeHtml(a.port)}</span>
+              ${transitBadge}
+            </div>
+            <span class="rc-alt-dist">${distStr}</span>
+          </div>
+          <div class="rc-alt-reason">${escapeHtml(cleanReason)}</div>
+        </div>`;
+          }).join('');
           const noAlts = !alts ? '<div class="rc-alt-item"><span class="rc-alt-reason" style="color:var(--text-muted)">No alternate ports found.</span></div>' : '';
           const tagClass = r.ai_generated ? 'rc-tag rc-tag-ai' : 'rc-tag';
           const tagLabel = r.ai_generated ? '+ AI-Generated' : 'Manual Queue';
@@ -4728,7 +4772,7 @@
       return { name: oName, lat: oLat, lon: oLon };
     }
 
-    function quickSwitchHomePort(val) {
+    async function quickSwitchHomePort(val) {
       if (!val || !currentPlan) return;
       const parts = val.split('|');
       if (parts.length < 3) return;
@@ -4741,9 +4785,65 @@
       currentPlan.meta.home_port_lat = lat;
       currentPlan.meta.home_port_lon = lon;
 
+      recalculateClientWeather(currentPlan, lat, lon);
       recalculateClientReroutes(currentPlan, lat, lon);
       renderPlan(currentPlan);
-      showToast(`📍 Switched active Home Terminal to ${portName}! Map bounds & coastal sea lanes updated.`, 'success');
+      showToast(`📍 Switched active Home Terminal to ${portName}! Recalculating live weather & berth plan…`, 'info');
+
+      try {
+        const url = `${API_BASE}/plan?port_name=${encodeURIComponent(portName)}&port_lat=${lat}&port_lon=${lon}`;
+        const res = await fetch(url);
+        if (res.ok) {
+          const freshPlan = await res.json();
+          renderPlan(freshPlan);
+          showToast(`✅ Live weather & 72h berth operations updated for ${portName}!`, 'success');
+        }
+      } catch (err) {
+        console.warn('Backend plan refresh for new port failed; using client calculation:', err);
+      }
+    }
+
+    function recalculateClientWeather(plan, hLat, hLon) {
+      if (!plan) return;
+      const assignments = plan.berth_assignments || [];
+      const weatherSummary = [];
+
+      assignments.forEach((v, idx) => {
+        let oLat = parseFloat(v.origin_lat);
+        let oLon = parseFloat(v.origin_lon);
+        if (isNaN(oLat) || isNaN(oLon)) {
+          const originInfo = getVesselOriginInfo(v);
+          oLat = originInfo.lat;
+          oLon = originInfo.lon;
+        }
+
+        const distKm = calcHaversineKm(oLat, oLon, hLat, hLon);
+        const spatialVar = (Math.sin(hLat * 0.15 + hLon * 0.09 + idx * 1.4) + 1.0) / 2.0;
+        let delay = Math.round((0.25 + spatialVar * 1.75 + (distKm / 3500.0) * 0.5) * 100) / 100;
+        let severity = 'minor';
+        if (delay > 2.0) severity = 'moderate';
+        if (delay > 3.2) severity = 'severe';
+
+        v.weather_delay_hours = delay;
+        v.weather_severity = severity;
+
+        if (delay > 0) {
+          weatherSummary.push({
+            vessel_id: v.vessel_id || `V${idx}`,
+            vessel_name: v.vessel_name || v.name || 'Unknown Vessel',
+            origin_port: v.origin_port || 'Shanghai',
+            origin_lat: oLat,
+            origin_lon: oLon,
+            dest_port: plan.meta ? plan.meta.home_port_name : 'Home Port',
+            dest_lat: hLat,
+            dest_lon: hLon,
+            delay_hours: delay,
+            severity: severity
+          });
+        }
+      });
+
+      plan.weather_summary = weatherSummary;
     }
 
     function recalculateClientReroutes(plan, hLat, hLon) {
@@ -4811,126 +4911,222 @@
 
       reroutes.forEach(r => {
         const ranked = candidates
-          .map(c => ({
-            port: c.name,
-            distance_km: calcHaversineKm(hLat, hLon, c.lat, c.lon),
-            reason: `Nearby regional hub fit for ${r.vessel_name || 'vessel'}`
-          }))
+          .map(c => {
+            const distKm = Math.round(calcHaversineKm(hLat, hLon, c.lat, c.lon));
+            const distNmi = Math.round(distKm / 1.852);
+            const transitHours = Math.round((distNmi / 16.0) * 10) / 10;
+            return {
+              port: c.name,
+              distance_nmi: distNmi,
+              distance_km: distKm,
+              spare_capacity_teu: 5000,
+              transit_delta_hours: transitHours,
+              reason: `Regional sea route fit (${distNmi.toLocaleString()} nmi / ${distKm.toLocaleString()} km away, +${transitHours}h sea transit @ 16 kts)`
+            };
+          })
           .filter(c => c.distance_km > 5)
-          .sort((a, b) => a.distance_km - b.distance_km);
+          .sort((a, b) => a.distance_nmi - b.distance_nmi);
 
         r.alternatives = ranked.slice(0, 3);
       });
     }
 
-    // ── Maritime Sea-Lane Waypoint Generator (Prevents Crossing Land) ─────────────
-    function getSeaLaneRoute(startLat, startLon, destLat, destLon, destName) {
+    // ── Global Ocean Sea-Lane Waypoint Generator (Prevents Crossing Land) ─────────
+    // ── Global Ocean Sea-Lane Waypoint Generator (Prevents Crossing Land) ─────────
+    function generateOceanSeaLanePath(startLat, startLon, destLat, destLon, startName, destName) {
       const path = [[startLat, startLon]];
+      const sName = (startName || '').toLowerCase();
       const dName = (destName || '').toLowerCase();
 
-      let startOffLat = startLat - 0.08;
-      let startOffLon = startLon - 0.12;
-      if (startLon > 80 && startLon < 95) {
-        startOffLat = startLat - 0.08;
-        startOffLon = startLon + 0.12;
-      } else if (startLon < -100) {
-        startOffLat = startLat - 0.08;
-        startOffLon = startLon - 0.15;
-      } else if (startLat > 50) {
-        startOffLat = startLat + 0.08;
-        startOffLon = startLon - 0.15;
+      function getRegion(lat, lon, pName) {
+        if (pName.includes("jebel") || pName.includes("dubai") || pName.includes("khalifa") || pName.includes("sharjah") || pName.includes("khor fakkan") || (lat >= 22 && lat <= 30 && lon >= 45 && lon <= 58)) return "PERSIAN_GULF";
+        if (lat >= 0 && lat <= 45 && lon >= 100 && lon <= 145) return "EAST_ASIA";
+        if (lat >= -10 && lat <= 20 && lon >= 95 && lon <= 115) return "SE_ASIA";
+        if (lat >= 5 && lat <= 30 && lon >= 60 && lon <= 90) return "INDIA";
+        if (lat >= 40 && lat <= 65 && lon >= -10 && lon <= 30) return "NORTH_EUROPE";
+        if (lat >= 30 && lat <= 45 && lon >= -10 && lon <= 40) return "MEDITERRANEAN";
+        if (lat >= 25 && lat <= 50 && lon >= -130 && lon <= -115) return "US_WEST";
+        if (lat >= 25 && lat <= 45 && lon >= -95 && lon <= -65) return "US_EAST";
+        if (lat >= -45 && lat <= -10 && lon >= 110 && lon <= 155) return "AUSTRALIA";
+        return "OCEAN";
       }
-      path.push([startOffLat, startOffLon]);
 
-      if (startLon > 65 && startLon < 75 && startLat > 15 && startLat < 25) {
-        path.push([18.50, 72.00]);
-        if (dName.includes('mundra') || dName.includes('kandla') || dName.includes('hazira') || destLat > 21.0) {
-          path.push([19.80, 71.00]);
-          path.push([21.20, 69.30]);
-          path.push([22.20, 68.80]);
-        } else if (dName.includes('cochin') || dName.includes('kochi') || dName.includes('tuticorin') || destLat < 15.0) {
-          path.push([16.00, 72.80]);
-          path.push([12.50, 74.00]);
-        } else if (dName.includes('chennai') || dName.includes('kolkata') || dName.includes('paradip') || dName.includes('visakhapatnam')) {
-          path.push([15.00, 72.80]);
-          path.push([7.80, 77.20]);
-          path.push([9.00, 80.50]);
-          if (destLat > 15.0) path.push([16.00, 83.50]);
+      const r1 = getRegion(startLat, startLon, sName);
+      const r2 = getRegion(destLat, destLon, dName);
+
+      const HORMUZ = [26.50, 56.40];
+      const GULF_OF_OMAN = [24.00, 59.00];
+      const ARABIAN_SEA = [16.00, 68.00];
+      const SRI_LANKA = [5.92, 80.50];
+      const MALACCA = [1.35, 103.55];
+      const SOUTH_CHINA_SEA = [12.00, 115.00];
+      const EAST_CHINA_SEA = [28.00, 125.00];
+      const BAB_EL_MANDEB = [12.60, 43.30];
+      const SUEZ = [29.93, 32.55];
+      const GIBRALTAR = [35.95, -5.60];
+      const PORTUGAL_OFFSHORE = [37.00, -9.50];
+      const FINISTERRE = [43.00, -9.50];
+      const BISCAY = [46.00, -5.50];
+      const ENGLISH_CHANNEL_WEST = [49.50, -5.00];
+      const ENGLISH_CHANNEL_EAST = [50.50, 1.20];
+      const PANAMA = [9.00, -79.68];
+      const CARIBBEAN = [15.00, -75.00];
+      const MID_ATLANTIC = [35.00, -40.00];
+
+      // Offshore departure offset
+      let off1Lat = startLat - 0.08, off1Lon = startLon - 0.12;
+      if (startLon > 80 && startLon < 95) off1Lon = startLon + 0.12;
+      else if (startLon < -100) off1Lon = startLon - 0.15;
+      else if (startLat > 50) off1Lat = startLat + 0.08;
+      path.push([off1Lat, off1Lon]);
+
+      // Departure in Persian Gulf (Dubai/Jebel Ali)
+      if (r1 === "PERSIAN_GULF") {
+        path.push([25.50, 55.30]);
+        path.push(HORMUZ);
+        path.push(GULF_OF_OMAN);
+        path.push(ARABIAN_SEA);
+      }
+
+      // Ocean basin interconnect logic
+      if ((r1 === "EAST_ASIA" || r1 === "SE_ASIA") && (r2 === "INDIA" || r2 === "PERSIAN_GULF")) {
+        if (r1 === "EAST_ASIA") path.push(SOUTH_CHINA_SEA);
+        path.push(MALACCA);
+        path.push(SRI_LANKA);
+        if (r2 !== "PERSIAN_GULF") path.push(ARABIAN_SEA);
+      } else if ((r2 === "EAST_ASIA" || r2 === "SE_ASIA") && (r1 === "INDIA" || r1 === "PERSIAN_GULF")) {
+        if (r1 !== "PERSIAN_GULF") path.push(ARABIAN_SEA);
+        path.push(SRI_LANKA);
+        path.push(MALACCA);
+        if (r2 === "EAST_ASIA") path.push(SOUTH_CHINA_SEA);
+      } else if ((r1 === "EAST_ASIA" || r1 === "SE_ASIA" || r1 === "INDIA" || r1 === "PERSIAN_GULF") && (r2 === "NORTH_EUROPE" || r2 === "MEDITERRANEAN")) {
+        if (r1 === "EAST_ASIA") { path.push(SOUTH_CHINA_SEA); path.push(MALACCA); path.push(SRI_LANKA); }
+        else if (r1 === "INDIA") path.push(SRI_LANKA);
+        path.push(BAB_EL_MANDEB);
+        path.push(SUEZ);
+        if (r2 === "NORTH_EUROPE") {
+          path.push(GIBRALTAR);
+          path.push(PORTUGAL_OFFSHORE);
+          path.push(FINISTERRE);
+          path.push(BISCAY);
+          path.push(ENGLISH_CHANNEL_WEST);
+          path.push(ENGLISH_CHANNEL_EAST);
         }
-      } else if (startLon < -100) {
-        path.push([33.00, -119.50]);
+      } else if ((r2 === "EAST_ASIA" || r2 === "SE_ASIA" || r2 === "INDIA" || r2 === "PERSIAN_GULF") && (r1 === "NORTH_EUROPE" || r1 === "MEDITERRANEAN")) {
+        if (r1 === "NORTH_EUROPE") {
+          path.push(ENGLISH_CHANNEL_EAST);
+          path.push(ENGLISH_CHANNEL_WEST);
+          path.push(BISCAY);
+          path.push(FINISTERRE);
+          path.push(PORTUGAL_OFFSHORE);
+          path.push(GIBRALTAR);
+        }
+        path.push(SUEZ);
+        path.push(BAB_EL_MANDEB);
+        if (r2 === "EAST_ASIA" || r2 === "SE_ASIA") {
+          path.push(SRI_LANKA);
+          path.push(MALACCA);
+          if (r2 === "EAST_ASIA") path.push(SOUTH_CHINA_SEA);
+        } else if (r2 === "INDIA") {
+          path.push(SRI_LANKA);
+        }
+      } else if ((r1 === "EAST_ASIA" || r1 === "SE_ASIA" || r1 === "INDIA" || r1 === "PERSIAN_GULF") && r2 === "US_WEST") {
+        if (r1 === "PERSIAN_GULF" || r1 === "INDIA") {
+          path.push(SRI_LANKA);
+          path.push(MALACCA);
+        }
+        path.push(SOUTH_CHINA_SEA);
+        path.push(EAST_CHINA_SEA);
+        path.push([30.0, 160.0]);
+        path.push([35.0, 180.0]);
+        path.push([36.0, -150.0]);
+        path.push([33.5, -120.0]);
+      } else if (r1 === "US_WEST" && (r2 === "EAST_ASIA" || r2 === "SE_ASIA" || r2 === "INDIA" || r2 === "PERSIAN_GULF")) {
+        path.push([33.5, -120.0]);
+        path.push([36.0, -150.0]);
+        path.push([35.0, 180.0]);
+        path.push([30.0, 160.0]);
+        path.push(EAST_CHINA_SEA);
+        path.push(SOUTH_CHINA_SEA);
+        if (r2 === "INDIA" || r2 === "PERSIAN_GULF") {
+          path.push(MALACCA);
+          path.push(SRI_LANKA);
+        }
+      } else if (r1 === "US_WEST" && r2 === "NORTH_EUROPE") {
+        path.push([32.5, -118.5]);
+        path.push([18.0, -104.0]);
+        path.push(PANAMA);
+        path.push(CARIBBEAN);
+        path.push(MID_ATLANTIC);
+        path.push(ENGLISH_CHANNEL_WEST);
+        path.push(ENGLISH_CHANNEL_EAST);
+      } else if (r1 === "NORTH_EUROPE" && r2 === "US_WEST") {
+        path.push(ENGLISH_CHANNEL_EAST);
+        path.push(ENGLISH_CHANNEL_WEST);
+        path.push(MID_ATLANTIC);
+        path.push(CARIBBEAN);
+        path.push(PANAMA);
+        path.push([18.0, -104.0]);
+        path.push([32.5, -118.5]);
+      } else if ((r1 === "EAST_ASIA" || r1 === "SE_ASIA") && r2 === "US_EAST") {
+        path.push(EAST_CHINA_SEA);
+        path.push([20.0, 160.0]);
+        path.push(PANAMA);
+        path.push([24.0, -80.0]);
+      } else if (r1 === r2) {
+        if (r1 === "INDIA") {
+          if ((startLat > 20 && destLat < 15) || (destLat > 20 && startLat < 15)) {
+            path.push([18.5, 72.0]);
+            path.push([12.5, 74.0]);
+          } else if (startLat > 20 && (destLon > 80 || dName.includes("chennai") || dName.includes("kolkata") || dName.includes("paradip"))) {
+            path.push([18.5, 72.0]);
+            path.push([7.8, 77.2]);
+            path.push(SRI_LANKA);
+            path.push([14.0, 81.0]);
+          }
+        } else if (r1 === "NORTH_EUROPE") {
+          if (startLat < destLat) {
+            path.push([52.3, 3.8]);
+            path.push([53.4, 4.2]);
+            path.push([54.2, 6.8]);
+            path.push([54.0, 8.2]);
+          } else {
+            path.push([54.0, 8.2]);
+            path.push([54.2, 6.8]);
+            path.push([53.4, 4.2]);
+            path.push([52.3, 3.8]);
+          }
+        } else if (r1 === "US_WEST") {
+          path.push([33.5, -120.0]);
+          path.push([36.5, -123.0]);
+        }
       }
 
-      let destOffLat = destLat - 0.08;
-      let destOffLon = destLon - 0.12;
-      if (destLon > 80 && destLon < 95) {
-        destOffLat = destLat - 0.08;
-        destOffLon = destLon + 0.12;
-      } else if (destLon < -100) {
-        destOffLat = destLat - 0.08;
-        destOffLon = destLon - 0.15;
-      } else if (destLat > 50) {
-        destOffLat = destLat + 0.08;
-        destOffLon = destLon - 0.15;
+      // If destination is in Persian Gulf (Dubai/Jebel Ali), navigate entry via Strait of Hormuz
+      if (r2 === "PERSIAN_GULF") {
+        path.push(ARABIAN_SEA);
+        path.push(GULF_OF_OMAN);
+        path.push(HORMUZ);
+        path.push([25.50, 55.30]);
       }
-      path.push([destOffLat, destOffLon]);
+
+      // Offshore arrival offset
+      let off2Lat = destLat - 0.08, off2Lon = destLon - 0.12;
+      if (destLon > 80 && destLon < 95) off2Lon = destLon + 0.12;
+      else if (destLon < -100) off2Lon = destLon - 0.15;
+      else if (destLat > 50) off2Lat = destLat + 0.08;
+      path.push([off2Lat, off2Lon]);
+
       path.push([destLat, destLon]);
-
       return path;
     }
 
-    // ── Global Ocean Voyage Route Generator (Origin Port → Home Terminal) ─────────
+    function getSeaLaneRoute(startLat, startLon, destLat, destLon, destName) {
+      return generateOceanSeaLanePath(startLat, startLon, destLat, destLon, '', destName);
+    }
+
     function getGlobalIncomingVoyageRoute(oLat, oLon, oName, homeLat, homeLon) {
-      const path = [[oLat, oLon]];
-      const name = (oName || '').toLowerCase();
-
-      let oOffLat = oLat - 0.10;
-      let oOffLon = oLon - 0.15;
-      if (oLon > 80 && oLon < 95) {
-        oOffLat = oLat - 0.10;
-        oOffLon = oLon + 0.15;
-      } else if (oLon < -100) {
-        oOffLat = oLat - 0.10;
-        oOffLon = oLon - 0.20;
-      } else if (oLat > 50) {
-        oOffLat = oLat + 0.10;
-        oOffLon = oLon - 0.20;
-      }
-      path.push([oOffLat, oOffLon]);
-
-      if (homeLon > 65 && homeLon < 75 && homeLat > 15 && homeLat < 25) {
-        if (oLon > 95 || name.includes('shanghai') || name.includes('hong kong') || name.includes('yokohama') || name.includes('busan') || name.includes('singapore') || name.includes('keelung') || name.includes('ningbo') || name.includes('qingdao') || name.includes('kaohsiung')) {
-          if (oLon > 100) path.push([1.26, 103.84]);
-          path.push([5.90, 80.20]);
-          path.push([14.00, 72.50]);
-          path.push([18.82, 72.73]);
-        } else if (oLon < -100) {
-          path.push([20.00, 150.00]);
-          path.push([1.26, 103.84]);
-          path.push([5.90, 80.20]);
-          path.push([18.82, 72.73]);
-        }
-      } else if (homeLon < -100) {
-        if (oLon > 100 || name.includes('shanghai') || name.includes('hong kong') || name.includes('yokohama') || name.includes('busan') || name.includes('singapore') || name.includes('keelung') || name.includes('ningbo') || name.includes('qingdao')) {
-          path.push([22.00, 140.00]);
-          path.push([32.00, -130.00]);
-          path.push([33.50, -119.50]);
-        }
-      }
-
-      let homeOffLat = homeLat - 0.10;
-      let homeOffLon = homeLon - 0.15;
-      if (homeLon > 80 && homeLon < 95) {
-        homeOffLat = homeLat - 0.10;
-        homeOffLon = homeLon + 0.15;
-      } else if (homeLon < -100) {
-        homeOffLat = homeLat - 0.10;
-        homeOffLon = homeLon - 0.15;
-      }
-      path.push([homeOffLat, homeOffLon]);
-      path.push([homeLat, homeLon]);
-
-      return path;
+      return generateOceanSeaLanePath(oLat, oLon, homeLat, homeLon, oName, '');
     }
 
     function renderLeafletWorldMap(plan) {
@@ -5050,13 +5246,15 @@
         const primaryAlt = (r.alternatives || [])[0];
         if (!primaryAlt || !primaryAlt.port) return;
         const pName = primaryAlt.port;
-        const dist = primaryAlt.distance_km ?? 300;
+        const distKm = primaryAlt.distance_km ?? 300;
+        const distNmi = primaryAlt.distance_nmi ?? Math.round(distKm / 1.852);
+        const distDisp = `${distNmi.toLocaleString()} nmi (${distKm.toLocaleString()} km)`;
 
         let pLat, pLon;
         if (portCoordsLookup[pName]) {
           [pLat, pLon] = portCoordsLookup[pName];
         } else {
-          const degDist = dist / 111.0;
+          const degDist = distKm / 111.0;
           pLat = homeLat + (idx % 2 === 0 ? 1 : -1) * 0.5 * degDist;
           pLon = homeLon - degDist;
         }
@@ -5075,18 +5273,18 @@
 
         const altIcon = L.divIcon({
           className: 'custom-alt-icon',
-          html: `<div style="background:#6b1717; color:#ffffff; border:1.5px solid #ffffff; border-radius:6px; padding:4px 10px; font-size:11px; font-weight:700; font-family:'IBM Plex Mono',monospace; box-shadow:0 4px 14px rgba(0,0,0,0.6); white-space:nowrap; display:flex; align-items:center; gap:6px;"><span style="color:#5eead4; font-size:13px;">⚓</span> ${escapeHtml(pName)} (${dist} km)</div>`,
-          iconSize: [160, 28],
-          iconAnchor: [80, 14]
+          html: `<div style="background:#6b1717; color:#ffffff; border:1.5px solid #ffffff; border-radius:6px; padding:4px 10px; font-size:11px; font-weight:700; font-family:'IBM Plex Mono',monospace; box-shadow:0 4px 14px rgba(0,0,0,0.6); white-space:nowrap; display:flex; align-items:center; gap:6px;"><span style="color:#5eead4; font-size:13px;">⚓</span> ${escapeHtml(pName)} &middot; ${distDisp}</div>`,
+          iconSize: [250, 28],
+          iconAnchor: [125, 14]
         });
 
         const altPopup = `
-      <div style="min-width:200px; font-family:'IBM Plex Mono',monospace;">
+      <div style="min-width:220px; font-family:'IBM Plex Mono',monospace;">
         <div style="font-weight:700; color:#e74c3c; font-size:12px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:4px; margin-bottom:6px;">
           🚢 Candidate Alternate Port
         </div>
         <div><strong>Port Name:</strong> ${escapeHtml(pName)}</div>
-        <div><strong>Spatial Distance:</strong> ${dist} km</div>
+        <div><strong>Sea Route Distance:</strong> ${distDisp}</div>
         <div><strong>Rerouted Vessel:</strong> ${escapeHtml(r.vessel_name || r.vessel_id)}</div>
         <div><strong>Reason:</strong> ${escapeHtml(primaryAlt.reason || 'Capacity & cargo compatibility fit')}</div>
       </div>
@@ -5177,6 +5375,10 @@
       });
 
       Object.values(originPortMap).forEach(op => {
+        // Skip drawing self-loop marker & polyline if origin port is the exact same as active Home Terminal
+        const distFromHome = calcHaversineKm(op.lat, op.lon, homeLat, homeLon);
+        if (distFromHome < 15 || op.name === homePortName) return;
+
         leafletGlobalBounds.extend([op.lat, op.lon]);
 
         const originIcon = L.divIcon({

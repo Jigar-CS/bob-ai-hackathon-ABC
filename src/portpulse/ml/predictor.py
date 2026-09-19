@@ -48,11 +48,11 @@ def _load() -> None:
     global _demurrage_model, _crane_model, _anomaly_model
     global _allocation_model, _cascade_model, _weather_delay_model
     global _feature_columns, _load_attempted
-    
+
     if _load_attempted:
         return
     _load_attempted = True
-    
+
     try:
         import joblib
 
@@ -60,65 +60,68 @@ def _load() -> None:
         risk_path = _MODEL_DIR / "risk_model.pkl"
         if risk_path.exists():
             _risk_model = joblib.load(risk_path)
-        
+
         encoder_path = _MODEL_DIR / "risk_label_encoder.pkl"
         if encoder_path.exists():
             _risk_encoder = joblib.load(encoder_path)
-        
+
         wait_path = _MODEL_DIR / "wait_model.pkl"
         if wait_path.exists():
             _wait_model = joblib.load(wait_path)
-        
+
         dem_path = _MODEL_DIR / "demurrage_model.pkl"
         if dem_path.exists():
             _demurrage_model = joblib.load(dem_path)
-        
+
         crane_path = _MODEL_DIR / "crane_productivity_model.pkl"
         if crane_path.exists():
             _crane_model = joblib.load(crane_path)
-        
+
         anom_path = _MODEL_DIR / "anomaly_model.pkl"
         if anom_path.exists():
             _anomaly_model = joblib.load(anom_path)
-        
+
         # Load enhanced models (if available)
         alloc_path = _MODEL_DIR / "berth_allocation_model.pkl"
         if alloc_path.exists():
             _allocation_model = joblib.load(alloc_path)
-        
+
         cascade_path = _MODEL_DIR / "delay_cascade_model.pkl"
         if cascade_path.exists():
             _cascade_model = joblib.load(cascade_path)
-        
+
         weather_path = _MODEL_DIR / "weather_delay_model.pkl"
         if weather_path.exists():
             _weather_delay_model = joblib.load(weather_path)
-        
+
         # Load feature columns for enhanced models
         feat_path = _MODEL_DIR / "feature_columns.pkl"
         if feat_path.exists():
             _feature_columns = joblib.load(feat_path)
-        
-        loaded_count = sum([
-            _risk_model is not None,
-            _wait_model is not None,
-            _demurrage_model is not None,
-            _crane_model is not None,
-            _anomaly_model is not None,
-            _allocation_model is not None,
-            _cascade_model is not None,
-            _weather_delay_model is not None,
-        ])
-        
+
+        loaded_count = sum(
+            [
+                _risk_model is not None,
+                _wait_model is not None,
+                _demurrage_model is not None,
+                _crane_model is not None,
+                _anomaly_model is not None,
+                _allocation_model is not None,
+                _cascade_model is not None,
+                _weather_delay_model is not None,
+            ]
+        )
+
         logger.info("Loaded %d ML models from %s", loaded_count, _MODEL_DIR)
-        
+
     except Exception as err:
         logger.warning("Could not load one or more ML models: %s", err)
 
 
-def _df(columns: list[str], values: list[object]):
+def _df(columns: list[str], values: list[object]) -> Any:
     """Wrap a single prediction row in a named DataFrame to suppress sklearn warnings."""
     import pandas as pd
+
     return pd.DataFrame([values], columns=columns)
 
 
@@ -132,6 +135,7 @@ def _get_features(feature_set_name: str, default_columns: list[str]) -> list[str
 # ---------------------------------------------------------------------------
 # Model availability checks
 # ---------------------------------------------------------------------------
+
 
 def is_ml_enabled() -> bool:
     """Check if ML models are available and loaded."""
@@ -180,7 +184,13 @@ def predict_risk(features: dict[str, Any]) -> str | None:
         return None
     try:
         X = _df(
-            ["vessel_count", "incoming_teu", "total_capacity_teu", "day_index", "utilization_ratio"],
+            [
+                "vessel_count",
+                "incoming_teu",
+                "total_capacity_teu",
+                "day_index",
+                "utilization_ratio",
+            ],
             [
                 features["vessel_count"],
                 features["incoming_teu"],
@@ -388,7 +398,9 @@ def log_prediction(
                 predicted_demurrage_cost_usd=predicted_demurrage_cost_usd,
                 predicted_moves_per_hour=predicted_moves_per_hour,
                 is_anomalous=1 if is_anomalous is True else (0 if is_anomalous is False else None),
-                ml_allocation_used=1 if ml_allocation_used is True else (0 if ml_allocation_used is False else None),
+                ml_allocation_used=1
+                if ml_allocation_used is True
+                else (0 if ml_allocation_used is False else None),
             )
             db.add(entry)
             db.commit()
@@ -403,12 +415,12 @@ def log_prediction(
 # ---------------------------------------------------------------------------
 def predict_cascade_delay(features: dict[str, Any]) -> float | None:
     """Predict cascading delay hours from an initial disruption.
-    
+
     Args:
         features: dict with keys ``initial_wait_hours``, ``n_vessels_queue``,
             ``n_berths``, ``avg_vessel_size``, ``weather_severity``,
             ``priority_avg``, ``hour_of_day``, ``utilization_ratio``.
-    
+
     Returns:
         Predicted cascade delay hours (float, ≥ 0); ``None`` on failure.
     """
@@ -416,23 +428,34 @@ def predict_cascade_delay(features: dict[str, Any]) -> float | None:
     if _cascade_model is None:
         return None
     try:
-        columns = _get_features('cascade_features', [
-            'initial_wait_hours', 'n_vessels_queue', 'n_berths',
-            'avg_vessel_size', 'weather_severity', 'priority_avg',
-            'hour_of_day', 'utilization_ratio'
-        ])
-        
-        X = _df(columns, [
-            features.get('initial_wait_hours', 0),
-            features.get('n_vessels_queue', 0),
-            features.get('n_berths', 5),
-            features.get('avg_vessel_size', 10000),
-            features.get('weather_severity', 0),
-            features.get('priority_avg', 2.5),
-            features.get('hour_of_day', 12),
-            features.get('utilization_ratio', 0.5),
-        ])
-        
+        columns = _get_features(
+            "cascade_features",
+            [
+                "initial_wait_hours",
+                "n_vessels_queue",
+                "n_berths",
+                "avg_vessel_size",
+                "weather_severity",
+                "priority_avg",
+                "hour_of_day",
+                "utilization_ratio",
+            ],
+        )
+
+        X = _df(
+            columns,
+            [
+                features.get("initial_wait_hours", 0),
+                features.get("n_vessels_queue", 0),
+                features.get("n_berths", 5),
+                features.get("avg_vessel_size", 10000),
+                features.get("weather_severity", 0),
+                features.get("priority_avg", 2.5),
+                features.get("hour_of_day", 12),
+                features.get("utilization_ratio", 0.5),
+            ],
+        )
+
         return max(0.0, float(_cascade_model.predict(X)[0]))
     except Exception as err:
         logger.warning("Cascade delay prediction failed: %s", err)
@@ -444,13 +467,13 @@ def predict_cascade_delay(features: dict[str, Any]) -> float | None:
 # ---------------------------------------------------------------------------
 def predict_weather_delay(features: dict[str, Any]) -> float | None:
     """Predict weather-induced delay hours.
-    
+
     Args:
         features: dict with keys ``wave_height_m``, ``wind_speed_kt``,
             ``visibility_km``, ``storm_probability``, ``precipitation_mm``,
             ``weather_severity``, ``distance_km``, ``month``, ``hour_of_day``,
             ``vessel_size_teu``.
-    
+
     Returns:
         Predicted delay hours (float, ≥ 0); ``None`` on failure.
     """
@@ -458,27 +481,40 @@ def predict_weather_delay(features: dict[str, Any]) -> float | None:
     if _weather_delay_model is None:
         return None
     try:
-        columns = _get_features('weather_delay_features', [
-            'wave_height_m', 'wind_speed_kt', 'visibility_km',
-            'storm_probability', 'precipitation_mm', 'weather_severity',
-            'distance_km', 'month', 'hour_of_day', 'vessel_size_teu'
-        ])
-        
+        columns = _get_features(
+            "weather_delay_features",
+            [
+                "wave_height_m",
+                "wind_speed_kt",
+                "visibility_km",
+                "storm_probability",
+                "precipitation_mm",
+                "weather_severity",
+                "distance_km",
+                "month",
+                "hour_of_day",
+                "vessel_size_teu",
+            ],
+        )
+
         now = datetime.now()
-        
-        X = _df(columns, [
-            features.get('wave_height_m', 0),
-            features.get('wind_speed_kt', 0),
-            features.get('visibility_km', 10),
-            features.get('storm_probability', 0),
-            features.get('precipitation_mm', 0),
-            features.get('weather_severity', 0),
-            features.get('distance_km', 1000),
-            features.get('month', now.month),
-            features.get('hour_of_day', now.hour),
-            features.get('vessel_size_teu', 10000),
-        ])
-        
+
+        X = _df(
+            columns,
+            [
+                features.get("wave_height_m", 0),
+                features.get("wind_speed_kt", 0),
+                features.get("visibility_km", 10),
+                features.get("storm_probability", 0),
+                features.get("precipitation_mm", 0),
+                features.get("weather_severity", 0),
+                features.get("distance_km", 1000),
+                features.get("month", now.month),
+                features.get("hour_of_day", now.hour),
+                features.get("vessel_size_teu", 10000),
+            ],
+        )
+
         return max(0.0, float(_weather_delay_model.predict(X)[0]))
     except Exception as err:
         logger.warning("Weather delay prediction failed: %s", err)
@@ -490,14 +526,14 @@ def predict_weather_delay(features: dict[str, Any]) -> float | None:
 # ---------------------------------------------------------------------------
 def predict_allocation_score(features: dict[str, Any]) -> float | None:
     """Score a berth allocation (0-100, higher = better).
-    
+
     Args:
         features: dict with keys ``vessel_size_teu``, ``vessel_priority``,
             ``berth_capacity_teu``, ``berth_crane_count``,
             ``berth_utilization_pct``, ``wave_height_m``, ``wind_speed_kt``,
             ``weather_severity``, ``hour_of_day``, ``n_vessels_queue``,
             ``capacity_fit_ratio``.
-    
+
     Returns:
         Allocation score (float, 0-100); ``None`` on failure.
     """
@@ -505,31 +541,44 @@ def predict_allocation_score(features: dict[str, Any]) -> float | None:
     if _allocation_model is None:
         return None
     try:
-        columns = _get_features('allocation_features', [
-            'vessel_size_teu', 'vessel_priority', 'berth_capacity_teu',
-            'berth_crane_count', 'berth_utilization_pct', 'wave_height_m',
-            'wind_speed_kt', 'weather_severity', 'hour_of_day',
-            'n_vessels_queue', 'capacity_fit_ratio'
-        ])
-        
-        vessel_size = features.get('vessel_size_teu', 10000)
-        berth_capacity = features.get('berth_capacity_teu', 15000)
+        columns = _get_features(
+            "allocation_features",
+            [
+                "vessel_size_teu",
+                "vessel_priority",
+                "berth_capacity_teu",
+                "berth_crane_count",
+                "berth_utilization_pct",
+                "wave_height_m",
+                "wind_speed_kt",
+                "weather_severity",
+                "hour_of_day",
+                "n_vessels_queue",
+                "capacity_fit_ratio",
+            ],
+        )
+
+        vessel_size = features.get("vessel_size_teu", 10000)
+        berth_capacity = features.get("berth_capacity_teu", 15000)
         capacity_fit = berth_capacity / max(vessel_size, 1)
-        
-        X = _df(columns, [
-            vessel_size,
-            features.get('vessel_priority', 2),
-            berth_capacity,
-            features.get('berth_crane_count', 3),
-            features.get('berth_utilization_pct', 60),
-            features.get('wave_height_m', 0),
-            features.get('wind_speed_kt', 0),
-            features.get('weather_severity', 0),
-            features.get('hour_of_day', datetime.now().hour),
-            features.get('n_vessels_queue', 10),
-            features.get('capacity_fit_ratio', capacity_fit),
-        ])
-        
+
+        X = _df(
+            columns,
+            [
+                vessel_size,
+                features.get("vessel_priority", 2),
+                berth_capacity,
+                features.get("berth_crane_count", 3),
+                features.get("berth_utilization_pct", 60),
+                features.get("wave_height_m", 0),
+                features.get("wind_speed_kt", 0),
+                features.get("weather_severity", 0),
+                features.get("hour_of_day", datetime.now().hour),
+                features.get("n_vessels_queue", 10),
+                features.get("capacity_fit_ratio", capacity_fit),
+            ],
+        )
+
         score = float(_allocation_model.predict(X)[0])
         return max(0.0, min(100.0, score))
     except Exception as err:

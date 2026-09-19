@@ -38,9 +38,9 @@ _MINOR_WAVE_M = 2.0
 _MINOR_WIND_KT = 25.0
 
 # Delay hours per severity (midpoints of the range)
-_DELAY_SEVERE_H = 9.0   # 6–12 h
-_DELAY_MODERATE_H = 4.0  # 2–6 h
-_DELAY_MINOR_H = 1.0    # 0.5–2 h
+_DELAY_SEVERE_H = 9.0  # 6-12 h
+_DELAY_MODERATE_H = 4.0  # 2-6 h
+_DELAY_MINOR_H = 1.0  # 0.5-2 h
 _DELAY_NONE_H = 0.0
 
 
@@ -84,7 +84,7 @@ def _fetch_marine_weather(lat: float, lon: float, timeout: float = 5.0) -> dict[
     try:
         # Try marine API first; fall back to forecast API which covers more of the globe
         try:
-            resp = requests.get(_MARINE_API_URL, params=params, timeout=timeout)
+            resp = requests.get(_MARINE_API_URL, params=params, timeout=timeout)  # type: ignore[arg-type]
             if resp.status_code == 200:
                 data = resp.json()
                 if "hourly" in data:
@@ -101,7 +101,7 @@ def _fetch_marine_weather(lat: float, lon: float, timeout: float = 5.0) -> dict[
             "forecast_days": 7,
             "timezone": "UTC",
         }
-        resp = requests.get(_WEATHER_API_URL, params=fallback_params, timeout=timeout)
+        resp = requests.get(_WEATHER_API_URL, params=fallback_params, timeout=timeout)  # type: ignore[arg-type]
         resp.raise_for_status()
         return resp.json()
     except Exception as err:
@@ -149,13 +149,17 @@ def _extract_conditions_near_eta(
                 t = datetime.fromisoformat(t_str)
             except ValueError:
                 continue
-            if (window_start <= t <= window_end) or (eta and abs(t.hour - eta.hour) <= 3 and not found):
-                w = waves[i] if i < len(waves) and waves[i] is not None else 0.0
-                v = winds[i] if i < len(winds) and winds[i] is not None else 0.0
-                if w or v:
+            if (window_start <= t <= window_end) or (
+                eta and abs(t.hour - eta.hour) <= 3 and not found
+            ):
+                w = waves[i] if i < len(waves) else None
+                v = winds[i] if i < len(winds) else None
+                if w is not None or v is not None:
                     found = True
-                    max_wave = max(max_wave, float(w))
-                    max_wind_ms = max(max_wind_ms, float(v))
+                    if w is not None:
+                        max_wave = max(max_wave, float(w))
+                    if v is not None:
+                        max_wind_ms = max(max_wind_ms, float(v))
 
         wind_kt = _ms_to_knots(max_wind_ms)
         if max_wave == 0.0 and wind_kt == 0.0:
@@ -189,12 +193,15 @@ def estimate_weather_delay_hours(
     if delay_h > 0:
         logger.info(
             "Weather at (%.3f, %.3f): wave=%.1fm wind=%.1fkt → %s (+%.1fh delay)",
-            lat, lon, wave_m, wind_kt, severity, delay_h,
+            lat,
+            lon,
+            wave_m,
+            wind_kt,
+            severity,
+            delay_h,
         )
 
     return delay_h, severity
-
-
 
 
 def _waypoints(
@@ -263,6 +270,7 @@ def apply_weather_delays(
         return []
 
     from concurrent.futures import ThreadPoolExecutor
+
     from portpulse.config import get_settings
 
     try:
@@ -279,7 +287,8 @@ def apply_weather_delays(
 
     if capped_vessels:
         logger.warning(
-            "Vessel count (%d) exceeds PORTPULSE_WEATHER_MAX_VESSELS (%d); %d vessels scheduled with unadjusted ETAs.",
+            "Vessel count (%d) exceeds PORTPULSE_WEATHER_MAX_VESSELS (%d); "
+            "%d vessels scheduled with unadjusted ETAs.",
             len(vessels),
             max_vessels,
             len(capped_vessels),

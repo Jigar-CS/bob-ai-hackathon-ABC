@@ -35,9 +35,12 @@ print("=" * 80)
 # Load Dataset
 # =============================================================================
 
-print("\n[1/4] Loading dataset...")
-
-from portpulse.datasets import load_vessels, load_berths, load_alternate_ports
+from portpulse.datasets import (  # noqa: E402
+    load_alternate_ports,
+    load_berths,
+    load_vessels,
+)
+from portpulse.domain.planner import generate_ops_plan  # noqa: E402
 
 vessels = load_vessels()
 berths = load_berths()
@@ -52,8 +55,6 @@ print(f"   Loaded {len(alternate_ports)} alternate ports")
 # =============================================================================
 
 print("\n[2/4] Generating ML predictions...")
-
-from portpulse.domain.planner import generate_ops_plan
 
 # Generate the full operations plan
 plan = generate_ops_plan(vessels, berths)
@@ -73,77 +74,79 @@ output = {
         "ml_enabled": plan.get("ml_enabled", False),
         "ml_allocation_used": plan.get("ml_allocation_used", False),
     },
-    
     "congestion_forecast": [],
     "berth_assignments": [],
     "weather_summary": [],
     "reroute_suggestions": [],
     "kpis": {},
     "swap_opportunities": [],
-    
     "ml_model_performance": {
         "risk_model_accuracy": 0.872,
         "wait_time_r2": 0.932,
         "allocation_r2": 0.945,
         "weather_delay_r2": 0.855,
         "demurrage_r2": 0.999,
-    }
+    },
 }
 
 # Congestion forecast
 for window in plan.get("congestion_forecast", []):
-    output["congestion_forecast"].append({
-        "day": window.get("day"),
-        "window_start": window.get("window_start"),
-        "window_end": window.get("window_end"),
-        "vessel_count": window.get("vessel_count"),
-        "incoming_teu": window.get("incoming_teu"),
-        "total_capacity_teu": window.get("total_capacity_teu"),
-        "utilization_ratio": window.get("utilization_ratio"),
-        "risk_level": window.get("risk_level"),
-        "rule_risk_level": window.get("rule_risk_level"),
-        "reason": window.get("reason"),
-    })
+    output["congestion_forecast"].append(
+        {
+            "day": window.get("day"),
+            "window_start": window.get("window_start"),
+            "window_end": window.get("window_end"),
+            "vessel_count": window.get("vessel_count"),
+            "incoming_teu": window.get("incoming_teu"),
+            "total_capacity_teu": window.get("total_capacity_teu"),
+            "utilization_ratio": window.get("utilization_ratio"),
+            "risk_level": window.get("risk_level"),
+            "rule_risk_level": window.get("rule_risk_level"),
+            "reason": window.get("reason"),
+        }
+    )
 
 # Berth assignments with ML scores
 for assignment in plan.get("berth_assignments", []):
-    output["berth_assignments"].append({
-        "vessel_id": assignment.get("vessel_id"),
-        "vessel_name": assignment.get("vessel_name"),
-        "berth_id": assignment.get("berth_id"),
-        "arrival": assignment.get("arrival"),
-        "berth_start": assignment.get("berth_start"),
-        "departure_est": assignment.get("departure_est"),
-        "size_teu": assignment.get("size_teu"),
-        "priority": assignment.get("priority"),
-        "cargo_type": assignment.get("cargo_type"),
-        "crane_count": assignment.get("crane_count"),
-        "effective_dwell_hours": assignment.get("effective_dwell_hours"),
-        "wait_hours": assignment.get("wait_hours"),
-        "weather_delay_hours": assignment.get("weather_delay_hours"),
-        "weather_severity": assignment.get("weather_severity"),
-        
-        # ML predictions
-        "ml_allocation_score": assignment.get("ml_allocation_score"),
-        "predicted_wait_hours": assignment.get("predicted_wait_hours"),
-        "predicted_demurrage_cost_usd": assignment.get("predicted_demurrage_cost_usd"),
-        "is_anomalous": assignment.get("is_anomalous"),
-        
-        "reason": assignment.get("reason"),
-    })
+    output["berth_assignments"].append(
+        {
+            "vessel_id": assignment.get("vessel_id"),
+            "vessel_name": assignment.get("vessel_name"),
+            "berth_id": assignment.get("berth_id"),
+            "arrival": assignment.get("arrival"),
+            "berth_start": assignment.get("berth_start"),
+            "departure_est": assignment.get("departure_est"),
+            "size_teu": assignment.get("size_teu"),
+            "priority": assignment.get("priority"),
+            "cargo_type": assignment.get("cargo_type"),
+            "crane_count": assignment.get("crane_count"),
+            "effective_dwell_hours": assignment.get("effective_dwell_hours"),
+            "wait_hours": assignment.get("wait_hours"),
+            "weather_delay_hours": assignment.get("weather_delay_hours"),
+            "weather_severity": assignment.get("weather_severity"),
+            # ML predictions
+            "ml_allocation_score": assignment.get("ml_allocation_score"),
+            "predicted_wait_hours": assignment.get("predicted_wait_hours"),
+            "predicted_demurrage_cost_usd": assignment.get("predicted_demurrage_cost_usd"),
+            "is_anomalous": assignment.get("is_anomalous"),
+            "reason": assignment.get("reason"),
+        }
+    )
 
 # Weather summary
 output["weather_summary"] = plan.get("weather_summary", [])
 
 # Reroute suggestions
 for reroute in plan.get("reroute_suggestions", []):
-    output["reroute_suggestions"].append({
-        "vessel_id": reroute.get("vessel_id"),
-        "vessel_name": reroute.get("vessel_name"),
-        "reason_unassigned": reroute.get("reason_unassigned"),
-        "ai_generated": reroute.get("ai_generated"),
-        "alternatives": reroute.get("alternatives", []),
-    })
+    output["reroute_suggestions"].append(
+        {
+            "vessel_id": reroute.get("vessel_id"),
+            "vessel_name": reroute.get("vessel_name"),
+            "reason_unassigned": reroute.get("reason_unassigned"),
+            "ai_generated": reroute.get("ai_generated"),
+            "alternatives": reroute.get("alternatives", []),
+        }
+    )
 
 # KPIs
 output["kpis"] = plan.get("kpis", {})
@@ -169,7 +172,9 @@ else:
 # Assignment statistics
 assigned_count = len(output["berth_assignments"])
 unassigned_count = len(output["reroute_suggestions"])
-total_wait = sum(a["wait_hours"] for a in output["berth_assignments"]) if output["berth_assignments"] else 0
+total_wait = (
+    sum(a["wait_hours"] for a in output["berth_assignments"]) if output["berth_assignments"] else 0
+)
 avg_wait = total_wait / assigned_count if assigned_count > 0 else 0
 
 # Priority breakdown
@@ -220,14 +225,17 @@ CONGESTION FORECAST
 """
 
 for w in output["congestion_forecast"]:
-    summary += f"Day {w['day']}: {w['risk_level']} risk ({w['vessel_count']} vessels, {w['incoming_teu']:,} TEU)\n"
+    summary += (
+        f"Day {w['day']}: {w['risk_level']} risk "
+        f"({w['vessel_count']} vessels, {w['incoming_teu']:,} TEU)\n"
+    )
 
 summary += f"""
 RISK DISTRIBUTION
 -----------------
-LOW Risk Windows:     {risk_breakdown['LOW']}
-MEDIUM Risk Windows:  {risk_breakdown['MEDIUM']}
-HIGH Risk Windows:    {risk_breakdown['HIGH']}
+LOW Risk Windows:     {risk_breakdown["LOW"]}
+MEDIUM Risk Windows:  {risk_breakdown["MEDIUM"]}
+HIGH Risk Windows:    {risk_breakdown["HIGH"]}
 
 QUEUE METRICS
 -------------
@@ -267,7 +275,9 @@ for a in output["berth_assignments"][:10]:  # Show first 10
     ml_score = a.get("ml_allocation_score", "N/A")
     if ml_score != "N/A":
         ml_score = f"{ml_score:.1f}"
-    summary += f"{a['vessel_id']}: {a['berth_id']} (Score: {ml_score}, Wait: {a['wait_hours']:.1f}h)\n"
+    summary += (
+        f"{a['vessel_id']}: {a['berth_id']} (Score: {ml_score}, Wait: {a['wait_hours']:.1f}h)\n"
+    )
 
 if output["reroute_suggestions"]:
     summary += "\nREROUTE SUGGESTIONS\n-------------------\n"
@@ -279,7 +289,10 @@ if output["reroute_suggestions"]:
 if output["swap_opportunities"]:
     summary += "\nSWAP OPPORTUNITIES\n------------------\n"
     for s in output["swap_opportunities"][:5]:
-        summary += f"{s['vessel_1_name']} <-> {s['vessel_2_name']}: Save {s['hours_saved']:.1f}h (${s['estimated_cost_saved']:,.0f})\n"
+        summary += (
+            f"{s['vessel_1_name']} <-> {s['vessel_2_name']}: "
+            f"Save {s['hours_saved']:.1f}h (${s['estimated_cost_saved']:,.0f})\n"
+        )
 
 summary += "\n" + "=" * 80 + "\n"
 
@@ -291,19 +304,20 @@ print("\n[4/4] Saving outputs...")
 
 # Save JSON output
 json_path = OUTPUT_DIR / "ml_operations_plan.json"
-with open(json_path, "w") as f:
+with json_path.open("w") as f:
     json.dump(output, f, indent=2, default=str)
 print(f"   Saved: {json_path}")
 
 # Save summary report
 summary_path = OUTPUT_DIR / "ml_operations_report.txt"
-with open(summary_path, "w", encoding="utf-8") as f:
+with summary_path.open("w", encoding="utf-8") as f:
     f.write(summary)
 print(f"   Saved: {summary_path}")
 
 # Save CSV export of assignments
 if output["berth_assignments"]:
     import pandas as pd
+
     assignments_df = pd.DataFrame(output["berth_assignments"])
     csv_path = OUTPUT_DIR / "ml_berth_assignments.csv"
     assignments_df.to_csv(csv_path, index=False)
@@ -321,9 +335,9 @@ print("OUTPUT GENERATION COMPLETE")
 print("=" * 80)
 print(f"\nOutput directory: {OUTPUT_DIR}")
 print("\nFiles generated:")
-print(f"  - ml_operations_plan.json      : Full JSON output")
-print(f"  - ml_operations_report.txt     : Human-readable summary")
-print(f"  - ml_berth_assignments.csv     : Assignment details")
-print(f"  - ml_congestion_forecast.csv   : Risk forecast data")
+print("  - ml_operations_plan.json      : Full JSON output")
+print("  - ml_operations_report.txt     : Human-readable summary")
+print("  - ml_berth_assignments.csv     : Assignment details")
+print("  - ml_congestion_forecast.csv   : Risk forecast data")
 
 print(summary)

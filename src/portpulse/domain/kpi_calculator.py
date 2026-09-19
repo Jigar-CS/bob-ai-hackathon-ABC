@@ -63,9 +63,7 @@ def calculate_plan_kpis(plan: dict[str, Any]) -> dict[str, float | int]:
         else:
             logger.warning("Assignment missing size_teu for vessel %s", a.get("vessel_id"))
 
-    single_window_capacity = max(
-        (int(w.get("total_capacity_teu", 0)) for w in forecast), default=0
-    )
+    single_window_capacity = max((int(w.get("total_capacity_teu", 0)) for w in forecast), default=0)
     if single_window_capacity > 0:
         berth_utilization_pct = round((total_assigned_teu / single_window_capacity) * 100, 1)
     else:

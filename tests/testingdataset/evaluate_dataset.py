@@ -51,7 +51,9 @@ def run_evaluation():
     print("\n--- Sample Berth Assignments (First 5) ---")
     for a in plan["berth_assignments"][:5]:
         print(f"Vessel: {a['vessel_id']} ({a['vessel_name']}) -> Berth: {a['berth_id']}")
-        print(f"  Priority: P{a['priority']} | Size: {a['size_teu']} TEU | Cargo: {a['cargo_type']}")
+        print(
+            f"  Priority: P{a['priority']} | Size: {a['size_teu']} TEU | Cargo: {a['cargo_type']}"
+        )
         print(f"  Berth Start: {a['berth_start']} | Est. Dept: {a['departure_est']}")
         print(f"  ML Pred Wait Hours:    {a['predicted_wait_hours']} h")
         print(f"  ML Pred Demurrage USD: ${a['predicted_demurrage_cost_usd']}")

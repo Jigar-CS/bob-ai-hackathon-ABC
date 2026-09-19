@@ -69,7 +69,7 @@ def weather_status(settings: Settings = Depends(get_settings)) -> dict[str, obje
     try:
         resp = requests.get(
             "https://api.open-meteo.com/v1/forecast",
-            params={
+            params={  # type: ignore[arg-type]
                 "latitude": settings.app.port_lat,
                 "longitude": settings.app.port_lon,
                 "hourly": "wind_speed_10m",
@@ -88,4 +88,3 @@ def weather_status(settings: Settings = Depends(get_settings)) -> dict[str, obje
         "port_lat": settings.app.port_lat,
         "port_lon": settings.app.port_lon,
     }
-

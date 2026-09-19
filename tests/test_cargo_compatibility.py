@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
-
 from portpulse.domain.assignment import _is_cargo_compatible, assign_berths
 from portpulse.domain.swap_optimizer import find_swap_opportunities
 from portpulse.ml.allocation_optimizer import allocate_with_ml
@@ -126,9 +124,19 @@ def test_swap_optimizer_blocks_incompatible_cargo_swap():
 
     berths = [
         # B1 accepts limestone
-        {"berth_id": "B1", "capacity_teu": 10000, "crane_count": 2, "allowed_cargo_types": "limestone"},
+        {
+            "berth_id": "B1",
+            "capacity_teu": 10000,
+            "crane_count": 2,
+            "allowed_cargo_types": "limestone",
+        },
         # B2 accepts hazmat only
-        {"berth_id": "B2", "capacity_teu": 10000, "crane_count": 4, "allowed_cargo_types": "hazmat"},
+        {
+            "berth_id": "B2",
+            "capacity_teu": 10000,
+            "crane_count": 4,
+            "allowed_cargo_types": "hazmat",
+        },
     ]
 
     swaps = find_swap_opportunities(assignments, berths)

@@ -52,10 +52,18 @@ def evaluate(dataset_path: Path, output_json_path: Path, title: str):
     print("\n--- Sample Assignments (First 3) ---")
     for a in plan["berth_assignments"][:3]:
         print(f"Vessel: {a['vessel_id']} ({a['vessel_name']}) -> Berth: {a['berth_id']}")
-        print(f"  Queue Status: {a.get('queue_status')} | Position: #{a.get('queue_position')} | Queued Behind: {a.get('queued_behind')}")
+        print(
+            f"  Queue Status: {a.get('queue_status')} | "
+            f"Position: #{a.get('queue_position')} | "
+            f"Queued Behind: {a.get('queued_behind')}"
+        )
         print(f"  Origin: {a.get('origin_port', 'N/A')} -> Dest: {a.get('dest_port', 'N/A')}")
         print(f"  Berth Start: {a['berth_start']} | Est Dept: {a['departure_est']}")
-        print(f"  ML Wait: {a['predicted_wait_hours']}h | ML Moves/Hr: {a['predicted_moves_per_hour']} | ML Demurrage: ${a['predicted_demurrage_cost_usd']}")
+        print(
+            f"  ML Wait: {a['predicted_wait_hours']}h | "
+            f"ML Moves/Hr: {a['predicted_moves_per_hour']} | "
+            f"ML Demurrage: ${a['predicted_demurrage_cost_usd']}"
+        )
         print(f"  Reason: {a['reason']}\n")
 
     return plan

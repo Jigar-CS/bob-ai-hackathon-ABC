@@ -6,8 +6,10 @@ required column set and which side of the plan input it replaces.
 
 from __future__ import annotations
 
+import contextlib
 import logging
 from enum import Enum
+from typing import Any
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Response, UploadFile, status
 
@@ -115,15 +117,11 @@ async def upload_both_datasets(
     if port_name and str(port_name).strip():
         settings.app.port_name = str(port_name).strip()
     if port_lat is not None and str(port_lat).strip():
-        try:
+        with contextlib.suppress(ValueError):
             settings.app.port_lat = float(port_lat)
-        except ValueError:
-            pass
     if port_lon is not None and str(port_lon).strip():
-        try:
+        with contextlib.suppress(ValueError):
             settings.app.port_lon = float(port_lon)
-        except ValueError:
-            pass
 
     logger.info(
         "Accepted combined upload: %d vessels, %d berths (Port: %s, lat=%s, lon=%s)",

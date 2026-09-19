@@ -19,10 +19,10 @@ from portpulse.integrations.weather import (
     estimate_weather_delay_hours,
 )
 
-
 # ---------------------------------------------------------------------------
 # Helper / unit tests
 # ---------------------------------------------------------------------------
+
 
 class TestSeverityTiers:
     """Tier classification is deterministic and covers all branches."""
@@ -88,7 +88,7 @@ _SAMPLE_HOURLY = {
             "2026-10-01T06:00",
             "2026-10-01T07:00",
             "2026-10-01T08:00",
-            "2026-10-02T08:00",   # outside window
+            "2026-10-02T08:00",  # outside window
         ],
         "wave_height": [1.0, 4.0, 2.5, 10.0],
         "wind_speed_10m": [5.0, 8.0, 6.0, 30.0],
@@ -116,6 +116,7 @@ class TestExtractConditions:
 # ---------------------------------------------------------------------------
 # estimate_weather_delay_hours — mocked API
 # ---------------------------------------------------------------------------
+
 
 def _make_api_response(wave: float, wind_ms: float) -> MagicMock:
     """Build a mock response matching the marine API structure."""
@@ -234,7 +235,7 @@ class TestApplyWeatherDelays:
             assert v["weather_delay_hours"] == 0.0
             assert v["weather_severity"] == "none"
 
-    def test_weather_disabled_via_config(self, monkeypatch: pytest.MonkeyPatch):
+    def test_weather_disabled_via_config(self, monkeypatch: pytest.MonkeyPatch):  # noqa: ARG002
         """When weather_enabled=False the planner skips apply_weather_delays entirely.
 
         This test verifies the function itself is pure and produces correct fields

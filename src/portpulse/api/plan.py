@@ -58,9 +58,21 @@ _DATA_ERROR_RESPONSES: dict[int | str, dict[str, object]] = {
     summary="Generate the 72-hour plan from the default datasets",
     responses=_DATA_ERROR_RESPONSES,
 )
-def get_plan() -> OpsPlan:
+def get_plan(
+    port_name: str | None = None,
+    port_lat: float | None = None,
+    port_lon: float | None = None,
+    settings: Settings = Depends(get_settings),
+) -> OpsPlan:
     """Build a plan from the bundled vessel and berth datasets."""
-    plan = generate_ops_plan(load_vessels(), load_berths())
+    if port_name and str(port_name).strip():
+        settings.app.port_name = str(port_name).strip()
+    if port_lat is not None:
+        settings.app.port_lat = port_lat
+    if port_lon is not None:
+        settings.app.port_lon = port_lon
+
+    plan = generate_ops_plan(load_vessels(settings), load_berths(settings))
     return OpsPlan.model_validate(plan)
 
 

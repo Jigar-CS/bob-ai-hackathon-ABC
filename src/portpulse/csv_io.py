@@ -12,12 +12,13 @@ import logging
 from collections.abc import Iterable, Sequence
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 from portpulse.errors import CsvValidationError, DataFileError
 
 logger = logging.getLogger(__name__)
 
-Row = dict[str, str]
+Row = dict[str, Any]
 
 
 def read_csv_file(path: Path) -> list[Row]:
@@ -194,7 +195,10 @@ def parse_csv_text(content: str, required_columns: Iterable[str]) -> list[Row]:
 
 
 def _sanitize_csv_cell(value: object) -> object:
-    """Escape values starting with =, +, -, @ to prevent spreadsheet formula injection, preserving negative numbers."""
+    """Escape values starting with =, +, -, @ to prevent spreadsheet formula injection.
+
+    Preserves negative numbers.
+    """
     if isinstance(value, str):
         val_str = value.strip()
         if val_str.startswith(("=", "+", "@")):

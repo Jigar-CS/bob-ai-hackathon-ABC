@@ -64,7 +64,9 @@ def has_promptable_fields(vessel: Row) -> bool:
 def build_prompt(vessel: Row, candidates: list[dict[str, Any]]) -> str:
     """Build the routing-recommendation prompt for one vessel."""
     ports_summary = "\n".join(
-        f"{index}. {port['port']}: {port['distance_km']}km away, "
+        f"{index}. {port['port']}: "
+        f"{port.get('distance_nmi', round(port['distance_km'] / 1.852)):,} nmi "
+        f"({port['distance_km']:,} km) away, "
         f"{port['spare_capacity_teu']:,} TEU spare capacity"
         for index, port in enumerate(candidates, start=1)
     )
@@ -138,12 +140,18 @@ def _rank_candidates(vessel: Row, ports: list[dict[str, Any]]) -> list[dict[str,
         size = 0
 
     fitting = [port for port in ports if port["spare_capacity_teu"] >= size] if size > 0 else []
-    ranked = sorted(fitting or ports, key=lambda port: port["distance_km"])
+    ranked = sorted(
+        fitting or ports, key=lambda port: port.get("distance_nmi", port["distance_km"])
+    )
     return ranked[:MAX_ALTERNATIVES]
 
 
 def _template_reason(port: dict[str, Any]) -> str:
-    return f"{port['spare_capacity_teu']:,} TEU spare capacity, {port['distance_km']}km away"
+    dist_nmi = port.get("distance_nmi", round(port["distance_km"] / 1.852))
+    return (
+        f"{port['spare_capacity_teu']:,} TEU spare capacity, "
+        f"{dist_nmi:,} nmi ({port['distance_km']:,} km) away"
+    )
 
 
 def _suggest_for_vessel(
@@ -184,8 +192,12 @@ def _suggest_for_vessel(
     alternatives = [
         {
             "port": port["port"],
+            "distance_nmi": port.get("distance_nmi", round(port["distance_km"] / 1.852)),
             "distance_km": port["distance_km"],
             "spare_capacity_teu": port["spare_capacity_teu"],
+            "transit_delta_hours": round(
+                port.get("distance_nmi", port["distance_km"] / 1.852) / 16.0, 1
+            ),
             "reason": recommendation if index == 0 and recommendation else _template_reason(port),
         }
         for index, port in enumerate(candidates)

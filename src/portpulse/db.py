@@ -28,9 +28,6 @@ DB_PORT = os.getenv("MYSQL_PORT", "3306")
 DB_NAME = os.getenv("MYSQL_DATABASE", "portpulse")
 
 
-
-
-
 DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
@@ -79,7 +76,7 @@ def get_db() -> Generator[Session, None, None]:
 def init_db() -> bool:
     """Ensure database connection and metadata tables exist."""
     try:
-        import pymysql
+        import pymysql  # type: ignore[import-untyped]
 
         admin_conn = pymysql.connect(
             host=DB_HOST,
@@ -106,6 +103,3 @@ def check_connection() -> bool:
 
 # Initialize database schema on module import if DB is accessible
 init_db()
-
-
-

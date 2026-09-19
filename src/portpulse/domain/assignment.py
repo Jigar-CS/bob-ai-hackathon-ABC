@@ -169,8 +169,8 @@ def _parse_vessels(vessels: list[Row]) -> tuple[list[_Vessel], list[Row]]:
 
 
 def _ml_berth_score(
-    vessel: "_Vessel",
-    berth: "_Berth",
+    vessel: _Vessel,
+    berth: _Berth,
     n_berths: int,
     n_vessels: int,
 ) -> float:
@@ -304,27 +304,35 @@ def assign_berths(
             queue_status = f"QUEUED (#{queue_position})"
             queued_behind = str(queue[-1]["vessel_name"])
 
-        queue.append({
-            "vessel_id": vessel.vessel_id,
-            "vessel_name": vessel.name,
-            "berth_start": best_start,
-            "departure": departure,
-        })
+        queue.append(
+            {
+                "vessel_id": vessel.vessel_id,
+                "vessel_name": vessel.name,
+                "berth_start": best_start,
+                "departure": departure,
+            }
+        )
 
         priority_label = f"P{vessel.priority}" if vessel.priority is not None else "unprioritised"
         cargo_note = (
             f" handling '{vessel.cargo_type}'"
-            if best.allowed_cargo_types and best.allowed_cargo_types.lower() not in ("all", "any", "*")
+            if best.allowed_cargo_types
+            and best.allowed_cargo_types.lower() not in ("all", "any", "*")
             else ""
         )
         if best_wait == 0:
-            reason = f"{priority_label}, fits {best.berth_id} capacity{cargo_note}, berth free on arrival"
+            reason = (
+                f"{priority_label}, fits {best.berth_id} capacity{cargo_note}, "
+                "berth free on arrival"
+            )
         else:
-            reason = f"{priority_label}, queued {best_wait:.1f}h for berth {best.berth_id}{cargo_note}"
+            reason = (
+                f"{priority_label}, queued {best_wait:.1f}h for berth {best.berth_id}{cargo_note}"
+            )
 
         if queue_position > 0 and queued_behind:
             reason += f"; queued #{queue_position} behind {queued_behind}"
-        if vessel.weather_delay_hours > 0:
+        if vessel.weather_delay_hours > 0 and "weather delay" not in reason:
             reason += f" (+{vessel.weather_delay_hours:.1f}h weather delay)"
 
         multiplier = effective_dwell / best.avg_dwell_hours if best.avg_dwell_hours > 0 else 1.0

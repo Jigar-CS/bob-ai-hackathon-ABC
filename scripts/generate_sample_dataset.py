@@ -65,20 +65,26 @@ ORIGIN_PORTS = [
 # Vessel names
 VESSEL_PREFIXES = ["MV", "CSCL", "MSC", "EVER", "HAPAG", "CMA", "OOCL", "COSCO", "MAERSK", "YANG"]
 VESSEL_NAMES = [
-    "Pacific Star", "Atlantic Express", "Global Trader", "Ocean Pride",
-    "Sea Guardian", "Blue Horizon", "Cargo Master", "Port Leader",
-    "Wave Runner", "Storm Breaker", "Trade Wind", "Harbor Queen",
-    "Marine Spirit", "Voyager Elite", "Container King", "Shipping Glory"
+    "Pacific Star",
+    "Atlantic Express",
+    "Global Trader",
+    "Ocean Pride",
+    "Sea Guardian",
+    "Blue Horizon",
+    "Cargo Master",
+    "Port Leader",
+    "Wave Runner",
+    "Storm Breaker",
+    "Trade Wind",
+    "Harbor Queen",
+    "Marine Spirit",
+    "Voyager Elite",
+    "Container King",
+    "Shipping Glory",
 ]
 
 # Cargo types with probabilities
-CARGO_TYPES = {
-    "general": 0.50,
-    "reefer": 0.20,
-    "bulk": 0.15,
-    "hazmat": 0.10,
-    "liquid": 0.05
-}
+CARGO_TYPES = {"general": 0.50, "reefer": 0.20, "bulk": 0.15, "hazmat": 0.10, "liquid": 0.05}
 
 # Vessel size ranges (TEU)
 SIZE_RANGES = {
@@ -87,7 +93,7 @@ SIZE_RANGES = {
     "panamax": (6000, 9000),
     "post_panamax": (9000, 12000),
     "new_panamax": (12000, 15000),
-    "ultra_large": (15000, 22000)
+    "ultra_large": (15000, 22000),
 }
 
 vessels = []
@@ -97,25 +103,21 @@ vessel_id = 1
 for hour in range(0, HORIZON_HOURS + 1, random.randint(2, 8)):
     # Random arrival time within horizon
     eta = NOW + timedelta(hours=hour)
-    
+
     # Vessel name
     prefix = random.choice(VESSEL_PREFIXES)
     name = f"{prefix} {random.choice(VESSEL_NAMES)} {vessel_id:03d}"
-    
+
     # Size category
     size_category = random.choices(
-        list(SIZE_RANGES.keys()),
-        weights=[0.15, 0.20, 0.25, 0.20, 0.12, 0.08]
+        list(SIZE_RANGES.keys()), weights=[0.15, 0.20, 0.25, 0.20, 0.12, 0.08]
     )[0]
     size_range = SIZE_RANGES[size_category]
     size_teu = random.randint(size_range[0], size_range[1])
-    
+
     # Cargo type
-    cargo_type = random.choices(
-        list(CARGO_TYPES.keys()),
-        weights=list(CARGO_TYPES.values())
-    )[0]
-    
+    cargo_type = random.choices(list(CARGO_TYPES.keys()), weights=list(CARGO_TYPES.values()))[0]
+
     # Priority (1=highest, 5=lowest)
     # Higher priority for hazmat, reefers, and larger vessels
     if cargo_type == "hazmat":
@@ -126,22 +128,24 @@ for hour in range(0, HORIZON_HOURS + 1, random.randint(2, 8)):
         priority = random.choices([1, 2, 3], weights=[0.3, 0.4, 0.3])[0]
     else:
         priority = random.choices([2, 3, 4, 5], weights=[0.15, 0.35, 0.30, 0.20])[0]
-    
+
     # Origin port
     origin = random.choice(ORIGIN_PORTS)
-    
-    vessels.append({
-        "vessel_id": f"V{vessel_id:03d}",
-        "name": name,
-        "eta": eta.strftime("%Y-%m-%d %H:%M"),
-        "size_teu": size_teu,
-        "cargo_type": cargo_type,
-        "priority": priority,
-        "origin_port": origin["name"],
-        "origin_lat": origin["lat"],
-        "origin_lon": origin["lon"]
-    })
-    
+
+    vessels.append(
+        {
+            "vessel_id": f"V{vessel_id:03d}",
+            "name": name,
+            "eta": eta.strftime("%Y-%m-%d %H:%M"),
+            "size_teu": size_teu,
+            "cargo_type": cargo_type,
+            "priority": priority,
+            "origin_port": origin["name"],
+            "origin_lat": origin["lat"],
+            "origin_lon": origin["lon"],
+        }
+    )
+
     vessel_id += 1
 
 # Create DataFrame and save
@@ -159,14 +163,62 @@ print(f"   Cargo types: {vessels_df['cargo_type'].value_counts().to_dict()}")
 print("\n[2/5] Generating berth dataset...")
 
 berths = [
-    {"berth_id": "B1", "capacity_teu": 20000, "crane_count": 6, "avg_dwell_hours": 24.0, "specialization": "ultra_large"},
-    {"berth_id": "B2", "capacity_teu": 18000, "crane_count": 5, "avg_dwell_hours": 22.0, "specialization": "new_panamax"},
-    {"berth_id": "B3", "capacity_teu": 15000, "crane_count": 5, "avg_dwell_hours": 20.0, "specialization": "post_panamax"},
-    {"berth_id": "B4", "capacity_teu": 12000, "crane_count": 4, "avg_dwell_hours": 18.0, "specialization": "panamax"},
-    {"berth_id": "B5", "capacity_teu": 10000, "crane_count": 4, "avg_dwell_hours": 16.0, "specialization": "panamax"},
-    {"berth_id": "B6", "capacity_teu": 8000, "crane_count": 3, "avg_dwell_hours": 14.0, "specialization": "feeder_max"},
-    {"berth_id": "B7", "capacity_teu": 6000, "crane_count": 3, "avg_dwell_hours": 12.0, "specialization": "feeder_max"},
-    {"berth_id": "B8", "capacity_teu": 5000, "crane_count": 2, "avg_dwell_hours": 10.0, "specialization": "feeder"},
+    {
+        "berth_id": "B1",
+        "capacity_teu": 20000,
+        "crane_count": 6,
+        "avg_dwell_hours": 24.0,
+        "specialization": "ultra_large",
+    },
+    {
+        "berth_id": "B2",
+        "capacity_teu": 18000,
+        "crane_count": 5,
+        "avg_dwell_hours": 22.0,
+        "specialization": "new_panamax",
+    },
+    {
+        "berth_id": "B3",
+        "capacity_teu": 15000,
+        "crane_count": 5,
+        "avg_dwell_hours": 20.0,
+        "specialization": "post_panamax",
+    },
+    {
+        "berth_id": "B4",
+        "capacity_teu": 12000,
+        "crane_count": 4,
+        "avg_dwell_hours": 18.0,
+        "specialization": "panamax",
+    },
+    {
+        "berth_id": "B5",
+        "capacity_teu": 10000,
+        "crane_count": 4,
+        "avg_dwell_hours": 16.0,
+        "specialization": "panamax",
+    },
+    {
+        "berth_id": "B6",
+        "capacity_teu": 8000,
+        "crane_count": 3,
+        "avg_dwell_hours": 14.0,
+        "specialization": "feeder_max",
+    },
+    {
+        "berth_id": "B7",
+        "capacity_teu": 6000,
+        "crane_count": 3,
+        "avg_dwell_hours": 12.0,
+        "specialization": "feeder_max",
+    },
+    {
+        "berth_id": "B8",
+        "capacity_teu": 5000,
+        "crane_count": 2,
+        "avg_dwell_hours": 10.0,
+        "specialization": "feeder",
+    },
 ]
 
 berths_df = pd.DataFrame(berths)
@@ -182,14 +234,40 @@ print(f"   Total cranes: {berths_df['crane_count'].sum()}")
 print("\n[3/5] Generating alternate ports dataset...")
 
 alternate_ports = [
-    {"port": "Port of Oakland", "distance_km": 620, "spare_capacity_teu": 12000, "specialization": "general"},
-    {"port": "Port of Tacoma", "distance_km": 1450, "spare_capacity_teu": 15000, "specialization": "general"},
-    {"port": "Port of Ensenada", "distance_km": 240, "spare_capacity_teu": 5000, "specialization": "feeder"},
-    {"port": "Port of Long Beach", "distance_km": 50, "spare_capacity_teu": 18000, "specialization": "ultra_large"},
-    {"port": "Port of Vancouver", "distance_km": 1800, "spare_capacity_teu": 10000, "specialization": "panamax"},
+    {
+        "port": "Port of Oakland",
+        "distance_km": 620,
+        "spare_capacity_teu": 12000,
+        "specialization": "general",
+    },
+    {
+        "port": "Port of Tacoma",
+        "distance_km": 1450,
+        "spare_capacity_teu": 15000,
+        "specialization": "general",
+    },
+    {
+        "port": "Port of Ensenada",
+        "distance_km": 240,
+        "spare_capacity_teu": 5000,
+        "specialization": "feeder",
+    },
+    {
+        "port": "Port of Long Beach",
+        "distance_km": 50,
+        "spare_capacity_teu": 18000,
+        "specialization": "ultra_large",
+    },
+    {
+        "port": "Port of Vancouver",
+        "distance_km": 1800,
+        "spare_capacity_teu": 10000,
+        "specialization": "panamax",
+    },
 ]
 
-with open(OUTPUT_DIR / "alternate_ports.json", "w") as f:
+alt_path = OUTPUT_DIR / "alternate_ports.json"
+with alt_path.open("w") as f:
     json.dump(alternate_ports, f, indent=2)
 print(f"   Generated {len(alternate_ports)} alternate ports")
 
@@ -200,13 +278,38 @@ print(f"   Generated {len(alternate_ports)} alternate ports")
 print("\n[4/5] Generating weather scenarios...")
 
 weather_scenarios = [
-    {"scenario": "clear", "wave_height_m": 0.5, "wind_speed_kt": 10, "visibility_km": 15, "probability": 0.40},
-    {"scenario": "minor", "wave_height_m": 2.0, "wind_speed_kt": 25, "visibility_km": 10, "probability": 0.30},
-    {"scenario": "moderate", "wave_height_m": 4.0, "wind_speed_kt": 40, "visibility_km": 5, "probability": 0.20},
-    {"scenario": "severe", "wave_height_m": 6.5, "wind_speed_kt": 55, "visibility_km": 2, "probability": 0.10},
+    {
+        "scenario": "clear",
+        "wave_height_m": 0.5,
+        "wind_speed_kt": 10,
+        "visibility_km": 15,
+        "probability": 0.40,
+    },
+    {
+        "scenario": "minor",
+        "wave_height_m": 2.0,
+        "wind_speed_kt": 25,
+        "visibility_km": 10,
+        "probability": 0.30,
+    },
+    {
+        "scenario": "moderate",
+        "wave_height_m": 4.0,
+        "wind_speed_kt": 40,
+        "visibility_km": 5,
+        "probability": 0.20,
+    },
+    {
+        "scenario": "severe",
+        "wave_height_m": 6.5,
+        "wind_speed_kt": 55,
+        "visibility_km": 2,
+        "probability": 0.10,
+    },
 ]
 
-with open(OUTPUT_DIR / "weather_scenarios.json", "w") as f:
+weather_path = OUTPUT_DIR / "weather_scenarios.json"
+with weather_path.open("w") as f:
     json.dump(weather_scenarios, f, indent=2)
 print(f"   Generated {len(weather_scenarios)} weather scenarios")
 
@@ -219,7 +322,7 @@ print("\n" + "=" * 80)
 print("DATASET SUMMARY")
 print("=" * 80)
 print(f"\nOutput directory: {OUTPUT_DIR}")
-print(f"\nFiles generated:")
+print("\nFiles generated:")
 print(f"  - vessels.csv          : {len(vessels)} vessels over {HORIZON_HOURS}h horizon")
 print(f"  - berths.csv           : {len(berths)} berths")
 print(f"  - alternate_ports.json : {len(alternate_ports)} alternate ports")

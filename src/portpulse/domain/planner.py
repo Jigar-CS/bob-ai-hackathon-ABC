@@ -35,18 +35,18 @@ def _try_ml_allocation(
     berths: list[Row],
 ) -> tuple[list[dict[str, object]], list[Row], bool]:
     """Try ML-based allocation, fall back to rule-based on failure.
-    
+
     Returns:
         Tuple of (assigned_list, unassigned_list, used_ml_flag)
     """
     settings = get_settings().app
-    
+
     if not settings.ml_enabled:
         return [], [], False
-    
+
     try:
         from portpulse.ml.allocation_optimizer import allocate_with_ml
-        
+
         result = allocate_with_ml(vessels, berths)
         logger.info("Used ML-based berth allocation")
         return result.assigned, result.unassigned, True
@@ -62,13 +62,13 @@ def _try_ml_weather_delays(
     timeout: float,
 ) -> tuple[list[Row], list[dict[str, Any]], bool]:
     """Try ML-based weather delay prediction.
-    
+
     Returns:
         Tuple of (enriched_vessels, weather_summary, used_ml_flag)
     """
     try:
         from portpulse.ml.weather_predictor import apply_ml_weather_delays
-        
+
         enriched, summary = apply_ml_weather_delays(
             vessels, port_lat, port_lon, timeout=timeout, n_waypoints=5
         )
@@ -212,10 +212,7 @@ def generate_ops_plan(
                     settings.weather_api_timeout_seconds,
                 )
                 if used_ml:
-                    logger.info(
-                        "ML weather delays applied to %d vessel(s).", 
-                        len(weather_summary)
-                    )
+                    logger.info("ML weather delays applied to %d vessel(s).", len(weather_summary))
                 else:
                     # Fallback to rule-based
                     raise ImportError("ML weather unavailable")
@@ -223,7 +220,7 @@ def generate_ops_plan(
                 # Fallback to original weather integration
                 try:
                     from portpulse.integrations.weather import apply_weather_delays
-                    
+
                     vessels = apply_weather_delays(
                         vessels,
                         port_lat=settings.port_lat,
@@ -234,29 +231,32 @@ def generate_ops_plan(
                     for v in vessels:
                         delay = float(v.get("weather_delay_hours") or 0.0)
                         if delay > 0:
-                            weather_summary.append({
-                                "vessel_id": str(v.get("vessel_id", "?")),
-                                "vessel_name": str(v.get("name", "Unknown")),
-                                "origin_lat": v.get("origin_lat"),
-                                "origin_lon": v.get("origin_lon"),
-                                "delay_hours": delay,
-                                "severity": str(v.get("weather_severity", "none")),
-                            })
+                            weather_summary.append(
+                                {
+                                    "vessel_id": str(v.get("vessel_id", "?")),
+                                    "vessel_name": str(v.get("name", "Unknown")),
+                                    "origin_lat": v.get("origin_lat"),
+                                    "origin_lon": v.get("origin_lon"),
+                                    "delay_hours": delay,
+                                    "severity": str(v.get("weather_severity", "none")),
+                                }
+                            )
                     if weather_summary:
                         logger.info(
-                            "Rule-based weather delays applied to %d vessel(s).", 
-                            len(weather_summary)
+                            "Rule-based weather delays applied to %d vessel(s).",
+                            len(weather_summary),
                         )
                 except Exception:
                     logger.exception("Weather delay adjustment failed — using unadjusted ETAs.")
                     warnings.append(
-                        "Weather delay adjustment unavailable — vessels scheduled with unadjusted ETAs."
+                        "Weather delay adjustment unavailable — vessels scheduled with "
+                        "unadjusted ETAs."
                     )
         else:
             # Non-ML mode: use original weather integration
             try:
                 from portpulse.integrations.weather import apply_weather_delays
-                
+
                 vessels = apply_weather_delays(
                     vessels,
                     port_lat=settings.port_lat,
@@ -266,18 +266,18 @@ def generate_ops_plan(
                 for v in vessels:
                     delay = float(v.get("weather_delay_hours") or 0.0)
                     if delay > 0:
-                        weather_summary.append({
-                            "vessel_id": str(v.get("vessel_id", "?")),
-                            "vessel_name": str(v.get("name", "Unknown")),
-                            "origin_lat": v.get("origin_lat"),
-                            "origin_lon": v.get("origin_lon"),
-                            "delay_hours": delay,
-                            "severity": str(v.get("weather_severity", "none")),
-                        })
+                        weather_summary.append(
+                            {
+                                "vessel_id": str(v.get("vessel_id", "?")),
+                                "vessel_name": str(v.get("name", "Unknown")),
+                                "origin_lat": v.get("origin_lat"),
+                                "origin_lon": v.get("origin_lon"),
+                                "delay_hours": delay,
+                                "severity": str(v.get("weather_severity", "none")),
+                            }
+                        )
                 if weather_summary:
-                    logger.info(
-                        "Weather delays applied to %d vessel(s).", len(weather_summary)
-                    )
+                    logger.info("Weather delays applied to %d vessel(s).", len(weather_summary))
             except Exception:
                 logger.exception("Weather delay adjustment failed — using unadjusted ETAs.")
                 warnings.append(
@@ -376,8 +376,8 @@ def generate_ops_plan(
     partial_plan["swap_opportunities"] = swap_opps
 
     # Persist log records to MySQL database (if connected)
-    _log_plan_vessels_to_db(assignment.assigned, assignment.unassigned, congestion, used_ml_allocation)
+    _log_plan_vessels_to_db(
+        assignment.assigned, assignment.unassigned, congestion, used_ml_allocation
+    )
 
     return partial_plan
-
-

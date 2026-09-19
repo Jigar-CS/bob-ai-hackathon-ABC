@@ -10,7 +10,6 @@ import logging
 from typing import Any
 
 from portpulse.constants import DEMURRAGE_RATE_PER_TEU_HOUR
-
 from portpulse.domain.assignment import _is_cargo_compatible
 
 logger = logging.getLogger(__name__)
@@ -88,7 +87,9 @@ def find_swap_opportunities(
             cargo2 = str(v2.get("cargo_type") or "general")
             allowed1 = berth_cargos.get(b1_id, "all")
             allowed2 = berth_cargos.get(b2_id, "all")
-            if not _is_cargo_compatible(cargo1, allowed2) or not _is_cargo_compatible(cargo2, allowed1):
+            if not _is_cargo_compatible(cargo1, allowed2) or not _is_cargo_compatible(
+                cargo2, allowed1
+            ):
                 continue
 
             # Temporal schedule check: vessel cannot start berthing after target departure
