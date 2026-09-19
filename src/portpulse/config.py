@@ -212,8 +212,6 @@ class GeminiSettings(BaseSettings):
         validation_alias=AliasChoices("GEMINI_MODEL_ID", "PORTPULSE_GEMINI_MODEL_ID"),
     )
 
-
-
     url: str = Field(
         default="https://generativelanguage.googleapis.com/v1beta",
         validation_alias=AliasChoices("GEMINI_URL", "PORTPULSE_GEMINI_URL"),
@@ -234,9 +232,7 @@ class GeminiSettings(BaseSettings):
     backoff_factor: float = Field(
         default=0.5,
         ge=0,
-        validation_alias=AliasChoices(
-            "GEMINI_BACKOFF_FACTOR", "PORTPULSE_GEMINI_BACKOFF_FACTOR"
-        ),
+        validation_alias=AliasChoices("GEMINI_BACKOFF_FACTOR", "PORTPULSE_GEMINI_BACKOFF_FACTOR"),
     )
 
     @field_validator("api_key", mode="before")
@@ -367,4 +363,3 @@ def get_settings() -> Settings:
 def reset_settings_cache() -> None:
     """Drop the cached settings so the next :func:`get_settings` re-reads the env."""
     get_settings.cache_clear()
-

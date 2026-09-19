@@ -40,9 +40,6 @@ def test_gemini_settings_with_key(gemini_env: None) -> None:
     assert "models/gemini-flash-latest:generateContent?key=test_gemini_key_123" in endpoint
 
 
-
-
-
 def test_gemini_client_unconfigured(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("GEMINI_API_KEY", "")
     monkeypatch.setenv("GOOGLE_API_KEY", "")
@@ -56,7 +53,6 @@ def test_gemini_client_unconfigured(monkeypatch: pytest.MonkeyPatch) -> None:
         client.generate_text("Hello")
 
 
-
 def test_gemini_client_generate_text_success(gemini_env: None) -> None:
     settings = GeminiSettings()
     mock_session = MagicMock()
@@ -64,13 +60,7 @@ def test_gemini_client_generate_text_success(gemini_env: None) -> None:
     mock_resp.status_code = 200
     mock_resp.json.return_value = {
         "candidates": [
-            {
-                "content": {
-                    "parts": [
-                        {"text": "  Vessel V101 is scheduled at Berth B1.  "}
-                    ]
-                }
-            }
+            {"content": {"parts": [{"text": "  Vessel V101 is scheduled at Berth B1.  "}]}}
         ]
     }
     mock_session.request.return_value = mock_resp
@@ -108,9 +98,7 @@ def test_gemini_client_retry_and_success(gemini_env: None) -> None:
     resp_ok = MagicMock()
     resp_ok.status_code = 200
     resp_ok.json.return_value = {
-        "candidates": [
-            {"content": {"parts": [{"text": "Berth B2 is operational."}]}}
-        ]
+        "candidates": [{"content": {"parts": [{"text": "Berth B2 is operational."}]}}]
     }
 
     mock_session.request.side_effect = [resp_fail, resp_ok]
@@ -127,4 +115,3 @@ def test_gemini_singleton_cache() -> None:
     c2 = get_gemini_client()
     assert c1 is c2
     reset_gemini_client_cache()
-

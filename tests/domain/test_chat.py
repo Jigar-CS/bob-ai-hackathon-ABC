@@ -128,7 +128,6 @@ def test_chat_uses_gemini_client_when_enabled():
     assert res["reply"] == "Vessel V101 is allocated to Berth B1 with 4 cranes."
 
 
-
 def test_prompt_injection_safety_instruction_present():
     plan = get_sample_plan()
     prompt = _build_prompt("Show plan", plan, [])

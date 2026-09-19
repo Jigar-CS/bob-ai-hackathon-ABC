@@ -262,7 +262,6 @@ def _is_out_of_scope(msg: str, plan: dict[str, Any]) -> bool:
         re.search(r"\b" + re.escape(g) + r"\b", clean_text) for g in _GREETING_KEYWORDS
     )
 
-
     if has_greeting and not has_out_of_scope:
         return False
 
@@ -316,7 +315,6 @@ def _fallback_reply(user_message: str, plan: dict[str, Any]) -> str:
             "3. **24-Hour Congestion Forecasts** (e.g. 'Show day 1 risk forecast')\n"
             "4. **Alternate Port Rerouting** (e.g. 'Why was V108 rerouted?')"
         )
-
 
     # 1. Search for specific vessel query (e.g. V101, V001, MV Pacific Titan, V108...)
     for a in assignments:
@@ -615,6 +613,3 @@ def answer(
         "ai_generated": False,
         "provider": "rule_based",
     }
-
-
-

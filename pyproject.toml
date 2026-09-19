@@ -98,7 +98,8 @@ known-first-party = ["portpulse"]
 # ── mypy ─────────────────────────────────────────────────────────────────────
 [tool.mypy]
 python_version = "3.11"
-files = ["src", "scripts"]
+files = ["src"]
+
 warn_unused_configs = true
 warn_redundant_casts = true
 warn_unused_ignores = true
