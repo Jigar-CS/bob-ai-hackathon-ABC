@@ -48,6 +48,9 @@ def isolated_environment(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
     monkeypatch.setenv("BOB_AGENT_PROJECT_ID", "")
     monkeypatch.setenv("PORTPULSE_ENVIRONMENT", "development")
     monkeypatch.setenv("PORTPULSE_LOG_LEVEL", "WARNING")
+    # Disable real-time weather API calls in all tests; individual weather tests
+    # mock the HTTP layer directly.
+    monkeypatch.setenv("PORTPULSE_WEATHER_ENABLED", "false")
 
     reset_settings_cache()
     reset_client_cache()

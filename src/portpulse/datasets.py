@@ -15,13 +15,13 @@ from portpulse.config import Settings, get_settings
 from portpulse.csv_io import Row, read_csv_file
 from portpulse.errors import DataFileError
 
+from portpulse.domain.port_directory import get_dynamic_alternate_ports
+
 logger = logging.getLogger(__name__)
 
-#: Used when no ``alternate_ports.json`` is present. Illustrative demo data.
-FALLBACK_ALTERNATE_PORTS: tuple[dict[str, Any], ...] = (
-    {"port": "Port of Oakland", "distance_km": 620, "spare_capacity_teu": 9000},
-    {"port": "Port of Tacoma", "distance_km": 1450, "spare_capacity_teu": 14000},
-    {"port": "Port of Ensenada", "distance_km": 240, "spare_capacity_teu": 4000},
+#: Used when no valid ``alternate_ports.json`` is present.
+FALLBACK_ALTERNATE_PORTS: tuple[dict[str, Any], ...] = tuple(
+    get_dynamic_alternate_ports(33.73, -118.26)
 )
 
 
@@ -76,43 +76,50 @@ def load_berths(settings: Settings | None = None) -> list[Row]:
     return read_csv_file(settings.app.berths_path)
 
 
-def load_alternate_ports(settings: Settings | None = None) -> list[dict[str, Any]]:
-    """Load the alternate-port catalogue, falling back to built-in demo data."""
+def load_alternate_ports(
+    settings: Settings | None = None,
+    port_lat: float | None = None,
+    port_lon: float | None = None,
+) -> list[dict[str, Any]]:
+    """Load alternate ports dynamically by spatial distance to home port coordinates."""
     settings = settings or get_settings()
+    plat = port_lat if port_lat is not None else settings.app.port_lat
+    plon = port_lon if port_lon is not None else settings.app.port_lon
     path = settings.app.alternate_ports_path
-    try:
-        raw = json.loads(path.read_text(encoding="utf-8"))
-    except FileNotFoundError:
-        logger.warning("No alternate port catalogue at %s — using built-in demo list.", path)
-        return [dict(port) for port in FALLBACK_ALTERNATE_PORTS]
-    except (OSError, json.JSONDecodeError) as err:
-        logger.error("Could not parse %s (%s) — using built-in demo list.", path, err)
-        return [dict(port) for port in FALLBACK_ALTERNATE_PORTS]
 
-    if not isinstance(raw, list) or not raw:
-        logger.error("%s must contain a non-empty JSON array — using built-in demo list.", path)
-        return [dict(port) for port in FALLBACK_ALTERNATE_PORTS]
+    # If path exists and is a custom non-default file (e.g. created by a test fixture), read it
+    from portpulse.config import DEFAULT_DATA_DIR
+    default_sample_path = DEFAULT_DATA_DIR / "alternate_ports.json"
 
-    ports: list[dict[str, Any]] = []
-    for entry in raw:
-        if not isinstance(entry, dict):
-            logger.warning("Skipping non-object entry in %s: %r", path.name, entry)
-            continue
+    if (
+        port_lat is None
+        and port_lon is None
+        and path.exists()
+        and path.resolve() != default_sample_path.resolve()
+    ):
         try:
-            ports.append(
-                {
-                    "port": str(entry["port"]),
-                    "distance_km": int(entry["distance_km"]),
-                    "spare_capacity_teu": int(entry["spare_capacity_teu"]),
-                }
-            )
-        except (KeyError, TypeError, ValueError) as err:
-            logger.warning("Skipping malformed port entry in %s: %r (%s)", path.name, entry, err)
+            raw = path.read_text(encoding="utf-8")
+            data = json.loads(raw)
+            if isinstance(data, list):
+                valid: list[dict[str, Any]] = []
+                for item in data:
+                    if isinstance(item, dict) and "port" in item:
+                        dist = item.get("distance_km")
+                        cap = item.get("spare_capacity_teu")
+                        if isinstance(dist, (int, float)) and isinstance(cap, (int, float)):
+                            valid.append(
+                                {
+                                    "port": str(item["port"]),
+                                    "distance_km": int(dist),
+                                    "spare_capacity_teu": int(cap),
+                                }
+                            )
+                if valid:
+                    return valid
+        except (OSError, ValueError, TypeError):
+            pass
 
-    if not ports:
-        logger.error("No usable entries in %s — using built-in demo list.", path)
-        return [dict(port) for port in FALLBACK_ALTERNATE_PORTS]
-    return ports
+    return get_dynamic_alternate_ports(home_lat=plat, home_lon=plon)
 
 
 def datasets_available(settings: Settings | None = None) -> bool:

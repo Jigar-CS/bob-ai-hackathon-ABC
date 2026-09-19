@@ -93,6 +93,24 @@ def _verify_startup_configuration(settings: Settings) -> None:
             "template text. Set WATSONX_API_KEY and WATSONX_PROJECT_ID to enable AI reasoning."
         )
 
+    from portpulse.db import check_connection as check_db_connection
+
+    if check_db_connection():
+        logger.info("MySQL database connection verified.")
+    else:
+        logger.warning(
+            "MySQL database is unreachable — running with file-based datasets. "
+            "Set MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, MYSQL_DATABASE in .env."
+        )
+
+    import time
+    from portpulse.ml.predictor import _load, get_available_models
+    t0 = time.perf_counter()
+    _load()
+    dur = time.perf_counter() - t0
+    models = get_available_models()
+    logger.info("Eagerly loaded %d ML models (%s) in %.3fs", len(models), ", ".join(models), dur)
+
 
 @asynccontextmanager
 async def _lifespan(app: FastAPI) -> AsyncIterator[None]:

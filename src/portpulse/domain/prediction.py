@@ -82,6 +82,7 @@ def predict_congestion(
         PlanningError: if no usable vessel or berth rows are supplied.
     """
     settings = get_settings().app
+    using_default_thresholds = high_risk_ratio is None and medium_risk_ratio is None
     high = settings.congestion_high_risk_ratio if high_risk_ratio is None else high_risk_ratio
     medium = (
         settings.congestion_medium_risk_ratio if medium_risk_ratio is None else medium_risk_ratio
@@ -154,21 +155,47 @@ def predict_congestion(
             beyond_horizon,
         )
 
-    if not windows:
-        return []
-
-    max_window_idx = max(windows.keys())
     results: list[dict[str, object]] = []
-    for window_index in range(max_window_idx + 1):
+    for window_index in range(horizon_days):
         sizes = windows.get(window_index, [])
         incoming_teu = sum(sizes)
         risk_ratio = incoming_teu / total_capacity
         if risk_ratio > high:
-            risk_level = "HIGH"
+            rule_risk_level = "HIGH"
         elif risk_ratio > medium:
-            risk_level = "MEDIUM"
+            rule_risk_level = "MEDIUM"
         else:
-            risk_level = "LOW"
+            rule_risk_level = "LOW"
+        risk_level = rule_risk_level  # ML may override below
+
+        if settings.ml_enabled and using_default_thresholds:
+            try:
+                from portpulse.ml.predictor import log_prediction, predict_risk
+
+                ml_risk = predict_risk(
+                    {
+                        "vessel_count": len(sizes),
+                        "incoming_teu": incoming_teu,
+                        "total_capacity_teu": total_capacity,
+                        "day_index": window_index + 1,
+                        "utilization_ratio": round(risk_ratio, 2),
+                    }
+                )
+                if ml_risk is not None:
+                    risk_level = ml_risk
+
+                log_prediction(
+                    vessel_id=f"WINDOW_DAY_{window_index + 1}",
+                    window_day=window_index + 1,
+                    vessel_count=len(sizes),
+                    incoming_teu=incoming_teu,
+                    total_capacity_teu=total_capacity,
+                    utilization_ratio=round(risk_ratio, 2),
+                    predicted_risk_level=risk_level,
+                    predicted_wait_hours=None,
+                )
+            except Exception as err:
+                logger.warning("ML window risk prediction or logging failed: %s", err)
 
         window_start = horizon_start + timedelta(hours=WINDOW_HOURS * window_index)
         window_end = window_start + timedelta(hours=WINDOW_HOURS)
@@ -191,6 +218,7 @@ def predict_congestion(
                 "total_capacity_teu": total_capacity,
                 "risk_ratio": round(risk_ratio, 2),
                 "risk_level": risk_level,
+                "rule_risk_level": rule_risk_level,
                 "reason": reason,
             }
         )

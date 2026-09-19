@@ -11,6 +11,8 @@ from typing import Any
 
 from portpulse.constants import DEMURRAGE_RATE_PER_TEU_HOUR
 
+from portpulse.domain.assignment import _is_cargo_compatible
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,7 +23,7 @@ def find_swap_opportunities(
     """Identify advisory berth swap opportunities across assigned vessels.
 
     For every pair of assigned vessels, check if swapping their berths is
-    physically valid (each vessel fits the target berth capacity) and produces a
+    physically valid (each vessel fits the target berth capacity and cargo type) and produces a
     net reduction in wait time or better priority placement.
 
     Args:
@@ -36,9 +38,10 @@ def find_swap_opportunities(
     if len(assignments) > 200:
         assignments = assignments[:200]
 
-    # Map berth capacities and crane counts if provided
+    # Map berth capacities, crane counts, and allowed cargo types if provided
     berth_caps: dict[str, int] = {}
     berth_cranes: dict[str, int] = {}
+    berth_cargos: dict[str, str] = {}
     if berths:
         for b in berths:
             bid = str(b.get("berth_id", "")).strip().upper()
@@ -50,6 +53,7 @@ def find_swap_opportunities(
                 berth_cranes[bid] = int(b.get("crane_count", 2))
             except (ValueError, TypeError):
                 berth_cranes[bid] = 2
+            berth_cargos[bid] = str(b.get("allowed_cargo_types") or "all").strip()
 
     opportunities: list[dict[str, Any]] = []
 
@@ -79,6 +83,14 @@ def find_swap_opportunities(
             if size1 > cap2 or size2 > cap1:
                 continue
 
+            # Cargo type compatibility check for swap targets
+            cargo1 = str(v1.get("cargo_type") or "general")
+            cargo2 = str(v2.get("cargo_type") or "general")
+            allowed1 = berth_cargos.get(b1_id, "all")
+            allowed2 = berth_cargos.get(b2_id, "all")
+            if not _is_cargo_compatible(cargo1, allowed2) or not _is_cargo_compatible(cargo2, allowed1):
+                continue
+
             # Temporal schedule check: vessel cannot start berthing after target departure
             arr1 = str(v1.get("arrival", "")).strip()
             arr2 = str(v2.get("arrival", "")).strip()
@@ -92,8 +104,13 @@ def find_swap_opportunities(
 
             p1 = int(v1.get("priority", 2))
             p2 = int(v2.get("priority", 2))
-            w1 = float(v1.get("wait_hours", 0.0))
-            w2 = float(v2.get("wait_hours", 0.0))
+            # Prefer ML-predicted wait hours when available for more accurate savings estimates
+            raw_w1 = float(v1.get("wait_hours", 0.0))
+            raw_w2 = float(v2.get("wait_hours", 0.0))
+            ml_w1 = v1.get("predicted_wait_hours")
+            ml_w2 = v2.get("predicted_wait_hours")
+            w1 = float(ml_w1) if ml_w1 is not None else raw_w1
+            w2 = float(ml_w2) if ml_w2 is not None else raw_w2
 
             c1 = int(v1.get("crane_count") or berth_cranes.get(b1_id, 2))
             c2 = int(v2.get("crane_count") or berth_cranes.get(b2_id, 2))

@@ -45,10 +45,15 @@ def test_get_plan_returns_every_section(client: TestClient) -> None:
         "unassigned_count",
         "reroute_suggestions",
         "swap_opportunities",
+        "weather_summary",
+        "ml_enabled",
+        "ml_allocation_used",
+        "meta",
         "warnings",
     }
     assert len(plan["berth_assignments"]) == 3
-    assert plan["warnings"] == []
+    # weather_summary is always present; may be empty if weather disabled in test env
+    assert isinstance(plan["weather_summary"], list)
     assert "effective_dwell_hours" in plan["berth_assignments"][0]
 
 

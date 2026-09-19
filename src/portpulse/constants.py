@@ -21,12 +21,27 @@ VESSEL_COLUMNS: Final[tuple[str, ...]] = (
     "priority",
 )
 
+#: Optional vessel columns used by the weather engine (backward-compatible).
+VESSEL_OPTIONAL_COLUMNS: Final[tuple[str, ...]] = (
+    "origin_lat",
+    "origin_lon",
+    "origin_port",
+    "dest_lat",
+    "dest_lon",
+    "dest_port",
+)
+
 #: Columns a berth capacity CSV must provide.
 BERTH_COLUMNS: Final[tuple[str, ...]] = (
     "berth_id",
     "capacity_teu",
     "crane_count",
     "avg_dwell_hours",
+)
+
+#: Optional berth columns (backward-compatible).
+BERTH_OPTIONAL_COLUMNS: Final[tuple[str, ...]] = (
+    "allowed_cargo_types",
 )
 
 #: Planning horizon, in 24-hour windows.

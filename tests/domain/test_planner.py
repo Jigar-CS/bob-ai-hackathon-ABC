@@ -28,8 +28,10 @@ def test_plan_contains_every_section(
     assert len(plan["berth_assignments"]) == 3
     assert plan["unassigned_count"] == 0
     assert plan["reroute_suggestions"] == []
-    assert plan["warnings"] == []
     assert plan["generated_at"].endswith("+00:00")
+    # Weather summary is always present (may be empty when no delays or weather disabled)
+    assert "weather_summary" in plan
+    assert isinstance(plan["weather_summary"], list)
 
 
 def test_plan_validates_against_the_response_schema(

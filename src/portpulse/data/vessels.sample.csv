@@ -1,41 +1,12 @@
-vessel_id,name,eta,size_teu,cargo_type,priority
-V034,MV Horizon-34,2026-09-15 08:15,9000,general,3
-V007,MV Horizon-7,2026-09-15 09:17,6000,reefer,2
-V039,MV Horizon-39,2026-09-15 10:21,9000,general,2
-V015,MV Horizon-15,2026-09-15 16:17,6000,general,3
-V024,MV Horizon-24,2026-09-15 17:00,6000,hazmat,2
-V009,MV Horizon-9,2026-09-15 17:42,9000,general,2
-V037,MV Horizon-37,2026-09-15 19:42,4000,hazmat,3
-V014,MV Horizon-14,2026-09-15 21:18,11000,reefer,3
-V029,MV Horizon-29,2026-09-16 01:05,11000,general,2
-V003,MV Horizon-3,2026-09-16 02:00,6000,reefer,1
-V006,MV Horizon-6,2026-09-16 03:06,9000,hazmat,2
-V032,MV Horizon-32,2026-09-16 06:20,6000,hazmat,2
-V026,MV Horizon-26,2026-09-16 08:08,9000,general,1
-V004,MV Horizon-4,2026-09-16 09:21,9000,reefer,2
-V013,MV Horizon-13,2026-09-16 10:53,4000,general,3
-V038,MV Horizon-38,2026-09-16 11:35,4000,hazmat,2
-V022,MV Horizon-22,2026-09-16 14:40,9000,hazmat,2
-V011,MV Horizon-11,2026-09-16 15:16,9000,hazmat,2
-V020,MV Horizon-20,2026-09-16 20:05,4000,hazmat,3
-V040,MV Horizon-40,2026-09-16 20:36,6000,reefer,3
-V001,MV Horizon-1,2026-09-16 22:24,11000,general,3
-V019,MV Horizon-19,2026-09-17 00:56,11000,reefer,3
-V025,MV Horizon-25,2026-09-17 01:07,11000,general,1
-V010,MV Horizon-10,2026-09-17 01:51,6000,hazmat,2
-V035,MV Horizon-35,2026-09-17 06:09,6000,hazmat,1
-V012,MV Horizon-12,2026-09-17 07:17,4000,general,3
-V033,MV Horizon-33,2026-09-17 08:57,4000,general,1
-V030,MV Horizon-30,2026-09-17 09:19,11000,hazmat,3
-V005,MV Horizon-5,2026-09-17 10:32,4000,reefer,1
-V016,MV Horizon-16,2026-09-17 11:47,11000,hazmat,2
-V021,MV Horizon-21,2026-09-17 13:20,9000,general,2
-V002,MV Horizon-2,2026-09-17 16:16,4000,general,3
-V018,MV Horizon-18,2026-09-17 19:59,6000,hazmat,3
-V008,MV Horizon-8,2026-09-17 20:23,11000,reefer,3
-V023,MV Horizon-23,2026-09-17 20:40,9000,hazmat,2
-V027,MV Horizon-27,2026-09-17 21:13,4000,general,2
-V031,MV Horizon-31,2026-09-17 22:46,11000,general,2
-V036,MV Horizon-36,2026-09-18 01:21,11000,general,3
-V028,MV Horizon-28,2026-09-18 04:24,6000,general,2
-V017,MV Horizon-17,2026-09-18 05:48,6000,hazmat,2
+vessel_id,name,eta,size_teu,cargo_type,priority,origin_port,origin_lat,origin_lon
+V001,CSCL Pacific Star 001,2026-09-19 05:03,10003,general,4,Rotterdam,51.92,4.48
+V002,MAERSK Global Trader 002,2026-09-19 12:03,6130,general,3,Kaohsiung,22.62,120.28
+V003,YANG Pacific Star 003,2026-09-19 19:03,8932,reefer,2,Tokyo,35.68,139.69
+V004,COSCO Wave Runner 004,2026-09-20 02:03,12026,bulk,3,Ningbo,29.87,121.55
+V005,CMA Wave Runner 005,2026-09-20 09:03,5960,bulk,2,Ningbo,29.87,121.55
+V006,CSCL Harbor Queen 006,2026-09-20 16:03,14472,general,2,Qingdao,36.07,120.38
+V007,MAERSK Ocean Pride 007,2026-09-20 23:03,18100,general,1,Rotterdam,51.92,4.48
+V008,YANG Harbor Queen 008,2026-09-21 06:03,8885,general,4,Busan,35.1,129.04
+V009,CSCL Port Leader 009,2026-09-21 13:03,13556,general,4,Shenzhen,22.54,114.06
+V010,MSC Harbor Queen 010,2026-09-21 20:03,8745,general,5,Rotterdam,51.92,4.48
+V011,CSCL Blue Horizon 011,2026-09-22 03:03,7002,general,3,Rotterdam,51.92,4.48

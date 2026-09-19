@@ -1,0 +1,23 @@
+vessel_id,name,eta,size_teu,cargo_type,priority,origin_lat,origin_lon,origin_port
+V101,MV Pacific Apex,2026-09-20 06:00,15000,hazmat,1,22.30,114.17,Hong Kong
+V102,MV Ocean Pioneer,2026-09-20 06:30,12000,reefer,1,31.23,121.47,Shanghai
+V103,MV Storm Titan,2026-09-20 07:00,18000,general,2,35.44,139.64,Yokohama
+V104,MV Dragon Empress,2026-09-20 08:15,9000,hazmat,1,25.04,121.56,Keelung
+V105,MV Global Breeze,2026-09-20 09:30,4000,bulk,3,1.29,103.85,Singapore
+V106,MV Nordic Voyager,2026-09-20 11:00,16000,reefer,2,51.95,4.14,Rotterdam
+V107,MV Atlantic Sentinel,2026-09-20 13:45,11000,general,3,53.55,9.99,Hamburg
+V108,MV Korea Star,2026-09-20 15:00,8500,hazmat,2,35.10,129.04,Busan
+V109,MV Desert Falcon,2026-09-20 17:30,14000,general,3,25.26,55.29,Dubai
+V110,MV Southern Cross,2026-09-20 19:00,6000,reefer,4,-33.86,151.20,Sydney
+V111,MV Samba Express,2026-09-20 21:15,3500,bulk,5,-23.95,-46.33,Santos
+V112,MV Spice Trader,2026-09-21 01:00,9500,general,3,18.96,72.82,Mumbai
+V113,MV Silk Road,2026-09-21 03:30,13000,hazmat,1,29.87,121.54,Ningbo
+V114,MV Yellow Sea,2026-09-21 06:00,7000,reefer,2,36.06,120.38,Qingdao
+V115,MV Formosa Pride,2026-09-21 08:45,10500,general,2,22.62,120.30,Kaohsiung
+V116,MV Golden Gate,2026-09-21 11:15,14500,hazmat,3,33.74,-118.27,Los Angeles
+V117,MV Schelde Carrier,2026-09-21 14:00,5000,general,4,51.22,4.40,Antwerp
+V118,MV Pearl of Ceylon,2026-09-21 17:30,8000,bulk,3,6.93,79.84,Colombo
+V119,MV Batavia Giant,2026-09-21 20:00,16500,general,1,-6.10,106.88,Jakarta
+V120,MV Iberian Wave,2026-09-22 00:30,4500,reefer,4,41.38,2.18,Barcelona
+V121,MV Manila Clipper,2026-09-22 04:00,6500,hazmat,2,14.59,120.97,Manila
+V122,MV Megamax Titan,2026-09-22 08:00,18000,bulk,5,31.23,121.47,Shanghai

@@ -1,0 +1,934 @@
+{
+  "generated_at": "2026-09-18T22:37:57+00:00",
+  "congestion_forecast": [
+    {
+      "day": 1,
+      "window_start": "2026-09-19 04:07",
+      "window_end": "2026-09-20 04:07",
+      "vessel_count": 0,
+      "incoming_teu": 0,
+      "total_capacity_teu": 80000,
+      "risk_ratio": 0.0,
+      "risk_level": "LOW",
+      "rule_risk_level": "LOW",
+      "reason": "No incoming vessels scheduled in Day 1 24-hour window."
+    },
+    {
+      "day": 2,
+      "window_start": "2026-09-20 04:07",
+      "window_end": "2026-09-21 04:07",
+      "vessel_count": 3,
+      "incoming_teu": 36500,
+      "total_capacity_teu": 80000,
+      "risk_ratio": 0.46,
+      "risk_level": "LOW",
+      "rule_risk_level": "LOW",
+      "reason": "3 vessels (36,500 TEU) arriving vs 80,000 TEU total berth capacity"
+    },
+    {
+      "day": 3,
+      "window_start": "2026-09-21 04:07",
+      "window_end": "2026-09-22 04:07",
+      "vessel_count": 12,
+      "incoming_teu": 167500,
+      "total_capacity_teu": 80000,
+      "risk_ratio": 2.09,
+      "risk_level": "HIGH",
+      "rule_risk_level": "HIGH",
+      "reason": "12 vessels (167,500 TEU) arriving vs 80,000 TEU total berth capacity"
+    }
+  ],
+  "berth_assignments": [
+    {
+      "vessel_id": "V323",
+      "vessel_name": "MV Port Klang Giant",
+      "berth_id": "B4",
+      "crane_count": 5,
+      "effective_dwell_hours": 16.0,
+      "arrival": "2026-09-22 18:30",
+      "berth_start": "2026-09-23 05:30",
+      "departure_est": "2026-09-23 21:30",
+      "wait_hours": 11.0,
+      "priority": 1,
+      "size_teu": 16000,
+      "cargo_type": "hazmat",
+      "queue_position": 0,
+      "queue_status": "BERTHED",
+      "queued_behind": null,
+      "reason": "Acceptable match \u2014 queued 11.0h; 5 cranes for fast turnaround; P1 priority vessel; +11.0h weather delay (+11.0h weather delay)",
+      "ml_allocation_score": 52.5,
+      "predicted_wait_hours": 12.98,
+      "origin_port": "Port Klang",
+      "dest_port": "Port of Singapore",
+      "weather_delay_hours": 11.0,
+      "weather_severity": "minor",
+      "predicted_demurrage_cost_usd": 55865.63,
+      "predicted_moves_per_hour": 88.72,
+      "is_anomalous": false
+    },
+    {
+      "vessel_id": "V309",
+      "vessel_name": "MV Colombo Monarch",
+      "berth_id": "B1",
+      "crane_count": 4,
+      "effective_dwell_hours": 18.5,
+      "arrival": "2026-09-21 02:03",
+      "berth_start": "2026-09-21 12:06",
+      "departure_est": "2026-09-22 06:36",
+      "wait_hours": 10.1,
+      "priority": 3,
+      "size_teu": 12000,
+      "cargo_type": "general",
+      "queue_position": 0,
+      "queue_status": "BERTHED",
+      "queued_behind": null,
+      "reason": "Acceptable match \u2014 queued 10.1h; 4 cranes for fast turnaround; +10.1h weather delay (+10.1h weather delay)",
+      "ml_allocation_score": 47.75,
+      "predicted_wait_hours": 14.81,
+      "origin_port": "Colombo",
+      "dest_port": "Port of Singapore",
+      "weather_delay_hours": 10.05,
+      "weather_severity": "moderate",
+      "predicted_demurrage_cost_usd": 8989.36,
+      "predicted_moves_per_hour": 79.14,
+      "is_anomalous": false
+    },
+    {
+      "vessel_id": "V324",
+      "vessel_name": "MV Tanjung Pelepas Breeze",
+      "berth_id": "B1",
+      "crane_count": 4,
+      "effective_dwell_hours": 18.5,
+      "arrival": "2026-09-22 19:36",
+      "berth_start": "2026-09-23 04:12",
+      "departure_est": "2026-09-23 22:42",
+      "wait_hours": 8.6,
+      "priority": 3,
+      "size_teu": 14500,
+      "cargo_type": "bulk",
+      "queue_position": 1,
+      "queue_status": "QUEUED (#1)",
+      "queued_behind": "MV Colombo Monarch",
+      "reason": "Acceptable match \u2014 queued 8.6h; 4 cranes for fast turnaround; +8.6h weather delay; queued #1 behind MV Colombo Monarch (+8.6h weather delay)",
+      "ml_allocation_score": 52.59,
+      "predicted_wait_hours": 15.14,
+      "origin_port": "Tanjung Pelepas",
+      "dest_port": "Port of Singapore",
+      "weather_delay_hours": 8.6,
+      "weather_severity": "minor",
+      "predicted_demurrage_cost_usd": 8728.36,
+      "predicted_moves_per_hour": 75.23,
+      "is_anomalous": false
+    },
+    {
+      "vessel_id": "V317",
+      "vessel_name": "MV Formosa Wave",
+      "berth_id": "B3",
+      "crane_count": 4,
+      "effective_dwell_hours": 24.5,
+      "arrival": "2026-09-21 23:35",
+      "berth_start": "2026-09-22 10:25",
+      "departure_est": "2026-09-23 10:55",
+      "wait_hours": 10.8,
+      "priority": 4,
+      "size_teu": 9000,
+      "cargo_type": "bulk",
+      "queue_position": 0,
+      "queue_status": "BERTHED",
+      "queued_behind": null,
+      "reason": "Acceptable match \u2014 ample capacity (2.2\u00d7); queued 10.8h; 4 cranes for fast turnaround; +10.8h weather delay (+10.8h weather delay)",
+      "ml_allocation_score": 39.8,
+      "predicted_wait_hours": 14.16,
+      "origin_port": "Kaohsiung",
+      "dest_port": "Port of Singapore",
+      "weather_delay_hours": 10.84,
+      "weather_severity": "moderate",
+      "predicted_demurrage_cost_usd": 6823.32,
+      "predicted_moves_per_hour": 84.58,
+      "is_anomalous": false
+    }
+  ],
+  "unassigned_count": 21,
+  "reroute_suggestions": [
+    {
+      "vessel_id": "V303",
+      "vessel_name": "MV Dubai Star",
+      "origin_port": "Dubai",
+      "dest_port": "Port of Singapore",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V304",
+      "vessel_name": "MV Singapore Pride",
+      "origin_port": "Singapore",
+      "dest_port": "Port of Rotterdam",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V301",
+      "vessel_name": "MV Rotterdam Carrier",
+      "origin_port": "Rotterdam",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V311",
+      "vessel_name": "MV Shanghai Titan",
+      "origin_port": "Shanghai",
+      "dest_port": "Port of Busan",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Ensenada",
+          "distance_km": 240,
+          "spare_capacity_teu": 5000,
+          "reason": "5,000 TEU spare capacity, 240km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V313",
+      "vessel_name": "MV Yokohama Star",
+      "origin_port": "Yokohama",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V315",
+      "vessel_name": "MV Ningbo Giant",
+      "origin_port": "Ningbo",
+      "dest_port": "Port of Rotterdam",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Ensenada",
+          "distance_km": 240,
+          "spare_capacity_teu": 5000,
+          "reason": "5,000 TEU spare capacity, 240km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V306",
+      "vessel_name": "MV Santos Trader",
+      "origin_port": "Santos",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V302",
+      "vessel_name": "MV Hamburg Sentinel",
+      "origin_port": "Hamburg",
+      "dest_port": "Port of Rotterdam",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V314",
+      "vessel_name": "MV Hong Kong Breeze",
+      "origin_port": "Hong Kong",
+      "dest_port": "Port of Singapore",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V308",
+      "vessel_name": "MV Mumbai Express",
+      "origin_port": "Mumbai",
+      "dest_port": "Port of Dubai",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V312",
+      "vessel_name": "MV Busan Leader",
+      "origin_port": "Busan",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V318",
+      "vessel_name": "MV Bremerhaven Express",
+      "origin_port": "Bremerhaven",
+      "dest_port": "Port of Rotterdam",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V320",
+      "vessel_name": "MV Felixstowe Pride",
+      "origin_port": "Felixstowe",
+      "dest_port": "Port of Hamburg",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V305",
+      "vessel_name": "MV Antwerp Clipper",
+      "origin_port": "Antwerp",
+      "dest_port": "Port of Hamburg",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V307",
+      "vessel_name": "MV Sydney Voyager",
+      "origin_port": "Sydney",
+      "dest_port": "Port of Singapore",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V319",
+      "vessel_name": "MV Piraeus Carrier",
+      "origin_port": "Piraeus",
+      "dest_port": "Port of Dubai",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V316",
+      "vessel_name": "MV Qingdao Sentinel",
+      "origin_port": "Qingdao",
+      "dest_port": "Port of Busan",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V321",
+      "vessel_name": "MV Le Havre Sovereign",
+      "origin_port": "Le Havre",
+      "dest_port": "Port of Rotterdam",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V310",
+      "vessel_name": "MV Iberian Wave",
+      "origin_port": "Barcelona",
+      "dest_port": "Port of Rotterdam",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V322",
+      "vessel_name": "MV Valencia Trader",
+      "origin_port": "Valencia",
+      "dest_port": "Port of Rotterdam",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V325",
+      "vessel_name": "MV Global Megamax Titan",
+      "origin_port": "Shanghai",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Ensenada",
+          "distance_km": 240,
+          "spare_capacity_teu": 5000,
+          "reason": "5,000 TEU spare capacity, 240km away"
+        }
+      ]
+    }
+  ],
+  "weather_summary": [
+    {
+      "vessel_id": "V301",
+      "vessel_name": "MV Rotterdam Carrier",
+      "origin_lat": "51.95",
+      "origin_lon": "4.14",
+      "origin_port": "Rotterdam",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 24.0,
+      "severity": "severe"
+    },
+    {
+      "vessel_id": "V302",
+      "vessel_name": "MV Hamburg Sentinel",
+      "origin_lat": "53.55",
+      "origin_lon": "9.99",
+      "origin_port": "Hamburg",
+      "dest_lat": "51.95",
+      "dest_lon": "4.14",
+      "dest_port": "Port of Rotterdam",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V303",
+      "vessel_name": "MV Dubai Star",
+      "origin_lat": "25.26",
+      "origin_lon": "55.29",
+      "origin_port": "Dubai",
+      "dest_lat": "1.29",
+      "dest_lon": "103.85",
+      "dest_port": "Port of Singapore",
+      "delay_hours": 20.75,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V304",
+      "vessel_name": "MV Singapore Pride",
+      "origin_lat": "1.29",
+      "origin_lon": "103.85",
+      "origin_port": "Singapore",
+      "dest_lat": "51.95",
+      "dest_lon": "4.14",
+      "dest_port": "Port of Rotterdam",
+      "delay_hours": 21.72,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V305",
+      "vessel_name": "MV Antwerp Clipper",
+      "origin_lat": "51.22",
+      "origin_lon": "4.40",
+      "origin_port": "Antwerp",
+      "dest_lat": "53.55",
+      "dest_lon": "9.99",
+      "dest_port": "Port of Hamburg",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V306",
+      "vessel_name": "MV Santos Trader",
+      "origin_lat": "-23.95",
+      "origin_lon": "-46.33",
+      "origin_port": "Santos",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 14.98,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V307",
+      "vessel_name": "MV Sydney Voyager",
+      "origin_lat": "-33.86",
+      "origin_lon": "151.20",
+      "origin_port": "Sydney",
+      "dest_lat": "1.29",
+      "dest_lon": "103.85",
+      "dest_port": "Port of Singapore",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V308",
+      "vessel_name": "MV Mumbai Express",
+      "origin_lat": "18.96",
+      "origin_lon": "72.82",
+      "origin_port": "Mumbai",
+      "dest_lat": "25.26",
+      "dest_lon": "55.29",
+      "dest_port": "Port of Dubai",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V309",
+      "vessel_name": "MV Colombo Monarch",
+      "origin_lat": "6.93",
+      "origin_lon": "79.84",
+      "origin_port": "Colombo",
+      "dest_lat": "1.29",
+      "dest_lon": "103.85",
+      "dest_port": "Port of Singapore",
+      "delay_hours": 10.05,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V310",
+      "vessel_name": "MV Iberian Wave",
+      "origin_lat": "41.38",
+      "origin_lon": "2.18",
+      "origin_port": "Barcelona",
+      "dest_lat": "51.95",
+      "dest_lon": "4.14",
+      "dest_port": "Port of Rotterdam",
+      "delay_hours": 24.0,
+      "severity": "severe"
+    },
+    {
+      "vessel_id": "V311",
+      "vessel_name": "MV Shanghai Titan",
+      "origin_lat": "31.23",
+      "origin_lon": "121.47",
+      "origin_port": "Shanghai",
+      "dest_lat": "35.10",
+      "dest_lon": "129.04",
+      "dest_port": "Port of Busan",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V312",
+      "vessel_name": "MV Busan Leader",
+      "origin_lat": "35.10",
+      "origin_lon": "129.04",
+      "origin_port": "Busan",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V313",
+      "vessel_name": "MV Yokohama Star",
+      "origin_lat": "35.44",
+      "origin_lon": "139.64",
+      "origin_port": "Yokohama",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V314",
+      "vessel_name": "MV Hong Kong Breeze",
+      "origin_lat": "22.30",
+      "origin_lon": "114.17",
+      "origin_port": "Hong Kong",
+      "dest_lat": "1.29",
+      "dest_lon": "103.85",
+      "dest_port": "Port of Singapore",
+      "delay_hours": 13.18,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V315",
+      "vessel_name": "MV Ningbo Giant",
+      "origin_lat": "29.87",
+      "origin_lon": "121.54",
+      "origin_port": "Ningbo",
+      "dest_lat": "51.95",
+      "dest_lon": "4.14",
+      "dest_port": "Port of Rotterdam",
+      "delay_hours": 24.0,
+      "severity": "severe"
+    },
+    {
+      "vessel_id": "V316",
+      "vessel_name": "MV Qingdao Sentinel",
+      "origin_lat": "36.06",
+      "origin_lon": "120.38",
+      "origin_port": "Qingdao",
+      "dest_lat": "35.10",
+      "dest_lon": "129.04",
+      "dest_port": "Port of Busan",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V317",
+      "vessel_name": "MV Formosa Wave",
+      "origin_lat": "22.62",
+      "origin_lon": "120.30",
+      "origin_port": "Kaohsiung",
+      "dest_lat": "1.29",
+      "dest_lon": "103.85",
+      "dest_port": "Port of Singapore",
+      "delay_hours": 10.84,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V318",
+      "vessel_name": "MV Bremerhaven Express",
+      "origin_lat": "53.54",
+      "origin_lon": "8.58",
+      "origin_port": "Bremerhaven",
+      "dest_lat": "51.95",
+      "dest_lon": "4.14",
+      "dest_port": "Port of Rotterdam",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V319",
+      "vessel_name": "MV Piraeus Carrier",
+      "origin_lat": "37.94",
+      "origin_lon": "23.64",
+      "origin_port": "Piraeus",
+      "dest_lat": "25.26",
+      "dest_lon": "55.29",
+      "dest_port": "Port of Dubai",
+      "delay_hours": 19.02,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V320",
+      "vessel_name": "MV Felixstowe Pride",
+      "origin_lat": "51.96",
+      "origin_lon": "1.35",
+      "origin_port": "Felixstowe",
+      "dest_lat": "53.55",
+      "dest_lon": "9.99",
+      "dest_port": "Port of Hamburg",
+      "delay_hours": 22.74,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V321",
+      "vessel_name": "MV Le Havre Sovereign",
+      "origin_lat": "49.49",
+      "origin_lon": "0.10",
+      "origin_port": "Le Havre",
+      "dest_lat": "51.95",
+      "dest_lon": "4.14",
+      "dest_port": "Port of Rotterdam",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V322",
+      "vessel_name": "MV Valencia Trader",
+      "origin_lat": "39.46",
+      "origin_lon": "-0.37",
+      "origin_port": "Valencia",
+      "dest_lat": "51.95",
+      "dest_lon": "4.14",
+      "dest_port": "Port of Rotterdam",
+      "delay_hours": 24.0,
+      "severity": "severe"
+    },
+    {
+      "vessel_id": "V323",
+      "vessel_name": "MV Port Klang Giant",
+      "origin_lat": "3.00",
+      "origin_lon": "101.40",
+      "origin_port": "Port Klang",
+      "dest_lat": "1.29",
+      "dest_lon": "103.85",
+      "dest_port": "Port of Singapore",
+      "delay_hours": 11.0,
+      "severity": "minor"
+    },
+    {
+      "vessel_id": "V324",
+      "vessel_name": "MV Tanjung Pelepas Breeze",
+      "origin_lat": "1.36",
+      "origin_lon": "103.55",
+      "origin_port": "Tanjung Pelepas",
+      "dest_lat": "1.29",
+      "dest_lon": "103.85",
+      "dest_port": "Port of Singapore",
+      "delay_hours": 8.6,
+      "severity": "minor"
+    },
+    {
+      "vessel_id": "V325",
+      "vessel_name": "MV Global Megamax Titan",
+      "origin_lat": "31.23",
+      "origin_lon": "121.47",
+      "origin_port": "Shanghai",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    }
+  ],
+  "ml_enabled": true,
+  "ml_allocation_used": true,
+  "warnings": [],
+  "kpis": {
+    "avg_wait_hours": 14.27,
+    "berth_utilization_pct": 64.4,
+    "vessels_at_risk": 21,
+    "estimated_emissions_saved_kg": 0.0,
+    "total_predicted_demurrage_usd": 80406.67,
+    "weather_delayed_vessels": 25
+  },
+  "swap_opportunities": [
+    {
+      "vessel_1_id": "V323",
+      "vessel_1_name": "MV Port Klang Giant",
+      "vessel_2_id": "V324",
+      "vessel_2_name": "MV Tanjung Pelepas Breeze",
+      "hours_saved": 15.14,
+      "estimated_cost_saved": 11544.25,
+      "reason": "Re-allocating MV Tanjung Pelepas Breeze balances berth crane loading and saves approximately 15.14h queue wait."
+    },
+    {
+      "vessel_1_id": "V323",
+      "vessel_1_name": "MV Port Klang Giant",
+      "vessel_2_id": "V317",
+      "vessel_2_name": "MV Formosa Wave",
+      "hours_saved": 14.16,
+      "estimated_cost_saved": 8850.0,
+      "reason": "Re-allocating MV Formosa Wave balances berth crane loading and saves approximately 14.16h queue wait."
+    },
+    {
+      "vessel_1_id": "V324",
+      "vessel_1_name": "MV Tanjung Pelepas Breeze",
+      "vessel_2_id": "V317",
+      "vessel_2_name": "MV Formosa Wave",
+      "hours_saved": 0.98,
+      "estimated_cost_saved": 575.75,
+      "reason": "Swapping MV Tanjung Pelepas Breeze (P3) with MV Formosa Wave (P4) prioritizes time-critical cargo and reduces P1 queue wait by 0.98h."
+    }
+  ]
+}

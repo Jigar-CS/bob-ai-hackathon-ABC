@@ -1,0 +1,14 @@
+vessel_id,name,eta,size_teu,cargo_type,priority,origin_lat,origin_lon,origin_port,dest_lat,dest_lon,dest_port
+V101,MV Transpacific Limestone,2026-09-20 06:00,15000,limestone,1,31.23,121.47,Shanghai,33.73,-118.26,LA/Long Beach
+V102,MV Pearl River Reefer,2026-09-20 07:15,12000,reefer,1,22.30,114.17,Hong Kong,33.73,-118.26,LA/Long Beach
+V103,MV Tokyo Hazmat Express,2026-09-20 08:30,14000,hazmat,2,35.44,139.64,Yokohama,37.80,-122.27,Port of Oakland
+V104,MV Formosa Limestone Giant,2026-09-20 09:45,17000,limestone,1,25.04,121.56,Keelung,33.73,-118.26,LA/Long Beach
+V105,MV Singapore Bulk Leader,2026-09-20 11:00,11000,bulk,3,1.29,103.85,Singapore,33.73,-118.26,LA/Long Beach
+V106,MV Korea Reefer Star,2026-09-20 12:15,13000,reefer,2,35.10,129.04,Busan,47.60,-122.33,Port of Seattle
+V107,MV Dragon Container Titan,2026-09-20 13:30,19000,container,2,29.87,121.54,Ningbo,33.73,-118.26,LA/Long Beach
+V108,MV Yellow Sea Hazmat,2026-09-20 15:00,10000,hazmat,1,36.06,120.38,Qingdao,37.80,-122.27,Port of Oakland
+V109,MV Pacific Limestone Express,2026-09-20 16:30,11500,limestone,2,22.62,120.30,Kaohsiung,33.73,-118.26,LA/Long Beach
+V110,MV Columbia Bulk Carrier,2026-09-20 18:00,9500,bulk,3,45.52,-122.67,Portland,47.60,-122.33,Port of Seattle
+V111,MV Golden State Reefer,2026-09-20 19:30,8500,reefer,2,33.74,-118.27,Long Beach,32.71,-117.16,Port of San Diego
+V112,MV Silk Hazmat Monarch,2026-09-20 21:00,15500,hazmat,1,31.23,121.47,Shanghai,33.73,-118.26,LA/Long Beach
+V113,MV Ocean Limestone Voyager,2026-09-20 22:30,16000,limestone,2,22.30,114.17,Hong Kong,33.73,-118.26,LA/Long Beach

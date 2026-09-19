@@ -1,0 +1,26 @@
+vessel_id,name,eta,size_teu,cargo_type,priority,origin_lat,origin_lon,origin_port,dest_lat,dest_lon,dest_port
+V201,MV Transpacific Titan,2026-09-20 06:00,20000,hazmat,1,31.23,121.47,Shanghai,33.73,-118.26,LA/Long Beach
+V202,MV Pearl River Empress,2026-09-20 06:15,18000,reefer,1,22.30,114.17,Hong Kong,33.73,-118.26,LA/Long Beach
+V203,MV Tokyo Express,2026-09-20 07:00,16500,general,2,35.44,139.64,Yokohama,37.80,-122.27,Port of Oakland
+V204,MV Formosa Pioneer,2026-09-20 07:30,14000,hazmat,1,25.04,121.56,Keelung,33.73,-118.26,LA/Long Beach
+V205,MV Singapore Giant,2026-09-20 08:45,15000,bulk,3,1.29,103.85,Singapore,33.73,-118.26,LA/Long Beach
+V206,MV Korea Leader,2026-09-20 09:30,12500,reefer,2,35.10,129.04,Busan,47.60,-122.33,Port of Seattle
+V207,MV Dragon Trader,2026-09-20 11:00,19000,general,3,29.87,121.54,Ningbo,33.73,-118.26,LA/Long Beach
+V208,MV Yellow Sea Sentinel,2026-09-20 12:15,11000,hazmat,2,36.06,120.38,Qingdao,37.80,-122.27,Port of Oakland
+V209,MV Pacific Voyager,2026-09-20 14:00,13500,general,3,22.62,120.30,Kaohsiung,33.73,-118.26,LA/Long Beach
+V210,MV Columbia Carrier,2026-09-20 15:30,8000,reefer,4,45.52,-122.67,Portland,47.60,-122.33,Port of Seattle
+V211,MV Golden State,2026-09-20 17:00,9500,hazmat,2,33.74,-118.27,Long Beach,32.71,-117.16,Port of San Diego
+V212,MV Silk Express,2026-09-20 18:45,17500,general,1,31.23,121.47,Shanghai,33.73,-118.26,LA/Long Beach
+V213,MV Ocean Monarch,2026-09-20 20:30,16000,hazmat,1,22.30,114.17,Hong Kong,33.73,-118.26,LA/Long Beach
+V214,MV Horizon Apex,2026-09-21 00:00,10500,reefer,2,35.44,139.64,Yokohama,37.80,-122.27,Port of Oakland
+V215,MV Bay Area Clipper,2026-09-21 02:15,12000,general,3,37.80,-122.27,Oakland,33.73,-118.26,LA/Long Beach
+V216,MV Evergreen Pride,2026-09-21 04:30,14500,hazmat,2,25.04,121.56,Keelung,33.73,-118.26,LA/Long Beach
+V217,MV Puget Sound Star,2026-09-21 07:00,8500,bulk,4,47.60,-122.33,Seattle,37.80,-122.27,Port of Oakland
+V218,MV Manila Breeze,2026-09-21 09:30,7000,general,3,14.59,120.97,Manila,33.73,-118.26,LA/Long Beach
+V219,MV Jakarta Giant,2026-09-21 12:00,15500,reefer,1,-6.10,106.88,Jakarta,33.73,-118.26,LA/Long Beach
+V220,MV Osaka Sentinel,2026-09-21 14:45,9000,hazmat,3,34.70,135.40,Osaka,47.60,-122.33,Port of Seattle
+V221,MV Incheon Express,2026-09-21 17:30,11500,general,2,37.55,126.98,Incheon,33.73,-118.26,LA/Long Beach
+V222,MV California Clipper,2026-09-21 20:00,13000,reefer,2,32.71,-117.16,San Diego,37.80,-122.27,Port of Oakland
+V223,MV Guangzhou Titan,2026-09-22 00:30,18500,hazmat,1,23.13,113.26,Guangzhou,33.73,-118.26,LA/Long Beach
+V224,MV Tianjin Voyager,2026-09-22 04:00,14000,bulk,4,39.34,117.36,Tianjin,33.73,-118.26,LA/Long Beach
+V225,MV Megamax Sovereign,2026-09-22 08:00,20000,general,5,31.23,121.47,Shanghai,33.73,-118.26,LA/Long Beach

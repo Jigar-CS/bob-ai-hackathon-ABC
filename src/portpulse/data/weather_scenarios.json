@@ -1,0 +1,30 @@
+[
+  {
+    "scenario": "clear",
+    "wave_height_m": 0.5,
+    "wind_speed_kt": 10,
+    "visibility_km": 15,
+    "probability": 0.4
+  },
+  {
+    "scenario": "minor",
+    "wave_height_m": 2.0,
+    "wind_speed_kt": 25,
+    "visibility_km": 10,
+    "probability": 0.3
+  },
+  {
+    "scenario": "moderate",
+    "wave_height_m": 4.0,
+    "wind_speed_kt": 40,
+    "visibility_km": 5,
+    "probability": 0.2
+  },
+  {
+    "scenario": "severe",
+    "wave_height_m": 6.5,
+    "wind_speed_kt": 55,
+    "visibility_km": 2,
+    "probability": 0.1
+  }
+]

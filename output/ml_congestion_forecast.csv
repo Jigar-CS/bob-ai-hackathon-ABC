@@ -1,0 +1,4 @@
+day,window_start,window_end,vessel_count,incoming_teu,total_capacity_teu,utilization_ratio,risk_level,reason
+1,2026-09-18 15:28,2026-09-19 15:28,3,33981,94000,0.361,LOW,"3 vessels arriving, 36.1% capacity utilization"
+2,2026-09-19 15:28,2026-09-20 15:28,2,27740,94000,0.295,LOW,"2 vessels arriving, 29.5% capacity utilization"
+3,2026-09-20 15:28,2026-09-21 15:28,4,50987,94000,0.542,MEDIUM,"4 vessels arriving, 54.2% capacity utilization"

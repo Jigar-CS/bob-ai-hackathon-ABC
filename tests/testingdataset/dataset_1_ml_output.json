@@ -1,0 +1,879 @@
+{
+  "generated_at": "2026-09-18T22:37:31+00:00",
+  "congestion_forecast": [
+    {
+      "day": 1,
+      "window_start": "2026-09-19 04:07",
+      "window_end": "2026-09-20 04:07",
+      "vessel_count": 0,
+      "incoming_teu": 0,
+      "total_capacity_teu": 80000,
+      "risk_ratio": 0.0,
+      "risk_level": "LOW",
+      "rule_risk_level": "LOW",
+      "reason": "No incoming vessels scheduled in Day 1 24-hour window."
+    },
+    {
+      "day": 2,
+      "window_start": "2026-09-20 04:07",
+      "window_end": "2026-09-21 04:07",
+      "vessel_count": 0,
+      "incoming_teu": 0,
+      "total_capacity_teu": 80000,
+      "risk_ratio": 0.0,
+      "risk_level": "LOW",
+      "rule_risk_level": "LOW",
+      "reason": "No incoming vessels scheduled in Day 2 24-hour window."
+    },
+    {
+      "day": 3,
+      "window_start": "2026-09-21 04:07",
+      "window_end": "2026-09-22 04:07",
+      "vessel_count": 16,
+      "incoming_teu": 227500,
+      "total_capacity_teu": 80000,
+      "risk_ratio": 2.84,
+      "risk_level": "HIGH",
+      "rule_risk_level": "HIGH",
+      "reason": "16 vessels (227,500 TEU) arriving vs 80,000 TEU total berth capacity"
+    }
+  ],
+  "berth_assignments": [],
+  "unassigned_count": 25,
+  "reroute_suggestions": [
+    {
+      "vessel_id": "V204",
+      "vessel_name": "MV Formosa Pioneer",
+      "origin_port": "Keelung",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V201",
+      "vessel_name": "MV Transpacific Titan",
+      "origin_port": "Shanghai",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Ensenada",
+          "distance_km": 240,
+          "spare_capacity_teu": 5000,
+          "reason": "5,000 TEU spare capacity, 240km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V202",
+      "vessel_name": "MV Pearl River Empress",
+      "origin_port": "Hong Kong",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V213",
+      "vessel_name": "MV Ocean Monarch",
+      "origin_port": "Hong Kong",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V212",
+      "vessel_name": "MV Silk Express",
+      "origin_port": "Shanghai",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V219",
+      "vessel_name": "MV Jakarta Giant",
+      "origin_port": "Jakarta",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V223",
+      "vessel_name": "MV Guangzhou Titan",
+      "origin_port": "Guangzhou",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Ensenada",
+          "distance_km": 240,
+          "spare_capacity_teu": 5000,
+          "reason": "5,000 TEU spare capacity, 240km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V203",
+      "vessel_name": "MV Tokyo Express",
+      "origin_port": "Yokohama",
+      "dest_port": "Port of Oakland",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V206",
+      "vessel_name": "MV Korea Leader",
+      "origin_port": "Busan",
+      "dest_port": "Port of Seattle",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V208",
+      "vessel_name": "MV Yellow Sea Sentinel",
+      "origin_port": "Qingdao",
+      "dest_port": "Port of Oakland",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V211",
+      "vessel_name": "MV Golden State",
+      "origin_port": "Long Beach",
+      "dest_port": "Port of San Diego",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V214",
+      "vessel_name": "MV Horizon Apex",
+      "origin_port": "Yokohama",
+      "dest_port": "Port of Oakland",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V216",
+      "vessel_name": "MV Evergreen Pride",
+      "origin_port": "Keelung",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V221",
+      "vessel_name": "MV Incheon Express",
+      "origin_port": "Incheon",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V222",
+      "vessel_name": "MV California Clipper",
+      "origin_port": "San Diego",
+      "dest_port": "Port of Oakland",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V205",
+      "vessel_name": "MV Singapore Giant",
+      "origin_port": "Singapore",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V209",
+      "vessel_name": "MV Pacific Voyager",
+      "origin_port": "Kaohsiung",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V207",
+      "vessel_name": "MV Dragon Trader",
+      "origin_port": "Ningbo",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Ensenada",
+          "distance_km": 240,
+          "spare_capacity_teu": 5000,
+          "reason": "5,000 TEU spare capacity, 240km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V215",
+      "vessel_name": "MV Bay Area Clipper",
+      "origin_port": "Oakland",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V218",
+      "vessel_name": "MV Manila Breeze",
+      "origin_port": "Manila",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V220",
+      "vessel_name": "MV Osaka Sentinel",
+      "origin_port": "Osaka",
+      "dest_port": "Port of Seattle",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V210",
+      "vessel_name": "MV Columbia Carrier",
+      "origin_port": "Portland",
+      "dest_port": "Port of Seattle",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V217",
+      "vessel_name": "MV Puget Sound Star",
+      "origin_port": "Seattle",
+      "dest_port": "Port of Oakland",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V224",
+      "vessel_name": "MV Tianjin Voyager",
+      "origin_port": "Tianjin",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V225",
+      "vessel_name": "MV Megamax Sovereign",
+      "origin_port": "Shanghai",
+      "dest_port": "LA/Long Beach",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Ensenada",
+          "distance_km": 240,
+          "spare_capacity_teu": 5000,
+          "reason": "5,000 TEU spare capacity, 240km away"
+        }
+      ]
+    }
+  ],
+  "weather_summary": [
+    {
+      "vessel_id": "V201",
+      "vessel_name": "MV Transpacific Titan",
+      "origin_lat": "31.23",
+      "origin_lon": "121.47",
+      "origin_port": "Shanghai",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V202",
+      "vessel_name": "MV Pearl River Empress",
+      "origin_lat": "22.30",
+      "origin_lon": "114.17",
+      "origin_port": "Hong Kong",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V203",
+      "vessel_name": "MV Tokyo Express",
+      "origin_lat": "35.44",
+      "origin_lon": "139.64",
+      "origin_port": "Yokohama",
+      "dest_lat": "37.80",
+      "dest_lon": "-122.27",
+      "dest_port": "Port of Oakland",
+      "delay_hours": 24.0,
+      "severity": "severe"
+    },
+    {
+      "vessel_id": "V204",
+      "vessel_name": "MV Formosa Pioneer",
+      "origin_lat": "25.04",
+      "origin_lon": "121.56",
+      "origin_port": "Keelung",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 22.88,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V205",
+      "vessel_name": "MV Singapore Giant",
+      "origin_lat": "1.29",
+      "origin_lon": "103.85",
+      "origin_port": "Singapore",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 21.95,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V206",
+      "vessel_name": "MV Korea Leader",
+      "origin_lat": "35.10",
+      "origin_lon": "129.04",
+      "origin_port": "Busan",
+      "dest_lat": "47.60",
+      "dest_lon": "-122.33",
+      "dest_port": "Port of Seattle",
+      "delay_hours": 24.0,
+      "severity": "severe"
+    },
+    {
+      "vessel_id": "V207",
+      "vessel_name": "MV Dragon Trader",
+      "origin_lat": "29.87",
+      "origin_lon": "121.54",
+      "origin_port": "Ningbo",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V208",
+      "vessel_name": "MV Yellow Sea Sentinel",
+      "origin_lat": "36.06",
+      "origin_lon": "120.38",
+      "origin_port": "Qingdao",
+      "dest_lat": "37.80",
+      "dest_lon": "-122.27",
+      "dest_port": "Port of Oakland",
+      "delay_hours": 24.0,
+      "severity": "severe"
+    },
+    {
+      "vessel_id": "V209",
+      "vessel_name": "MV Pacific Voyager",
+      "origin_lat": "22.62",
+      "origin_lon": "120.30",
+      "origin_port": "Kaohsiung",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 21.42,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V210",
+      "vessel_name": "MV Columbia Carrier",
+      "origin_lat": "45.52",
+      "origin_lon": "-122.67",
+      "origin_port": "Portland",
+      "dest_lat": "47.60",
+      "dest_lon": "-122.33",
+      "dest_port": "Port of Seattle",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V211",
+      "vessel_name": "MV Golden State",
+      "origin_lat": "33.74",
+      "origin_lon": "-118.27",
+      "origin_port": "Long Beach",
+      "dest_lat": "32.71",
+      "dest_lon": "-117.16",
+      "dest_port": "Port of San Diego",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V212",
+      "vessel_name": "MV Silk Express",
+      "origin_lat": "31.23",
+      "origin_lon": "121.47",
+      "origin_port": "Shanghai",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V213",
+      "vessel_name": "MV Ocean Monarch",
+      "origin_lat": "22.30",
+      "origin_lon": "114.17",
+      "origin_port": "Hong Kong",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 21.32,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V214",
+      "vessel_name": "MV Horizon Apex",
+      "origin_lat": "35.44",
+      "origin_lon": "139.64",
+      "origin_port": "Yokohama",
+      "dest_lat": "37.80",
+      "dest_lon": "-122.27",
+      "dest_port": "Port of Oakland",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V215",
+      "vessel_name": "MV Bay Area Clipper",
+      "origin_lat": "37.80",
+      "origin_lon": "-122.27",
+      "origin_port": "Oakland",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V216",
+      "vessel_name": "MV Evergreen Pride",
+      "origin_lat": "25.04",
+      "origin_lon": "121.56",
+      "origin_port": "Keelung",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 23.19,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V217",
+      "vessel_name": "MV Puget Sound Star",
+      "origin_lat": "47.60",
+      "origin_lon": "-122.33",
+      "origin_port": "Seattle",
+      "dest_lat": "37.80",
+      "dest_lon": "-122.27",
+      "dest_port": "Port of Oakland",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V218",
+      "vessel_name": "MV Manila Breeze",
+      "origin_lat": "14.59",
+      "origin_lon": "120.97",
+      "origin_port": "Manila",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 20.55,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V219",
+      "vessel_name": "MV Jakarta Giant",
+      "origin_lat": "-6.10",
+      "origin_lon": "106.88",
+      "origin_port": "Jakarta",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 19.36,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V220",
+      "vessel_name": "MV Osaka Sentinel",
+      "origin_lat": "34.70",
+      "origin_lon": "135.40",
+      "origin_port": "Osaka",
+      "dest_lat": "47.60",
+      "dest_lon": "-122.33",
+      "dest_port": "Port of Seattle",
+      "delay_hours": 24.0,
+      "severity": "severe"
+    },
+    {
+      "vessel_id": "V221",
+      "vessel_name": "MV Incheon Express",
+      "origin_lat": "37.55",
+      "origin_lon": "126.98",
+      "origin_port": "Incheon",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V222",
+      "vessel_name": "MV California Clipper",
+      "origin_lat": "32.71",
+      "origin_lon": "-117.16",
+      "origin_port": "San Diego",
+      "dest_lat": "37.80",
+      "dest_lon": "-122.27",
+      "dest_port": "Port of Oakland",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V223",
+      "vessel_name": "MV Guangzhou Titan",
+      "origin_lat": "23.13",
+      "origin_lon": "113.26",
+      "origin_port": "Guangzhou",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 18.31,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V224",
+      "vessel_name": "MV Tianjin Voyager",
+      "origin_lat": "39.34",
+      "origin_lon": "117.36",
+      "origin_port": "Tianjin",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    },
+    {
+      "vessel_id": "V225",
+      "vessel_name": "MV Megamax Sovereign",
+      "origin_lat": "31.23",
+      "origin_lon": "121.47",
+      "origin_port": "Shanghai",
+      "dest_lat": "33.73",
+      "dest_lon": "-118.26",
+      "dest_port": "LA/Long Beach",
+      "delay_hours": 24.0,
+      "severity": "moderate"
+    }
+  ],
+  "ml_enabled": true,
+  "ml_allocation_used": true,
+  "warnings": [],
+  "kpis": {
+    "avg_wait_hours": 0.0,
+    "berth_utilization_pct": 0.0,
+    "vessels_at_risk": 25,
+    "estimated_emissions_saved_kg": 0.0,
+    "total_predicted_demurrage_usd": 0,
+    "weather_delayed_vessels": 25
+  },
+  "swap_opportunities": []
+}

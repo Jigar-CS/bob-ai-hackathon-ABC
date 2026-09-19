@@ -123,6 +123,8 @@ def test_chat_endpoint_protected_when_key_configured(secured_client: TestClient)
         "berth_assignments": [],
         "unassigned_count": 0,
         "reroute_suggestions": [],
+        "ml_enabled": False,
+        "ml_allocation_used": False,
         "warnings": [],
     }
     chat_payload = {"message": "Which vessel is at B1?", "plan": plan, "history": []}

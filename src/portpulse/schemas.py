@@ -8,7 +8,7 @@ the OpenAPI schema a real output contract instead of bare dicts.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Annotated, Literal
+from typing import Any, Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -36,6 +36,12 @@ class VesselIn(_Model):
     size_teu: Teu = Field(examples=[9000])
     cargo_type: str = Field(min_length=1, max_length=64, examples=["reefer"])
     priority: Priority = Field(examples=[1])
+    origin_lat: float | None = Field(default=None, ge=-90.0, le=90.0, examples=[25.2048])
+    origin_lon: float | None = Field(default=None, ge=-180.0, le=180.0, examples=[55.2708])
+    origin_port: str | None = Field(default=None, max_length=128, examples=["Dubai"])
+    dest_lat: float | None = Field(default=None, ge=-90.0, le=90.0, examples=[33.73])
+    dest_lon: float | None = Field(default=None, ge=-180.0, le=180.0, examples=[-118.26])
+    dest_port: str | None = Field(default=None, max_length=128, examples=["LA/Long Beach"])
 
     @field_validator("eta")
     @classmethod
@@ -48,7 +54,7 @@ class VesselIn(_Model):
 
     def to_row(self) -> dict[str, str]:
         """Render as a CSV-shaped row so the domain layer sees one uniform format."""
-        return {key: str(value) for key, value in self.model_dump().items()}
+        return {key: str(value) for key, value in self.model_dump().items() if value is not None}
 
 
 class BerthIn(_Model):
@@ -58,9 +64,12 @@ class BerthIn(_Model):
     capacity_teu: Teu = Field(examples=[16000])
     crane_count: int = Field(ge=0, le=50, examples=[4])
     avg_dwell_hours: float = Field(gt=0, le=720, examples=[24.0])
+    allowed_cargo_types: str | None = Field(
+        default=None, examples=["container, bulk, limestone"]
+    )
 
     def to_row(self) -> dict[str, str]:
-        return {key: str(value) for key, value in self.model_dump().items()}
+        return {key: str(value) for key, value in self.model_dump().items() if value is not None}
 
 
 class CustomPlanRequest(_Model):
@@ -139,6 +148,10 @@ class CongestionWindow(BaseModel):
     total_capacity_teu: int = Field(ge=0)
     risk_ratio: float = Field(ge=0)
     risk_level: RiskLevel
+    rule_risk_level: RiskLevel = Field(
+        default="LOW",
+        description="Rule-based risk level before any ML override",
+    )
     reason: str
 
 
@@ -159,6 +172,37 @@ class BerthAssignment(BaseModel):
     priority: int | None = None
     size_teu: int | None = Field(default=None, description="Vessel capacity volume in TEU")
     reason: str
+    predicted_wait_hours: float | None = Field(
+        default=None, description="ML-predicted wait time in hours"
+    )
+    predicted_demurrage_cost_usd: float | None = Field(
+        default=None, description="ML-predicted demurrage cost impact in USD"
+    )
+    predicted_moves_per_hour: float | None = Field(
+        default=None, description="ML-predicted crane handling speed in moves/hour"
+    )
+    is_anomalous: bool | None = Field(
+        default=None, description="True if vessel dwell/wait pattern is flagged as an anomaly"
+    )
+    weather_delay_hours: float | None = Field(
+        default=None,
+        description="Hours added to ETA due to adverse weather along the vessel's route",
+    )
+    weather_severity: str | None = Field(
+        default=None,
+        description="Weather severity tier: none / minor / moderate / severe",
+    )
+    queue_position: int | None = Field(
+        default=None, description="0-indexed position in berth waiting queue"
+    )
+    queue_status: str | None = Field(
+        default=None, description="Queue status: BERTHED or QUEUED (#N)"
+    )
+    queued_behind: str | None = Field(
+        default=None, description="Name of vessel immediately preceding in berth queue"
+    )
+    origin_port: str | None = Field(default=None, description="Departure origin port")
+    dest_port: str | None = Field(default=None, description="Destination port")
 
 
 class AlternatePort(BaseModel):
@@ -187,7 +231,8 @@ class KpiSummary(BaseModel):
     """High-level operations performance metrics calculated from the plan."""
 
     avg_wait_hours: float = Field(
-        ge=0, description="Average queue wait hours across assigned vessels"
+        ge=0,
+        description="Average wait hours — ML predicted when available, else rule-based",
     )
     berth_utilization_pct: float = Field(
         ge=0, description="Total assigned TEU volume vs berth capacity percentage"
@@ -196,6 +241,16 @@ class KpiSummary(BaseModel):
     estimated_emissions_saved_kg: float = Field(
         ge=0,
         description="Illustrative estimate of CO2 emissions saved (kg) (estimate, not quoted rate)",
+    )
+    total_predicted_demurrage_usd: float = Field(
+        default=0.0,
+        ge=0,
+        description="Sum of ML-predicted demurrage costs across all assigned vessels (USD)",
+    )
+    weather_delayed_vessels: int = Field(
+        default=0,
+        ge=0,
+        description="Count of vessels whose ETA was adjusted due to adverse weather",
     )
 
 
@@ -213,6 +268,20 @@ class SwapOpportunity(BaseModel):
     reason: str
 
 
+class WeatherDelayInfo(BaseModel):
+    """Per-vessel weather delay summary entry."""
+
+    vessel_id: str
+    vessel_name: str
+    origin_lat: float | None = None
+    origin_lon: float | None = None
+    delay_hours: float = Field(ge=0)
+    severity: str = Field(
+        default="none",
+        description="Weather severity tier: none / minor / moderate / severe",
+    )
+
+
 class OpsPlan(BaseModel):
     """The complete 72-hour operations plan returned to the dashboard."""
 
@@ -226,6 +295,16 @@ class OpsPlan(BaseModel):
     unassigned_count: int = Field(default=0, ge=0)
     reroute_suggestions: list[RerouteSuggestion] = Field(default_factory=list)
     swap_opportunities: list[SwapOpportunity] = Field(default_factory=list)
+    weather_summary: list[WeatherDelayInfo] = Field(
+        default_factory=list,
+        description="Weather-induced ETA delays applied before berth assignment.",
+    )
+    ml_enabled: bool = Field(description="True when ML model features and predictions are enabled.")
+    ml_allocation_used: bool = Field(description="True when ML model berth allocation was used for assignments.")
+    meta: dict[str, Any] | None = Field(
+        default=None,
+        description="Home port metadata including home_port_name, home_port_lat, and home_port_lon.",
+    )
     warnings: list[str] = Field(
         default_factory=list,
         description="Non-fatal degradations, e.g. a sub-engine that failed.",

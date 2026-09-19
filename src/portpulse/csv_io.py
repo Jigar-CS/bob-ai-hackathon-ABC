@@ -55,6 +55,26 @@ COLUMN_ALIASES: dict[str, str] = {
     "priority": "priority",
     "prio": "priority",
     "priority_level": "priority",
+    # Origin aliases
+    "origin_lat": "origin_lat",
+    "origin_latitude": "origin_lat",
+    "origin_lon": "origin_lon",
+    "origin_lng": "origin_lon",
+    "origin_longitude": "origin_lon",
+    "origin_port": "origin_port",
+    "origin": "origin_port",
+    "source_port": "origin_port",
+    # Destination aliases
+    "dest_lat": "dest_lat",
+    "destination_lat": "dest_lat",
+    "dest_latitude": "dest_lat",
+    "dest_lon": "dest_lon",
+    "dest_lng": "dest_lon",
+    "destination_lon": "dest_lon",
+    "destination_longitude": "dest_lon",
+    "dest_port": "dest_port",
+    "destination_port": "dest_port",
+    "destination": "dest_port",
     # Berth column aliases
     "berth_id": "berth_id",
     "berthid": "berth_id",
@@ -70,6 +90,12 @@ COLUMN_ALIASES: dict[str, str] = {
     "avgdwellhours": "avg_dwell_hours",
     "dwell_hours": "avg_dwell_hours",
     "avg_dwell": "avg_dwell_hours",
+    "allowed_cargo_types": "allowed_cargo_types",
+    "allowedcargotypes": "allowed_cargo_types",
+    "cargo_types": "allowed_cargo_types",
+    "cargotypes": "allowed_cargo_types",
+    "allowed_cargo": "allowed_cargo_types",
+    "allowedcargo": "allowed_cargo_types",
 }
 
 
@@ -121,6 +147,19 @@ def decode_upload(raw: bytes) -> str:
         ) from err
 
 
+def _clean_cell_str(val: object) -> str:
+    if val is None:
+        return ""
+    s = str(val).strip()
+    if s.startswith("'") and len(s) > 1:
+        try:
+            float(s[1:])
+            return s[1:]
+        except ValueError:
+            pass
+    return s
+
+
 def parse_csv_text(content: str, required_columns: Iterable[str]) -> list[Row]:
     """Parse CSV text and assert the required columns are present.
 
@@ -140,7 +179,7 @@ def parse_csv_text(content: str, required_columns: Iterable[str]) -> list[Row]:
     try:
         rows = [
             {
-                column_mapping[k]: (v.strip() if isinstance(v, str) else v)
+                column_mapping[k]: _clean_cell_str(v)
                 for k, v in row.items()
                 if k and k in column_mapping
             }
@@ -155,9 +194,17 @@ def parse_csv_text(content: str, required_columns: Iterable[str]) -> list[Row]:
 
 
 def _sanitize_csv_cell(value: object) -> object:
-    """Escape values starting with =, +, -, @ to prevent spreadsheet formula injection."""
-    if isinstance(value, str) and value.startswith(("=", "+", "-", "@")):
-        return f"'{value}"
+    """Escape values starting with =, +, -, @ to prevent spreadsheet formula injection, preserving negative numbers."""
+    if isinstance(value, str):
+        val_str = value.strip()
+        if val_str.startswith(("=", "+", "@")):
+            return f"'{value}"
+        if val_str.startswith("-"):
+            try:
+                float(val_str)
+                return value
+            except ValueError:
+                return f"'{value}"
     return value
 
 

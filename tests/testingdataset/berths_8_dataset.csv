@@ -1,0 +1,9 @@
+berth_id,capacity_teu,crane_count,avg_dwell_hours,allowed_cargo_types
+B1,18000,4,18.5,"container, bulk, limestone"
+B2,14000,3,22.0,"container, reefer"
+B3,16000,4,24.5,"hazmat, container"
+B4,20000,5,20.0,"container, bulk, limestone, reefer"
+B5,12000,2,16.0,"limestone, bulk"
+B6,15000,3,21.0,"reefer, container, hazmat"
+B7,22000,6,18.0,"all"
+B8,10000,2,25.0,"general, container"

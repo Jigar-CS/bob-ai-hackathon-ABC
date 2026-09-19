@@ -55,3 +55,11 @@ def test_dashboard_is_served_at_the_root(client: TestClient) -> None:
     assert response.status_code == 200
     assert "PortPulse" in response.text
     assert "/api/v1" in response.text, "the dashboard must call the versioned API"
+
+
+def test_db_status_endpoint(client: TestClient) -> None:
+    response = client.get("/api/v1/db-status")
+    assert response.status_code == 200
+    body = response.json()
+    assert "database_connected" in body
+    assert isinstance(body["database_connected"], bool)

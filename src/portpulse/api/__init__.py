@@ -20,5 +20,6 @@ health_router = health_routes.router
 api_v1_router = APIRouter(prefix=API_V1_PREFIX)
 api_v1_router.include_router(plan_routes.router)
 api_v1_router.include_router(datasets_routes.router)
+api_v1_router.include_router(health_routes.router)
 
 __all__ = ["API_V1_PREFIX", "api_v1_router", "health_router"]

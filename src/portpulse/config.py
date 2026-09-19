@@ -201,6 +201,7 @@ class AppSettings(BaseSettings):
     environment: Literal["development", "staging", "production"] = "development"
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
     log_json: bool = False
+    ml_enabled: bool = False
 
     host: str = "127.0.0.1"
     port: int = Field(default=8000, ge=1, le=65535)
@@ -230,6 +231,20 @@ class AppSettings(BaseSettings):
     routing_max_workers: int = Field(default=8, ge=1, le=32)
     #: Hard ceiling on LLM calls per request; beyond this, template text is used.
     routing_max_llm_calls: int = Field(default=25, ge=0)
+
+    # ── Weather delay engine ──────────────────────────────────────────────────
+    #: Enable real-time weather delay adjustment for vessel ETAs.
+    weather_enabled: bool = True
+    #: Default Home Port name.
+    port_name: str = "JNPT / Nhava Sheva (Navi Mumbai)"
+    #: Destination port latitude (used to fetch weather along vessel routes).
+    port_lat: float = Field(default=18.95, ge=-90.0, le=90.0)
+    #: Destination port longitude.
+    port_lon: float = Field(default=72.95, ge=-180.0, le=180.0)
+    #: HTTP timeout in seconds for weather API requests.
+    weather_api_timeout_seconds: float = Field(default=5.0, gt=0)
+    weather_max_workers: int = Field(default=8, ge=1, le=32)
+    weather_max_vessels: int = Field(default=200, ge=1)
 
     @field_validator("api_key", mode="before")
     @classmethod

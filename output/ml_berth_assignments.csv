@@ -1,0 +1,9 @@
+vessel_id,vessel_name,berth_id,arrival,berth_start,departure_est,size_teu,priority,cargo_type,crane_count,effective_dwell_hours,wait_hours,weather_delay_hours,weather_severity,ml_allocation_score,predicted_wait_hours,predicted_demurrage_cost_usd,is_anomalous,reason
+V001,MV Pacific Star 001,B1,2026-09-18 17:28,2026-09-18 17:40,2026-09-19 15:40,15000,1,reefer,6,22.0,0.2,0.0,clear,89.7,0.44,0.0,False,ML-optimized assignment. Score: 89.7/100
+V002,MSC Atlantic Express 002,B1,2026-09-18 19:28,2026-09-18 20:09,2026-09-19 18:08,18000,2,general,6,22.0,0.7,0.1,minor,95.5,0.7,0.0,True,ML-optimized assignment. Score: 95.5/100
+V003,EVER Global Trader 003,B1,2026-09-18 21:28,2026-09-18 23:13,2026-09-19 19:40,12000,2,general,6,20.4,1.8,2.4,moderate,87.5,2.07,0.0,False,ML-optimized assignment. Score: 87.5/100
+V004,COSCO Ocean Pride 004,B1,2026-09-18 23:28,2026-09-19 02:09,2026-09-19 23:15,8500,3,bulk,6,21.1,2.7,0.0,clear,97.0,3.04,0.0,False,ML-optimized assignment. Score: 97.0/100
+V005,MAERSK Cargo Master 005,B1,2026-09-19 01:28,2026-09-19 14:13,2026-09-20 13:20,20000,1,hazmat,6,23.1,12.8,2.9,moderate,93.6,12.81,9190.32,False,ML-optimized assignment. Score: 93.6/100
+V006,HAPAG Port Leader 006,B1,2026-09-19 03:28,2026-09-19 15:55,2026-09-20 13:57,14000,3,general,6,22.0,12.5,0.0,clear,88.3,12.24,1137.16,True,ML-optimized assignment. Score: 88.3/100
+V007,CMA Wave Runner 007,B1,2026-09-19 06:28,2026-09-19 11:40,2026-09-20 12:39,9500,4,general,6,25.0,5.2,0.0,clear,80.4,5.08,0.0,False,ML-optimized assignment. Score: 80.4/100
+V008,OOCL Storm Breaker 008,B1,2026-09-19 09:28,2026-09-19 16:40,2026-09-20 17:27,16500,2,reefer,6,24.8,7.2,1.9,moderate,79.8,6.87,0.0,False,ML-optimized assignment. Score: 79.8/100

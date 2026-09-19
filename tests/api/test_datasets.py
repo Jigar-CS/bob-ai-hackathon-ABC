@@ -65,6 +65,24 @@ def test_uploading_vessels_then_berths_combines_both_datasets(client: TestClient
     assert plan_assignments[0]["berth_id"] == "B9"
 
 
+def test_upload_both_datasets_atomic_update(client: TestClient) -> None:
+    res = client.post(
+        "/api/v1/uploads/both",
+        files={
+            "vessels_file": ("vessels.csv", VESSEL_UPLOAD, "text/csv"),
+            "berths_file": ("berths.csv", BERTH_UPLOAD, "text/csv"),
+        },
+        data={"port_name": "Test Port", "port_lat": "34.0", "port_lon": "-118.0"},
+    )
+
+    assert res.status_code == 200
+    plan = res.json()
+    assignments = plan["berth_assignments"]
+    assert len(assignments) == 1
+    assert assignments[0]["vessel_id"] == "V100"
+    assert assignments[0]["berth_id"] == "B9"
+
+
 def test_reset_datasets_restores_default_sample_data(client: TestClient) -> None:
     upload(client, "vessels", VESSEL_UPLOAD)
     upload(client, "berths", BERTH_UPLOAD)

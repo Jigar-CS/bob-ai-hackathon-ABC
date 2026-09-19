@@ -1,0 +1,26 @@
+vessel_id,name,eta,size_teu,cargo_type,priority,origin_lat,origin_lon,origin_port,dest_lat,dest_lon,dest_port
+V301,MV Rotterdam Carrier,2026-09-20 06:00,16000,hazmat,1,51.95,4.14,Rotterdam,33.73,-118.26,LA/Long Beach
+V302,MV Hamburg Sentinel,2026-09-20 06:30,14000,reefer,2,53.55,9.99,Hamburg,51.95,4.14,Port of Rotterdam
+V303,MV Dubai Star,2026-09-20 07:15,15000,general,1,25.26,55.29,Dubai,1.29,103.85,Port of Singapore
+V304,MV Singapore Pride,2026-09-20 08:00,18000,hazmat,1,1.29,103.85,Singapore,51.95,4.14,Port of Rotterdam
+V305,MV Antwerp Clipper,2026-09-20 09:30,11000,bulk,3,51.22,4.40,Antwerp,53.55,9.99,Port of Hamburg
+V306,MV Santos Trader,2026-09-20 11:00,9500,reefer,2,-23.95,-46.33,Santos,33.73,-118.26,LA/Long Beach
+V307,MV Sydney Voyager,2026-09-20 12:45,10500,general,3,-33.86,151.20,Sydney,1.29,103.85,Port of Singapore
+V308,MV Mumbai Express,2026-09-20 14:15,13000,hazmat,2,18.96,72.82,Mumbai,25.26,55.29,Port of Dubai
+V309,MV Colombo Monarch,2026-09-20 16:00,12000,general,3,6.93,79.84,Colombo,1.29,103.85,Port of Singapore
+V310,MV Iberian Wave,2026-09-20 18:00,8000,reefer,4,41.38,2.18,Barcelona,51.95,4.14,Port of Rotterdam
+V311,MV Shanghai Titan,2026-09-20 20:30,19500,hazmat,1,31.23,121.47,Shanghai,35.10,129.04,Port of Busan
+V312,MV Busan Leader,2026-09-21 00:00,15000,general,2,35.10,129.04,Busan,33.73,-118.26,LA/Long Beach
+V313,MV Yokohama Star,2026-09-21 02:30,16500,hazmat,1,35.44,139.64,Yokohama,33.73,-118.26,LA/Long Beach
+V314,MV Hong Kong Breeze,2026-09-21 05:00,17000,reefer,2,22.30,114.17,Hong Kong,1.29,103.85,Port of Singapore
+V315,MV Ningbo Giant,2026-09-21 07:30,18500,general,1,29.87,121.54,Ningbo,51.95,4.14,Port of Rotterdam
+V316,MV Qingdao Sentinel,2026-09-21 10:00,11500,hazmat,3,36.06,120.38,Qingdao,35.10,129.04,Port of Busan
+V317,MV Formosa Wave,2026-09-21 12:45,9000,bulk,4,22.62,120.30,Kaohsiung,1.29,103.85,Port of Singapore
+V318,MV Bremerhaven Express,2026-09-21 15:15,12500,general,2,53.54,8.58,Bremerhaven,51.95,4.14,Port of Rotterdam
+V319,MV Piraeus Carrier,2026-09-21 18:00,10000,reefer,3,37.94,23.64,Piraeus,25.26,55.29,Port of Dubai
+V320,MV Felixstowe Pride,2026-09-21 21:00,14000,hazmat,2,51.96,1.35,Felixstowe,53.55,9.99,Port of Hamburg
+V321,MV Le Havre Sovereign,2026-09-22 00:30,13500,general,3,49.49,0.10,Le Havre,51.95,4.14,Port of Rotterdam
+V322,MV Valencia Trader,2026-09-22 04:00,8500,reefer,4,39.46,-0.37,Valencia,51.95,4.14,Port of Rotterdam
+V323,MV Port Klang Giant,2026-09-22 07:30,16000,hazmat,1,3.00,101.40,Port Klang,1.29,103.85,Port of Singapore
+V324,MV Tanjung Pelepas Breeze,2026-09-22 11:00,14500,bulk,3,1.36,103.55,Tanjung Pelepas,1.29,103.85,Port of Singapore
+V325,MV Global Megamax Titan,2026-09-22 15:00,20000,general,5,31.23,121.47,Shanghai,33.73,-118.26,LA/Long Beach

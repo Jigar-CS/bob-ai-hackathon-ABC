@@ -79,6 +79,11 @@ def build_prompt(vessel: Row, candidates: list[dict[str, Any]]) -> str:
             "IMPORTANT: this vessel carries refrigerated cargo (reefer) and requires "
             "a port with cold-chain facilities and continuous power supply for reefer plugs."
         )
+    elif cargo_type in ("limestone", "bulk"):
+        cargo_note = (
+            f"IMPORTANT: this vessel carries {cargo_type} bulk cargo and requires "
+            "a port with specialized bulk/limestone unloading terminals and conveyor systems."
+        )
     else:
         cargo_note = ""
     cargo_line = f"\n- Cargo note: {cargo_note}" if cargo_note else ""
@@ -189,6 +194,12 @@ def _suggest_for_vessel(
     return {
         "vessel_id": vessel_id,
         "vessel_name": vessel_name,
+        "origin_port": vessel.get("origin_port"),
+        "origin_lat": vessel.get("origin_lat"),
+        "origin_lon": vessel.get("origin_lon"),
+        "dest_port": vessel.get("dest_port"),
+        "dest_lat": vessel.get("dest_lat"),
+        "dest_lon": vessel.get("dest_lon"),
         "reason_unassigned": reason_unassigned,
         "ai_generated": ai_generated,
         "alternatives": alternatives,
@@ -198,6 +209,8 @@ def _suggest_for_vessel(
 def suggest_alternates(
     unassigned_vessels: list[Row],
     *,
+    port_lat: float | None = None,
+    port_lon: float | None = None,
     client: WatsonxClient | None = None,
     max_workers: int | None = None,
     max_llm_calls: int | None = None,
@@ -206,6 +219,8 @@ def suggest_alternates(
 
     Args:
         unassigned_vessels: Vessels that could not be berthed.
+        port_lat: Home port latitude for spatial distance calculations.
+        port_lon: Home port longitude for spatial distance calculations.
         client: watsonx client to use; defaults to the shared one. Pass ``None``
             explicitly via ``max_llm_calls=0`` to force template-only output.
         max_workers: Thread-pool size cap.
@@ -222,7 +237,7 @@ def suggest_alternates(
     workers = settings.routing_max_workers if max_workers is None else max_workers
     budget = settings.routing_max_llm_calls if max_llm_calls is None else max_llm_calls
 
-    ports = load_alternate_ports()
+    ports = load_alternate_ports(port_lat=port_lat, port_lon=port_lon)
     active_client = client if client is not None else get_client()
     if not active_client.enabled:
         logger.info(

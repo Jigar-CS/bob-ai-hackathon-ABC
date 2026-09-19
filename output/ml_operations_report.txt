@@ -1,0 +1,60 @@
+
+================================================================================
+PortPulse ML Operations Report
+Generated: 2026-09-18 15:28:01
+================================================================================
+
+PLANNING OVERVIEW
+-----------------
+Planning Horizon:     72 hours
+Vessels Processed:    8
+Berths Available:     6
+ML Enabled:           True
+ML Allocation Used:   True
+
+VESSEL ASSIGNMENT RESULTS
+-------------------------
+Assigned:             8
+Unassigned:           0
+Assignment Rate:      100.0%
+
+WEATHER IMPACT
+--------------
+Vessels with Delays:  4
+Total Delay Hours:    7.3h
+
+CONGESTION FORECAST
+-------------------
+Day 1: LOW risk (3 vessels, 33,981 TEU)
+Day 2: LOW risk (2 vessels, 27,740 TEU)
+Day 3: MEDIUM risk (4 vessels, 50,987 TEU)
+
+KEY PERFORMANCE INDICATORS
+--------------------------
+Average Wait Hours:           5.39h
+Berth Utilization:            78.5%
+Vessels at Risk:              2
+Emissions Saved:              1250.0 kg
+Total Demurrage Cost:         $10,327.48
+Weather-Delayed Vessels:      4
+
+ML MODEL PERFORMANCE
+--------------------
+Risk Classification Accuracy: 87.2%
+Wait Time R2 Score:           0.932
+Allocation R2 Score:          0.945
+Weather Delay R2 Score:       0.855
+Demurrage R2 Score:           0.999
+
+BERTH ASSIGNMENTS (ML-Scored)
+-----------------------------
+V001: B1 (Score: 89.7, Wait: 0.2h, Weather: 0.0h)
+V002: B1 (Score: 95.5, Wait: 0.7h, Weather: 0.1h)
+V003: B1 (Score: 87.5, Wait: 1.8h, Weather: 2.4h)
+V004: B1 (Score: 97.0, Wait: 2.7h, Weather: 0.0h)
+V005: B1 (Score: 93.6, Wait: 12.8h, Weather: 2.9h)
+V006: B1 (Score: 88.3, Wait: 12.5h, Weather: 0.0h)
+V007: B1 (Score: 80.4, Wait: 5.2h, Weather: 0.0h)
+V008: B1 (Score: 79.8, Wait: 7.2h, Weather: 1.9h)
+
+================================================================================

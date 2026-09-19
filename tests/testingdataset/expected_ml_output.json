@@ -1,0 +1,539 @@
+{
+  "generated_at": "2026-09-18T12:45:02+00:00",
+  "congestion_forecast": [
+    {
+      "day": 1,
+      "window_start": "2026-09-18 18:14",
+      "window_end": "2026-09-19 18:14",
+      "vessel_count": 0,
+      "incoming_teu": 0,
+      "total_capacity_teu": 76000,
+      "risk_ratio": 0.0,
+      "risk_level": "LOW",
+      "rule_risk_level": "LOW",
+      "reason": "No incoming vessels scheduled in Day 1 24-hour window."
+    },
+    {
+      "day": 2,
+      "window_start": "2026-09-19 18:14",
+      "window_end": "2026-09-20 18:14",
+      "vessel_count": 9,
+      "incoming_teu": 107500,
+      "total_capacity_teu": 76000,
+      "risk_ratio": 1.41,
+      "risk_level": "HIGH",
+      "rule_risk_level": "HIGH",
+      "reason": "9 vessels (107,500 TEU) arriving vs 76,000 TEU total berth capacity"
+    },
+    {
+      "day": 3,
+      "window_start": "2026-09-20 18:14",
+      "window_end": "2026-09-21 18:14",
+      "vessel_count": 9,
+      "incoming_teu": 77000,
+      "total_capacity_teu": 76000,
+      "risk_ratio": 1.01,
+      "risk_level": "HIGH",
+      "rule_risk_level": "HIGH",
+      "reason": "9 vessels (77,000 TEU) arriving vs 76,000 TEU total berth capacity"
+    }
+  ],
+  "berth_assignments": [
+    {
+      "vessel_id": "V101",
+      "vessel_name": "MV Pacific Apex",
+      "berth_id": "B1",
+      "crane_count": 2,
+      "effective_dwell_hours": 37.2,
+      "arrival": "2026-09-20 06:00",
+      "berth_start": "2026-09-20 06:00",
+      "departure_est": "2026-09-21 19:12",
+      "wait_hours": 0.0,
+      "priority": 1,
+      "size_teu": 15000,
+      "cargo_type": "hazmat",
+      "reason": "Poor match \u2014 tight fit (1.1\u00d7 capacity); extended wait (9.7h); limited crane capacity (2); P1 priority vessel",
+      "ml_allocation_score": 25.67,
+      "predicted_wait_hours": 9.67,
+      "weather_delay_hours": 0.0,
+      "weather_severity": "none",
+      "predicted_demurrage_cost_usd": 2814.09,
+      "predicted_moves_per_hour": 38.17,
+      "is_anomalous": false
+    },
+    {
+      "vessel_id": "V102",
+      "vessel_name": "MV Ocean Pioneer",
+      "berth_id": "B3",
+      "crane_count": 2,
+      "effective_dwell_hours": 65.8,
+      "arrival": "2026-09-20 06:30",
+      "berth_start": "2026-09-20 06:30",
+      "departure_est": "2026-09-23 00:18",
+      "wait_hours": 0.0,
+      "priority": 1,
+      "size_teu": 12000,
+      "cargo_type": "reefer",
+      "reason": "Poor match \u2014 extended wait (9.0h); limited crane capacity (2); P1 priority vessel",
+      "ml_allocation_score": 32.96,
+      "predicted_wait_hours": 9.01,
+      "weather_delay_hours": 0.0,
+      "weather_severity": "none",
+      "predicted_demurrage_cost_usd": 499.4,
+      "predicted_moves_per_hour": 38.17,
+      "is_anomalous": false
+    },
+    {
+      "vessel_id": "V104",
+      "vessel_name": "MV Dragon Empress",
+      "berth_id": "B4",
+      "crane_count": 2,
+      "effective_dwell_hours": 62.0,
+      "arrival": "2026-09-20 08:15",
+      "berth_start": "2026-09-20 08:15",
+      "departure_est": "2026-09-22 22:15",
+      "wait_hours": 0.0,
+      "priority": 1,
+      "size_teu": 9000,
+      "cargo_type": "hazmat",
+      "reason": "Acceptable match \u2014 extended wait (8.1h); limited crane capacity (2); P1 priority vessel",
+      "ml_allocation_score": 44.24,
+      "predicted_wait_hours": 8.09,
+      "weather_delay_hours": 0.0,
+      "weather_severity": "none",
+      "predicted_demurrage_cost_usd": 577.63,
+      "predicted_moves_per_hour": 42.09,
+      "is_anomalous": false
+    },
+    {
+      "vessel_id": "V108",
+      "vessel_name": "MV Korea Star",
+      "berth_id": "B2",
+      "crane_count": 2,
+      "effective_dwell_hours": 45.8,
+      "arrival": "2026-09-20 15:00",
+      "berth_start": "2026-09-20 15:00",
+      "departure_est": "2026-09-22 12:48",
+      "wait_hours": 0.0,
+      "priority": 2,
+      "size_teu": 8500,
+      "cargo_type": "hazmat",
+      "reason": "Poor match \u2014 extended wait (9.7h); limited crane capacity (2)",
+      "ml_allocation_score": 26.86,
+      "predicted_wait_hours": 9.66,
+      "weather_delay_hours": 0.0,
+      "weather_severity": "none",
+      "predicted_demurrage_cost_usd": 633.14,
+      "predicted_moves_per_hour": 41.84,
+      "is_anomalous": false
+    },
+    {
+      "vessel_id": "V114",
+      "vessel_name": "MV Yellow Sea",
+      "berth_id": "B6",
+      "crane_count": 4,
+      "effective_dwell_hours": 31.2,
+      "arrival": "2026-09-21 06:00",
+      "berth_start": "2026-09-21 06:00",
+      "departure_est": "2026-09-22 13:12",
+      "wait_hours": 0.0,
+      "priority": 2,
+      "size_teu": 7000,
+      "cargo_type": "reefer",
+      "reason": "Poor match \u2014 tight fit (1.1\u00d7 capacity); extended wait (8.6h); 4 cranes for fast turnaround",
+      "ml_allocation_score": 36.34,
+      "predicted_wait_hours": 8.56,
+      "weather_delay_hours": 0.0,
+      "weather_severity": "none",
+      "predicted_demurrage_cost_usd": 105.27,
+      "predicted_moves_per_hour": 80.4,
+      "is_anomalous": false
+    },
+    {
+      "vessel_id": "V115",
+      "vessel_name": "MV Formosa Pride",
+      "berth_id": "B1",
+      "crane_count": 2,
+      "effective_dwell_hours": 37.2,
+      "arrival": "2026-09-21 08:45",
+      "berth_start": "2026-09-21 19:12",
+      "departure_est": "2026-09-23 08:24",
+      "wait_hours": 10.4,
+      "priority": 2,
+      "size_teu": 10500,
+      "cargo_type": "general",
+      "reason": "Poor match \u2014 extended wait (9.1h); limited crane capacity (2)",
+      "ml_allocation_score": 31.54,
+      "predicted_wait_hours": 9.06,
+      "weather_delay_hours": 0.0,
+      "weather_severity": "none",
+      "predicted_demurrage_cost_usd": 8899.47,
+      "predicted_moves_per_hour": 41.71,
+      "is_anomalous": false
+    },
+    {
+      "vessel_id": "V121",
+      "vessel_name": "MV Manila Clipper",
+      "berth_id": "B6",
+      "crane_count": 4,
+      "effective_dwell_hours": 31.2,
+      "arrival": "2026-09-22 04:00",
+      "berth_start": "2026-09-22 13:12",
+      "departure_est": "2026-09-23 20:24",
+      "wait_hours": 9.2,
+      "priority": 2,
+      "size_teu": 6500,
+      "cargo_type": "hazmat",
+      "reason": "Acceptable match \u2014 4 cranes for fast turnaround",
+      "ml_allocation_score": 41.59,
+      "predicted_wait_hours": 7.77,
+      "weather_delay_hours": 0.0,
+      "weather_severity": "none",
+      "predicted_demurrage_cost_usd": 15535.58,
+      "predicted_moves_per_hour": 80.16,
+      "is_anomalous": false
+    },
+    {
+      "vessel_id": "V105",
+      "vessel_name": "MV Global Breeze",
+      "berth_id": "B5",
+      "crane_count": 2,
+      "effective_dwell_hours": 40.2,
+      "arrival": "2026-09-20 09:30",
+      "berth_start": "2026-09-20 09:30",
+      "departure_est": "2026-09-22 01:42",
+      "wait_hours": 0.0,
+      "priority": 3,
+      "size_teu": 4000,
+      "cargo_type": "bulk",
+      "reason": "Poor match \u2014 extended wait (10.5h); limited crane capacity (2)",
+      "ml_allocation_score": 28.95,
+      "predicted_wait_hours": 10.53,
+      "weather_delay_hours": 0.0,
+      "weather_severity": "minor",
+      "predicted_demurrage_cost_usd": 0.0,
+      "predicted_moves_per_hour": 47.87,
+      "is_anomalous": false
+    },
+    {
+      "vessel_id": "V118",
+      "vessel_name": "MV Pearl of Ceylon",
+      "berth_id": "B5",
+      "crane_count": 2,
+      "effective_dwell_hours": 40.2,
+      "arrival": "2026-09-21 17:30",
+      "berth_start": "2026-09-22 01:42",
+      "departure_est": "2026-09-23 17:54",
+      "wait_hours": 8.2,
+      "priority": 3,
+      "size_teu": 8000,
+      "cargo_type": "bulk",
+      "reason": "Poor match \u2014 tight fit (1.0\u00d7 capacity); extended wait (10.7h); limited crane capacity (2)",
+      "ml_allocation_score": 13.55,
+      "predicted_wait_hours": 10.73,
+      "weather_delay_hours": 0.0,
+      "weather_severity": "none",
+      "predicted_demurrage_cost_usd": 4200.95,
+      "predicted_moves_per_hour": 43.18,
+      "is_anomalous": false
+    }
+  ],
+  "unassigned_count": 13,
+  "reroute_suggestions": [
+    {
+      "vessel_id": "V113",
+      "vessel_name": "MV Silk Road",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V119",
+      "vessel_name": "MV Batavia Giant",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V103",
+      "vessel_name": "MV Storm Titan",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V106",
+      "vessel_name": "MV Nordic Voyager",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V107",
+      "vessel_name": "MV Atlantic Sentinel",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V109",
+      "vessel_name": "MV Desert Falcon",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V112",
+      "vessel_name": "MV Spice Trader",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V116",
+      "vessel_name": "MV Golden Gate",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Tacoma",
+          "distance_km": 1450,
+          "spare_capacity_teu": 15000,
+          "reason": "15,000 TEU spare capacity, 1450km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V110",
+      "vessel_name": "MV Southern Cross",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Oakland",
+          "distance_km": 620,
+          "spare_capacity_teu": 12000,
+          "reason": "12,000 TEU spare capacity, 620km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V117",
+      "vessel_name": "MV Schelde Carrier",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Ensenada",
+          "distance_km": 240,
+          "spare_capacity_teu": 5000,
+          "reason": "5,000 TEU spare capacity, 240km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V120",
+      "vessel_name": "MV Iberian Wave",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Ensenada",
+          "distance_km": 240,
+          "spare_capacity_teu": 5000,
+          "reason": "5,000 TEU spare capacity, 240km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V111",
+      "vessel_name": "MV Samba Express",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        },
+        {
+          "port": "Port of Ensenada",
+          "distance_km": 240,
+          "spare_capacity_teu": 5000,
+          "reason": "5,000 TEU spare capacity, 240km away"
+        }
+      ]
+    },
+    {
+      "vessel_id": "V122",
+      "vessel_name": "MV Megamax Titan",
+      "reason_unassigned": "No berth had capacity or availability within the 72-hour window",
+      "ai_generated": false,
+      "alternatives": [
+        {
+          "port": "Port of Long Beach",
+          "distance_km": 50,
+          "spare_capacity_teu": 18000,
+          "reason": "18,000 TEU spare capacity, 50km away"
+        }
+      ]
+    }
+  ],
+  "weather_summary": [],
+  "ml_enabled": true,
+  "ml_allocation_used": true,
+  "warnings": [],
+  "kpis": {
+    "avg_wait_hours": 9.23,
+    "berth_utilization_pct": 100.0,
+    "vessels_at_risk": 13,
+    "estimated_emissions_saved_kg": 11219.8,
+    "total_predicted_demurrage_usd": 33265.53,
+    "weather_delayed_vessels": 0
+  },
+  "swap_opportunities": [
+    {
+      "vessel_1_id": "V101",
+      "vessel_1_name": "MV Pacific Apex",
+      "vessel_2_id": "V102",
+      "vessel_2_name": "MV Ocean Pioneer",
+      "hours_saved": 9.67,
+      "estimated_cost_saved": 6527.25,
+      "reason": "Re-allocating MV Pacific Apex balances berth crane loading and saves approximately 9.67h queue wait."
+    },
+    {
+      "vessel_1_id": "V101",
+      "vessel_1_name": "MV Pacific Apex",
+      "vessel_2_id": "V104",
+      "vessel_2_name": "MV Dragon Empress",
+      "hours_saved": 9.67,
+      "estimated_cost_saved": 5802.0,
+      "reason": "Re-allocating MV Pacific Apex balances berth crane loading and saves approximately 9.67h queue wait."
+    },
+    {
+      "vessel_1_id": "V102",
+      "vessel_1_name": "MV Ocean Pioneer",
+      "vessel_2_id": "V115",
+      "vessel_2_name": "MV Formosa Pride",
+      "hours_saved": 9.06,
+      "estimated_cost_saved": 5096.25,
+      "reason": "Re-allocating MV Formosa Pride balances berth crane loading and saves approximately 9.06h queue wait."
+    },
+    {
+      "vessel_1_id": "V108",
+      "vessel_1_name": "MV Korea Star",
+      "vessel_2_id": "V115",
+      "vessel_2_name": "MV Formosa Pride",
+      "hours_saved": 9.66,
+      "estimated_cost_saved": 4588.5,
+      "reason": "Re-allocating MV Korea Star balances berth crane loading and saves approximately 9.66h queue wait."
+    },
+    {
+      "vessel_1_id": "V104",
+      "vessel_1_name": "MV Dragon Empress",
+      "vessel_2_id": "V108",
+      "vessel_2_name": "MV Korea Star",
+      "hours_saved": 9.66,
+      "estimated_cost_saved": 4226.25,
+      "reason": "Re-allocating MV Korea Star balances berth crane loading and saves approximately 9.66h queue wait."
+    }
+  ]
+}
