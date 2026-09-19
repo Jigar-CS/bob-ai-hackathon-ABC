@@ -25,6 +25,7 @@ def test_gemini_settings_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("GEMINI_API_KEY", "")
     monkeypatch.setenv("GOOGLE_API_KEY", "")
     monkeypatch.setenv("PORTPULSE_GEMINI_API_KEY", "")
+    monkeypatch.setenv("GEMINI_MODEL_ID", "gemini-flash-latest")
 
     settings = GeminiSettings()
     assert settings.api_key is None
@@ -32,7 +33,8 @@ def test_gemini_settings_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
     assert settings.model_id == "gemini-flash-latest"
 
 
-def test_gemini_settings_with_key(gemini_env: None) -> None:
+def test_gemini_settings_with_key(gemini_env: None, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("GEMINI_MODEL_ID", "gemini-flash-latest")
     settings = GeminiSettings()
     assert settings.api_key == "test_gemini_key_123"
     assert settings.enabled is True
